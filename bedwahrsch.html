@@ -757,7 +757,15 @@
       document.getElementById('resPBTotal').textContent = pct(pB);
       document.getElementById('resBayes').textContent = pct(pAgB);
 
+const W = 760, H = 320;
+const scale = 0.85;
+
+// damit der kleinere Inhalt mittig sitzt
+const tx = (W - W * scale) / 2;
+const ty = (H - H * scale) / 2;
+
 const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
     <linearGradient id="lineGrad" x1="0" x2="1" y1="0" y2="0">
       <stop offset="0%" stop-color="#6ee7ff"/>
@@ -765,41 +773,46 @@ const svg = `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width="760" height="320" rx="18" fill="rgba(255,255,255,0.012)" />
+  <!-- Hintergrund bleibt gleich groß -->
+  <rect x="0" y="0" width="${W}" height="${H}" rx="18" fill="rgba(255,255,255,0.012)" />
 
-  <!-- Äste -->
-  <line x1="90" y1="160" x2="300" y2="85" stroke="url(#lineGrad)" stroke-width="4" />
-  <line x1="90" y1="160" x2="300" y2="235" stroke="url(#lineGrad)" stroke-width="4" />
-  <line x1="330" y1="85" x2="560" y2="45" stroke="url(#lineGrad)" stroke-width="4" />
-  <line x1="330" y1="85" x2="560" y2="125" stroke="url(#lineGrad)" stroke-width="4" />
-  <line x1="330" y1="235" x2="560" y2="195" stroke="url(#lineGrad)" stroke-width="4" />
-  <line x1="330" y1="235" x2="560" y2="275" stroke="url(#lineGrad)" stroke-width="4" />
+  <!-- Inhalt wird kleiner -->
+  <g transform="translate(${tx} ${ty}) scale(${scale})">
+    <!-- Äste -->
+    <line x1="90" y1="160" x2="300" y2="85" stroke="url(#lineGrad)" stroke-width="4" />
+    <line x1="90" y1="160" x2="300" y2="235" stroke="url(#lineGrad)" stroke-width="4" />
+    <line x1="330" y1="85" x2="560" y2="45" stroke="url(#lineGrad)" stroke-width="4" />
+    <line x1="330" y1="85" x2="560" y2="125" stroke="url(#lineGrad)" stroke-width="4" />
+    <line x1="330" y1="235" x2="560" y2="195" stroke="url(#lineGrad)" stroke-width="4" />
+    <line x1="330" y1="235" x2="560" y2="275" stroke="url(#lineGrad)" stroke-width="4" />
 
-  <!-- Nur Wahrscheinlichkeiten an den ersten Ästen -->
-  <text x="185" y="104" fill="#b8c2ea" font-size="14">${fmt(pA, 2)}</text>
-  <text x="180" y="232" fill="#b8c2ea" font-size="14">${fmt(pNotA, 2)}</text>
+    <!-- Nur Wahrscheinlichkeiten an den ersten Ästen -->
+    <text x="185" y="104" fill="#b8c2ea" font-size="14">${fmt(pA, 2)}</text>
+    <text x="180" y="232" fill="#b8c2ea" font-size="14">${fmt(pNotA, 2)}</text>
 
-  <!-- A / A̅ an den Verzweigungspunkten -->
-  <text x="312" y="90" fill="#eef2ff" font-size="18">A</text>
-  <text x="312" y="245" fill="#eef2ff" font-size="18">A̅</text>
+    <!-- A / A̅ an den Verzweigungspunkten -->
+    <text x="312" y="90" fill="#eef2ff" font-size="18">A</text>
+    <text x="312" y="245" fill="#eef2ff" font-size="18">A̅</text>
 
-  <!-- Nur Wahrscheinlichkeiten an den zweiten Ästen -->
-  <text x="400" y="54" fill="#b8c2ea" font-size="14">${fmt(pBgA, 2)}</text>
-  <text x="400" y="130" fill="#b8c2ea" font-size="14">${fmt(pNotBgA, 2)}</text>
-  <text x="400" y="204" fill="#b8c2ea" font-size="14">${fmt(pBgNotA, 2)}</text>
-  <text x="400" y="280" fill="#b8c2ea" font-size="14">${fmt(pNotBgNotA, 2)}</text>
+    <!-- Nur Wahrscheinlichkeiten an den zweiten Ästen -->
+    <text x="400" y="54" fill="#b8c2ea" font-size="14">${fmt(pBgA, 2)}</text>
+    <text x="400" y="130" fill="#b8c2ea" font-size="14">${fmt(pNotBgA, 2)}</text>
+    <text x="400" y="204" fill="#b8c2ea" font-size="14">${fmt(pBgNotA, 2)}</text>
+    <text x="400" y="280" fill="#b8c2ea" font-size="14">${fmt(pNotBgNotA, 2)}</text>
 
-  <!-- B / B̅ an den Enden -->
-  <text x="572" y="52" fill="#eef2ff" font-size="18">B</text>
-  <text x="572" y="138" fill="#eef2ff" font-size="18">B̅</text>
-  <text x="572" y="202" fill="#eef2ff" font-size="18">B</text>
-  <text x="572" y="288" fill="#eef2ff" font-size="18">B̅</text>
+    <!-- B / B̅ an den Enden -->
+    <text x="572" y="52" fill="#eef2ff" font-size="18">B</text>
+    <text x="572" y="138" fill="#eef2ff" font-size="18">B̅</text>
+    <text x="572" y="202" fill="#eef2ff" font-size="18">B</text>
+    <text x="572" y="288" fill="#eef2ff" font-size="18">B̅</text>
 
-  <!-- Pfadwahrscheinlichkeiten rechts -->
-  <text x="610" y="50" fill="#34d399" font-size="16">P(A∩B) = ${fmt(pAB, 4)}</text>
-  <text x="610" y="130" fill="#fbbf24" font-size="16">P(A∩B̅) = ${fmt(pANotB, 4)}</text>
-  <text x="610" y="210" fill="#34d399" font-size="16">P(A̅∩B) = ${fmt(pNotAB, 4)}</text>
-  <text x="610" y="290" fill="#fbbf24" font-size="16">P(A̅∩B̅) = ${fmt(pNotANotB, 4)}</text>
+    <!-- Pfadwahrscheinlichkeiten rechts -->
+    <text x="610" y="50" fill="#34d399" font-size="16">P(A∩B) = ${fmt(pAB, 4)}</text>
+    <text x="610" y="130" fill="#fbbf24" font-size="16">P(A∩B̅) = ${fmt(pANotB, 4)}</text>
+    <text x="610" y="210" fill="#34d399" font-size="16">P(A̅∩B) = ${fmt(pNotAB, 4)}</text>
+    <text x="610" y="290" fill="#fbbf24" font-size="16">P(A̅∩B̅) = ${fmt(pNotANotB, 4)}</text>
+  </g>
+</svg>
 `;
 
 document.getElementById('treeChart').innerHTML = svg;
