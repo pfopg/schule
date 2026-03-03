@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terme und lineare Gleichungen</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #08101f;
+      --bg-soft: #101a33;
+      --card: rgba(18, 27, 53, 0.88);
+      --line: rgba(255,255,255,0.1);
+      --text: #eef2ff;
+      --muted: #b8c2ea;
+      --accent: #6ee7ff;
+      --accent-2: #a78bfa;
+      --accent-3: #34d399;
+      --accent-4: #fbbf24;
+      --danger: #fb7185;
+      --radius: 22px;
+      --shadow: 0 20px 50px rgba(0,0,0,0.35);
+      --max: 1240px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(110,231,255,0.12), transparent 26%),
+        radial-gradient(circle at 90% 18%, rgba(167,139,250,0.15), transparent 28%),
+        radial-gradient(circle at 72% 82%, rgba(52,211,153,0.08), transparent 22%),
+        linear-gradient(180deg, #07101d 0%, #0b1222 45%, #10162a 100%);
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    .wrap { width: min(var(--max), calc(100% - 28px)); margin: 0 auto; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(9, 16, 30, 0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07111f;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+      font-size: 0.95rem;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.08);
+    }
+    section { padding: 20px 0; }
+    .hero { padding-top: 44px; }
+    .hero-grid, .grid-2, .grid-3 { display: grid; gap: 22px; }
+    .hero-grid { grid-template-columns: 1.2fr 0.8fr; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .hero-card, .panel, .module-card, .question, .mini, .tool-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .hero-card, .panel, .module-card, .question, .tool-box { padding: 24px; }
+    .hero-card { position: relative; overflow: hidden; }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110,231,255,0.18), transparent 62%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      color: var(--accent);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    h1, h2, h3, h4 { line-height: 1.18; margin: 0 0 12px; }
+    h1 { font-size: clamp(2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.35rem, 3vw, 2rem); }
+    h3 { font-size: 1.08rem; }
+    p { margin: 0 0 12px; color: var(--muted); }
+    strong { color: var(--text); }
+    ul { margin: 0 0 12px; color: var(--muted); padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      padding: 20px;
+    }
+    .stat, .mini {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      padding: 16px;
+    }
+    .stat .value { font-size: 1.5rem; font-weight: 800; }
+    .stat .label { font-size: 0.95rem; color: var(--muted); }
+    .chips, .hero-actions, .module-tabs, .option-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+    .btn, .tab-btn {
+      appearance: none;
+      border: none;
+      border-radius: 14px;
+      padding: 11px 15px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+    .btn {
+      color: #071018;
+      background: linear-gradient(135deg, var(--accent), #8bf5d1);
+      box-shadow: 0 10px 24px rgba(110,231,255,0.2);
+    }
+    .btn.secondary, .tab-btn {
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(110,231,255,0.18), rgba(167,139,250,0.18));
+      border-color: rgba(110,231,255,0.25);
+      color: var(--text);
+    }
+    .formula {
+      background: rgba(7,16,24,0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+    .callout {
+      margin-top: 12px;
+      border-left: 4px solid var(--accent-3);
+      background: rgba(52,211,153,0.08);
+      padding: 14px 16px;
+      border-radius: 0 16px 16px 0;
+      color: var(--text);
+    }
+    .warn { border-left-color: var(--accent-4); background: rgba(251,191,36,0.09); }
+    .modules {
+      margin-top: 18px;
+      display: grid;
+      gap: 20px;
+    }
+    .module-page { display: none; }
+    .module-page.active { display: block; }
+    .module-card { margin-top: 14px; }
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    input[type="number"], select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      padding: 11px 12px;
+      font: inherit;
+    }
+    select option { color: #1f2937; background: #ffffff; }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .mini .big { display: block; font-size: 1.06rem; font-weight: 700; color: var(--text); }
+    .muted { color: var(--muted); }
+    .question {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      margin-top: 14px;
+    }
+    .question h4 { font-size: 1rem; margin-bottom: 10px; }
+    .options { display: grid; gap: 8px; margin-top: 10px; }
+    .option {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .feedback {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      display: none;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .feedback.ok { display: block; background: rgba(52,211,153,0.1); color: #d9fff0; }
+    .feedback.bad { display: block; background: rgba(251,113,133,0.12); color: #ffe0e8; }
+    .score-box {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(110,231,255,0.11), rgba(167,139,250,0.12));
+      border: 1px solid rgba(255,255,255,0.1);
+      display: none;
+    }
+    .summary-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+    }
+    .module-progress {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .small { font-size: 0.92rem; }
+    .center { text-align: center; }
+    footer { padding: 36px 0 56px; color: var(--muted); }
+    @media (max-width: 1080px) {
+      .hero-grid, .grid-2, .grid-3, .inputs, .result-grid, .module-progress { grid-template-columns: 1fr; }
+      .nav { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 720px) {
+      .wrap { width: min(var(--max), calc(100% - 18px)); }
+      .hero-card, .panel, .module-card, .question, .tool-box { padding: 18px; }
+      .stats { grid-template-columns: 1fr; padding: 16px; }
+      .module-tabs { display: grid; grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="brand-badge">T</div>
+        <div>Terme & lineare Gleichungen</div>
+      </div>
+      <nav class="nav-links">
+        <a href="#start">Start</a>
+        <a href="#module">Lernmodule</a>
+        <a href="#gesamttraining">Training</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="start">
+      <div class="wrap hero-grid">
+        <div class="hero-card">
+          <h1>Terme und lineare Gleichungen</h1>
+          <p>
+            Diese Lernapp führt dich durch die wichtigsten Bausteine: <strong>Termwerte berechnen</strong>,
+            <strong>Terme umformen</strong>, <strong>Terme aus Texten aufstellen</strong>,
+            <strong>lineare Gleichungen lösen</strong> und <strong>Anwendungsaufgaben sauber übersetzen</strong>.
+            Jede Lerneinheit endet mit einem eigenen Übungsbereich im Multiple-Choice-Format, damit du auf dem Handy
+            oder Tablet schnell trainieren kannst.
+          </p>
+        </div>
+        <div class="hero-card stats">
+          <div class="stat">
+            <div class="value">1</div>
+            <div class="label">Verstehe erst die Sprache der Terme</div>
+          </div>
+          <div class="stat">
+            <div class="value">2</div>
+            <div class="label">Trainiere Regeln nicht isoliert, sondern in Beispielen</div>
+          </div>
+          <div class="stat">
+            <div class="value">3</div>
+            <div class="label">Achte bei Gleichungen immer auf dieselbe Operation auf beiden Seiten</div>
+          </div>
+          <div class="stat">
+            <div class="value">4</div>
+            <div class="label">Deute am Ende dein Ergebnis in Worten</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="module">
+      <div class="wrap">
+        <div class="panel">
+          <h2>Lernmodule</h2>
+          <p>Wechsle zwischen den Teilthemen. Jedes Modul hat einen Lernteil und einen eigenen Trainingsbereich.</p>
+          <div class="module-tabs" id="moduleTabs">
+            <button class="tab-btn active" data-module="termwerte">1. Termwerte</button>
+            <button class="tab-btn" data-module="umformen">2. Termumformungen</button>
+            <button class="tab-btn" data-module="wortterme">3. Terme aus Texten</button>
+            <button class="tab-btn" data-module="gleichungen">4. Lineare Gleichungen</button>
+            <button class="tab-btn" data-module="anwendungen">5. Anwendungsaufgaben</button>
+          </div>
+
+          <div class="modules">
+            <div class="module-page active" id="module-termwerte">
+              <div class="grid-2">
+                <div class="module-card">
+                  <h2>Termwerte berechnen</h2>
+                  <p>
+                    Ein <strong>Term</strong> ist ein Rechenausdruck mit Zahlen, Rechenzeichen und oft auch Variablen.
+                    Ein <strong>Termwert</strong> entsteht, wenn du für die Variablen konkrete Zahlen einsetzt und anschließend rechnest.
+                  </p>
+                  <div class="formula">Beispiel-Term: $3x+4$ <br>mit $x = 2$ folgt: $3\cdot 2+4=10$</div>
+                  <ul>
+                    <li>Beachte die Rechenreihenfolge: zuerst Potenzen, dann Multiplikation/Division, dann Addition/Subtraktion.</li>
+                    <li>Bei negativen Zahlen helfen Klammern: $2x$ wird bei $x=-3$ zu $2\cdot(-3)$.</li>
+                  </ul>
+                  <div class="callout">Merksatz: Erst <strong>ersetzen</strong>, dann <strong>schrittweise ausrechnen</strong>.</div>
+                </div>
+                <div class="tool-box">
+                  <h3>Mini-Tool: Termwert-Check</h3>
+                  <p class="small">Für den Term $2x^2-3y+5$ kannst du direkt prüfen, wie sich der Termwert ändert.</p>
+                  <div class="inputs" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="field">
+                      <label for="tvX">Wert für $x$</label>
+                      <input id="tvX" type="number" value="2" />
+                    </div>
+                    <div class="field">
+                      <label for="tvY">Wert für $y$</label>
+                      <input id="tvY" type="number" value="-1" />
+                    </div>
+                  </div>
+                  <div class="hero-actions" style="margin-top:14px;">
+                    <button class="btn" id="tvBtn">Berechnen</button>
+                  </div>
+                  <div class="result-grid">
+                    <div class="mini"><span class="muted">Eingesetzt</span><span class="big" id="tvFormula">–</span></div>
+                    <div class="mini"><span class="muted">Termwert</span><span class="big" id="tvResult">–</span></div>
+                    <div class="mini"><span class="muted">Hinweis</span><span class="big small" id="tvHint">–</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="summary-box">
+                <h3>Typische Fehler</h3>
+                <ul>
+                  <li>Minuszeichen vergessen, wenn ein negativer Wert eingesetzt wird.</li>
+                  <li>Zu früh addieren, obwohl erst multipliziert werden müsste.</li>
+                  <li>Bei Potenzen nur die Zahl quadrieren, aber das Vorzeichen falsch behandeln.</li>
+                </ul>
+              </div>
+              <div id="quiz-termwerte"></div>
+            </div>
+
+            <div class="module-page" id="module-umformen">
+              <div class="grid-2">
+                <div class="module-card">
+                  <h2>Termumformungen</h2>
+                  <p>
+                    Beim Umformen soll ein Term <strong>einfacher</strong>, aber <strong>gleichwertig</strong> werden.
+                    Er darf also anders aussehen, muss aber denselben Wert haben.
+                  </p>
+                  <ul>
+                    <li><strong>Gleichartige Terme zusammenfassen:</strong> Nur dieselben Variablenteile dürfen addiert/subtrahiert werden.</li>
+                    <li><strong>Klammern auflösen:</strong> Beim Auflösen von Minusklammern: Alle Vorzeichen umdrehen</li>
+                    <li><strong>Mutiplikation/Division mit Potenzen:</strong> Koeffizienten und Variablenteile getrennt betrachten.</li>
+                  </ul>
+                  <div class="formula">$$4a+(3a-5b)=7a-5b$$</div>
+                  <div class="formula">$$5\cdot 3a+3\cdot 4b-4\cdot 2a=15a+12b-8a=7a+12b$$</div>
+                </div>
+                <div class="module-card">
+                  <h3>Strategie</h3>
+                  <ol style="margin:0; padding-left:20px; color:var(--muted);">
+                    <li>Erst Klammern/Punkte auflösen.</li>
+                    <li>Dann Koeffizienten zusammenrechnen.</li>
+                    <li>Zum Schluss gleichartige Terme zusammenfassen.</li>
+                  </ol>
+                  <div class="callout warn">Nicht erlaubt: $3x+4y=7xy$. Nur gleichartige Terme darf man zusammenfassen.</div>
+                  <p>
+                    Bei Produkten wie $a\cdot a^2$ addierst du die Exponenten: $a^3$.
+                    Bei Quotienten wie $15a^3:(-12a)$ teilst du zuerst die Zahlen und kürzt dann die Variablenpotenzen.
+                  </p>
+                </div>
+              </div>
+              <div id="quiz-umformen"></div>
+            </div>
+
+            <div class="module-page" id="module-wortterme">
+              <div class="grid-2">
+                <div class="module-card">
+                  <h2>Terme aus Wortbeschreibungen</h2>
+                  <p>
+                    Hier übersetzt du Sprache in Mathematik. Entscheidend ist, dass du erkennst,
+                    <strong>welche Größe die Variable beschreibt</strong> und wie die Rechenwörter gelesen werden.
+                  </p>
+                  <ul>
+                    <li>„um 5 größer als $x$“ bedeutet $x+5$.</li>
+                    <li>„das Dreifache einer Zahl“ bedeutet $3x$.</li>
+                    <li>„7 weniger als das Doppelte einer Zahl“ bedeutet $2x-7$.</li>
+                    <li>„die Summe aus 4 und dem Produkt von 3 und $x$“ bedeutet $4+3x$.</li>
+                  </ul>
+                </div>
+                <div class="module-card">
+                  <h3>Vorgehen</h3>
+                  <div class="formula">1. Variable festlegen \(\rightarrow\) Was soll $x$ bedeuten?</div>
+                  <div class="formula">2. Sprachsignal markieren \(\rightarrow\) plus, minus, mal, geteilt, doppelt, Hälfte ...</div>
+                  <div class="formula">3. Term bauen \(\rightarrow\) Reihenfolge prüfen</div>
+                  <p>
+                    Gerade bei längeren Sätzen hilft es, erst den Kern auszuschreiben:
+                    „Das Dreifache einer Zahl, vermehrt um 8“ wird erst zu „dreifach“, dann „plus 8“.
+                  </p>
+                </div>
+              </div>
+              <div id="quiz-wortterme"></div>
+            </div>
+
+            <div class="module-page" id="module-gleichungen">
+              <div class="grid-2">
+                <div class="module-card">
+                  <h2>Lineare Gleichungen lösen</h2>
+                  <p>
+                    Eine lineare Gleichung enthält die Variable nur in der ersten Potenz. Ziel ist, die Variable
+                    <strong>allein</strong> auf eine Seite zu bringen.
+                  </p>
+                  <div class="formula">$$3x+11=20 \Rightarrow 3x=9 \Rightarrow x=3$$</div>
+                  <ul>
+                    <li>Führe auf beiden Seiten dieselbe Operation aus.</li>
+                    <li>Räume zuerst Plus/Minus weg, dann Mal/Geteilt.</li>
+                    <li>Fasse gleichartige Terme zusammen, bevor du weiterlöst.</li>
+                  </ul>
+                </div>
+                <div class="tool-box">
+                  <h3>Mini-Tool: Gleichung prüfen</h3>
+                  <p class="small">Für die Gleichung $4x-7=13$ kannst du einen Lösungswert testen.</p>
+                  <div class="field">
+                    <label for="eqGuess">Dein Wert für $x$</label>
+                    <input id="eqGuess" type="number" value="5" />
+                  </div>
+                  <div class="hero-actions" style="margin-top:14px;">
+                    <button class="btn" id="eqBtn">Prüfen</button>
+                  </div>
+                  <div class="result-grid">
+                    <div class="mini"><span class="muted">linke Seite</span><span class="big" id="eqLeft">–</span></div>
+                    <div class="mini"><span class="muted">rechte Seite</span><span class="big" id="eqRight">13</span></div>
+                    <div class="mini"><span class="muted">Urteil</span><span class="big small" id="eqJudge">–</span></div>
+                  </div>
+                </div>
+              </div>
+              <div id="quiz-gleichungen"></div>
+            </div>
+
+            <div class="module-page" id="module-anwendungen">
+              <div class="grid-2">
+                <div class="module-card">
+                  <h2>Anwendungsaufgaben mit Gleichungen</h2>
+                  <p>
+                    Bei Sachaufgaben ist die Mathematik nicht das Einzige: Du musst zuerst die Situation verstehen,
+                    dann eine Variable festlegen, eine Gleichung aufstellen und am Ende das Ergebnis <strong>in Worten deuten</strong>.
+                  </p>
+                  <div class="formula">1. Variable festlegen \(\rightarrow\) Was ist gesucht?</div>
+                  <div class="formula">2. Aussage in Gleichung übersetzen</div>
+                  <div class="formula">3. Gleichung lösen</div>
+                  <div class="formula">4. Antwortsatz formulieren</div>
+                </div>
+                <div class="module-card">
+                  <h3>Beispiel</h3>
+                  <p>
+                    „Ein Kinoticket kostet 8 Euro, dazu kommt eine einmalige Reservierungsgebühr von 4 Euro.
+                    Insgesamt wurden 44 Euro bezahlt. Wie viele Tickets wurden gekauft?“
+                  </p>
+                  <p>
+                    Setze $x$ = Anzahl der Tickets.
+                    Dann gilt: $8x+4=44$.
+                    Also $8x=40$ und damit $x=5$.
+                  </p>
+                  <div class="callout">Antwort: Es wurden <strong>5 Tickets</strong> gekauft.</div>
+                </div>
+              </div>
+              <div id="quiz-anwendungen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gesamttraining">
+      <div class="wrap">
+        <div class="panel">
+          <h2>Gesamtauswertung</h2>
+          <p>Hier siehst du, wie viele Aufgaben du in den einzelnen Teilbereichen gelöst hast.</p>
+          <div class="module-progress" id="moduleProgress"></div>
+          <div class="score-box" id="finalScore" style="display:block;">
+            <h3>Dein Gesamtstand</h3>
+            <p id="finalScoreText">Noch keine Auswertung. Bearbeite die Module und klicke jeweils auf „Auswerten“.</p>
+            <p id="finalScoreHint" class="small"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap center small">
+      Interaktive Lernapp zu Termen und linearen Gleichungen
+    </div>
+  </footer>
+
+<script>
+  const quizModules = {
+    termwerte: {
+      title: 'Termwerte',
+      questions: [
+        { text: '1. Welchen Wert hat $3x+4$ für $x=2$?', options: ['8', '10', '12', '14'], answer: 1, explanation: '$3\\cdot 2+4=10$.' },
+        { text: '2. Welchen Wert hat $2a-5$ für $a=7$?', options: ['9', '7', '14', '5'], answer: 0, explanation: '$2\\cdot 7-5=9$.' },
+        { text: '3. Welchen Wert hat $x^2+3$ für $x=-4$?', options: ['-13', '19', '13', '7'], answer: 1, explanation: '$(-4)^2+3=16+3=19$.' },
+        { text: '4. Welchen Wert hat $2x^2-3y+5$ für $x=2$ und $y=-1$?', options: ['10', '16', '12', '18'], answer: 1, explanation: '$2\\cdot 2^2-3\\cdot(-1)+5=8+3+5=16$.' },
+        { text: '5. Welchen Wert hat $5z-2$ für $z=0$?', options: ['-2', '0', '2', '5'], answer: 0, explanation: '$5\\cdot 0-2=-2$.' },
+        { text: '6. Welchen Wert hat $4x-3$ für $x=-2$?', options: ['-11', '-5', '5', '11'], answer: 0, explanation: '$4\\cdot(-2)-3=-8-3=-11$.' },
+        { text: '7. Welchen Wert hat $ab+2$ für $a=3$ und $b=4$?', options: ['9', '10', '12', '14'], answer: 3, explanation: '$3\\cdot 4+2=14$.' },
+        { text: '8. Welchen Wert hat $6-2x$ für $x=3$?', options: ['0', '6', '12', '-6'], answer: 0, explanation: '$6-2\\cdot 3=0$.' }
+      ]
+    },
+    umformen: {
+      title: 'Termumformungen',
+      questions: [
+        { text: '1. Vereinfache: $4a+(3a-5b)$', options: ['$7a-5b$', '$7ab$', '$a-5b$', '$4a+3a+5b$'], answer: 0, explanation: '$4a+3a-5b=7a-5b$.' },
+        { text: '2. Vereinfache: $7x^2-18y-(6x-9y)$', options: ['$7x^2-6x-9y$', '$7x^2+6x-27y$', '$x^2-9y$', '$7x^2-6x+9y$'], answer: 0, explanation: 'Minus vor der Klammer ändert beide Vorzeichen.' },
+        { text: '3. Vereinfache: $a\\cdot a^2$', options: ['$a^2$', '$2a^2$', '$a^3$', '$a$'], answer: 2, explanation: 'Exponenten addieren: $1+2=3$.' },
+        { text: '4. Vereinfache: $5z\\cdot 8y\\cdot 0{,}1x$', options: ['$4xyz$', '$40xyz$', '$13xyz$', '$0{,}4xyz$'], answer: 0, explanation: '$5\\cdot 8\\cdot 0{,}1=4$.' },
+        { text: '5. Vereinfache: $5\\cdot 3a+3\\cdot 4b-4\\cdot 2a$', options: ['$7a+12b$', '$23ab$', '$15a+12b-2a$', '$7ab$'], answer: 0, explanation: '$15a+12b-8a=7a+12b$.' },
+        { text: '6. Multipliziere aus: $6(14-2a)$', options: ['$84-12a$', '$84-2a$', '$20-12a$', '$84+12a$'], answer: 0, explanation: '$6\\cdot 14=84$ und $6\\cdot(-2a)=-12a$.' },
+        { text: '7. Multipliziere aus: $(6a-2b)(2a+5b)$', options: ['$12a^2+26ab-10b^2$', '$12a^2+30ab-4ab-10b^2$', '$8a^2+3ab-10b^2$', '$12a^2+30ab+4ab-10b^2$'], answer: 0, explanation: 'Erst ausmultiplizieren, dann zusammenfassen.' },
+        { text: '8. Nutze binomische Formeln: $(4x-5y)^2$', options: ['$16x^2-25y^2$', '$16x^2-40xy+25y^2$', '$8x-10y$', '$16x^2+40xy+25y^2$'], answer: 1, explanation: 'Quadrat der Differenz: $a^2-2ab+b^2$.' },
+        { text: '9. Vereinfache: $15a^3:(-12a)$', options: ['$-\\dfrac{5}{4}a^2$', '$\\dfrac{5}{4}a^2$', '$-3a^2$', '$-\\dfrac{15}{12}a^3$'], answer: 0, explanation: '$15:(-12)=-5/4$ und $a^3:a=a^2$.' },
+        { text: '10. Vereinfache: $-8x\\cdot14y^2-18y^2\\cdot 6x$', options: ['$-220xy^2$', '$-112xy^2$', '$-108xy^2$', '$220xy^2$'], answer: 0, explanation: '$-112xy^2-108xy^2=-220xy^2$.' }
+      ]
+    },
+    wortterme: {
+      title: 'Terme aus Texten',
+      questions: [
+        { text: '1. „Das Dreifache einer Zahl $x$“', options: ['$x+3$', '$3x$', '$x^3$', '$3+x$'], answer: 1, explanation: 'Dreifaches bedeutet mal 3.' },
+        { text: '2. „7 mehr als eine Zahl $x$“', options: ['$7x$', '$x-7$', '$x+7$', '$7-x$'], answer: 2, explanation: '„mehr als“ bedeutet addieren.' },
+        { text: '3. „5 weniger als das Doppelte von $y$“', options: ['$2y-5$', '$2(y-5)$', '$5-2y$', '$y-10$'], answer: 0, explanation: 'Erst doppelt, dann 5 weniger.' },
+        { text: '4. „Die Summe aus 4 und dem Produkt von 3 und $a$“', options: ['$12a$', '$4+3a$', '$3(4+a)$', '$7a$'], answer: 1, explanation: 'Produkt von 3 und $a$ ist $3a$.' },
+        { text: '5. „Die Hälfte einer Zahl $n$, vermehrt um 8“', options: ['$\\frac{n+8}{2}$', '$\\frac{n}{2}+8$', '$2n+8$', '$\\frac{8}{n}$'], answer: 1, explanation: '„Die Hälfte“ ist $n/2$.' },
+        { text: '6. „Das Produkt aus 6 und der Summe aus $x$ und 2“', options: ['$6x+2$', '$6(x+2)$', '$x+12$', '$8x$'], answer: 1, explanation: 'Die Klammer gehört zur Summe.' },
+        { text: '7. „3 Euro pro Heft und 5 Euro Grundgebühr“ mit $h$ Heften', options: ['$3h+5$', '$5h+3$', '$8h$', '$3(h+5)$'], answer: 0, explanation: 'Variable Teil plus fester Teil.' },
+        { text: '8. „Die Differenz aus 12 und dem Vierfachen von $z$“', options: ['$12-4z$', '$4z-12$', '$48-z$', '$12z-4$'], answer: 0, explanation: 'Differenz aus A und B bedeutet A minus B.' }
+      ]
+    },
+    gleichungen: {
+      title: 'Lineare Gleichungen',
+      questions: [
+        { text: '1. Löse: $x+7=10$', options: ['$x=17$', '$x=3$', '$x=-3$', '$x=10$'], answer: 1, explanation: '7 auf beiden Seiten abziehen.' },
+        { text: '2. Löse: $4x=48$', options: ['$x=12$', '$x=44$', '$x=52$', '$x=8$'], answer: 0, explanation: 'Beide Seiten durch 4.' },
+        { text: '3. Löse: $3x+11=20$', options: ['$x=3$', '$x=9$', '$x=31$', '$x=1$'], answer: 0, explanation: '$3x=9$.' },
+        { text: '4. Löse: $9x-7=11$', options: ['$x=2$', '$x=1$', '$x=4$', '$x=18$'], answer: 0, explanation: '$9x=18$.' },
+        { text: '5. Löse: $7x=4x+15$', options: ['$x=11$', '$x=5$', '$x=3$', '$x=15$'], answer: 1, explanation: '$3x=15$.' },
+        { text: '6. Löse: $8x+3=5x+24$', options: ['$x=9$', '$x=7$', '$x=21$', '$x=-7$'], answer: 1, explanation: '$3x=21$.' },
+        { text: '7. Löse: $16x+19=5(4+3x)$', options: ['$x=1$', '$x=5$', '$x=-1$', '$x=19$'], answer: 0, explanation: 'Rechts ausmultiplizieren: $20+15x$.' },
+        { text: '8. Löse: $7(2z+1)+5z=3(8z-3)$', options: ['$z=4$', '$z=2$', '$z=1$', '$z=-2$'], answer: 0, explanation: '$19z+7=24z-9$ führt zu $16=5z$.' },
+        { text: '9. Welche Gleichung ist schon so umgeformt, dass man direkt durch 5 teilen kann?', options: ['$5x+7=12$', '$5x=20$', '$5(x+4)=20$', '$2x+3=13$'], answer: 1, explanation: 'Die Variable steht schon allein mit Faktor 5.' },
+        { text: '10. Was ist der erste sinnvolle Schritt bei $4(y-3)-2y=5(3y+1)$?', options: ['Durch 4 teilen', 'Klammern auflösen', 'Alles mit y multiplizieren', 'Die 3 addieren'], answer: 1, explanation: 'Zuerst Klammern beseitigen.' }
+      ]
+    },
+    anwendungen: {
+      title: 'Anwendungsaufgaben',
+      questions: [
+        { text: '1. „Ein Heft kostet 3 Euro. Zusammen mit 5 Euro Grundkosten sind es 20 Euro.“ Welche Gleichung passt?', options: ['$3x+5=20$', '$5x+3=20$', '$3(x+5)=20$', '$20x=15$'], answer: 0, explanation: 'Variable Stückkosten plus fester Betrag.' },
+        { text: '2. Zur Aufgabe 1: Wie viele Hefte wurden gekauft?', options: ['3', '4', '5', '6'], answer: 2, explanation: '$3x+5=20 \\Rightarrow 3x=15 \\Rightarrow x=5$.' },
+        { text: '3. „Eine Zahl vermehrt um 8 ergibt 23.“ Welche Gleichung?', options: ['$x-8=23$', '$x+8=23$', '$8x=23$', '$x+23=8$'], answer: 1, explanation: '„vermehrt um 8“ bedeutet plus 8.' },
+        { text: '4. Zur Aufgabe 3: Wie lautet die Lösung?', options: ['$x=31$', '$x=15$', '$x=23$', '$x=8$'], answer: 1, explanation: '$x=15$.' },
+        { text: '5. „Dreimal eine Zahl minus 4 ist 20.“ Welche Gleichung?', options: ['$3x-4=20$', '$3(x-4)=20$', '$x-12=20$', '$3x+4=20$'], answer: 0, explanation: 'Dreimal die Zahl, danach minus 4.' },
+        { text: '6. Zur Aufgabe 5: Wie lautet die Zahl?', options: ['8', '6', '12', '4'], answer: 0, explanation: '$3x=24 \\Rightarrow x=8$.' },
+        { text: '7. „Ein Taxi verlangt 6 Euro Startpreis und 2 Euro pro Kilometer. Insgesamt kostet die Fahrt 22 Euro.“ Wie viele Kilometer?', options: ['6 km', '8 km', '11 km', '14 km'], answer: 1, explanation: '$2x+6=22 \\Rightarrow 2x=16 \\Rightarrow x=8$.' },
+        { text: '8. Was ist bei Sachaufgaben der wichtigste letzte Schritt?', options: ['Die Variable löschen', 'Die Gleichung noch einmal abschreiben', 'Das Ergebnis in einem Antwortsatz deuten', 'Alles noch einmal ausmultiplizieren'], answer: 2, explanation: 'Das Ergebnis muss zur Situation passen und in Worten angegeben werden.' }
+      ]
+    }
+  };
+
+  const moduleOrder = ['termwerte', 'umformen', 'wortterme', 'gleichungen', 'anwendungen'];
+  const moduleScores = {};
+
+  function typeset() {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise();
+    }
+  }
+
+  function renderModuleQuiz(moduleKey) {
+    const module = quizModules[moduleKey];
+    const root = document.getElementById(`quiz-${moduleKey}`);
+    let html = `<div class="module-card"><h2>Training: ${module.title}</h2><p>Wähle jeweils die passende Antwort aus.</p>`;
+    module.questions.forEach((q, index) => {
+      html += `<div class="question"><h4>${q.text}</h4><div class="options">`;
+      q.options.forEach((opt, i) => {
+        html += `<label class="option"><input type="radio" name="${moduleKey}-q${index}" value="${i}"> <span>${opt}</span></label>`;
+      });
+      html += `</div><div class="feedback" id="fb-${moduleKey}-${index}"></div></div>`;
+    });
+    html += `<div class="hero-actions" style="margin-top:14px;">
+      <button class="btn" onclick="checkModuleQuiz('${moduleKey}')">Auswerten</button>
+      <button class="btn secondary" onclick="resetModuleQuiz('${moduleKey}')">Zurücksetzen</button>
+    </div>
+    <div class="score-box" id="score-${moduleKey}">
+      <h3>Ergebnis in ${module.title}</h3>
+      <p id="score-text-${moduleKey}"></p>
+      <p id="score-hint-${moduleKey}" class="small"></p>
+    </div></div>`;
+    root.innerHTML = html;
+  }
+
+  function checkModuleQuiz(moduleKey) {
+    const module = quizModules[moduleKey];
+    let score = 0;
+    module.questions.forEach((q, index) => {
+      const selected = document.querySelector(`input[name="${moduleKey}-q${index}"]:checked`);
+      const fb = document.getElementById(`fb-${moduleKey}-${index}`);
+      const correct = !!selected && Number(selected.value) === q.answer;
+      if (correct) {
+        score++;
+        fb.className = 'feedback ok';
+        fb.innerHTML = 'Richtig. ' + q.explanation;
+      } else {
+        fb.className = 'feedback bad';
+        fb.innerHTML = 'Noch nicht richtig. ' + q.explanation;
+      }
+    });
+    const total = module.questions.length;
+    const percent = score / total;
+    let hint = '';
+    if (percent >= 0.9) hint = 'Sehr sicher in diesem Teilbereich.';
+    else if (percent >= 0.7) hint = 'Schon gut. Wiederhole nur noch die typischen Stolperstellen.';
+    else if (percent >= 0.5) hint = 'Solide Basis. Lies den Lernteil noch einmal langsam durch.';
+    else hint = 'Starte noch einmal mit den Grundregeln und arbeite die Beispiele Schritt für Schritt nach.';
+    document.getElementById(`score-text-${moduleKey}`).innerHTML = `Du hast <strong>${score} von ${total}</strong> Punkten erreicht (${Math.round(percent * 100)} %).`;
+    document.getElementById(`score-hint-${moduleKey}`).textContent = hint;
+    document.getElementById(`score-${moduleKey}`).style.display = 'block';
+    moduleScores[moduleKey] = { score, total };
+    updateFinalScore();
+    typeset();
+  }
+
+  function resetModuleQuiz(moduleKey) {
+    renderModuleQuiz(moduleKey);
+    delete moduleScores[moduleKey];
+    updateFinalScore();
+    typeset();
+  }
+
+  function updateFinalScore() {
+    const progress = document.getElementById('moduleProgress');
+    let totalScore = 0;
+    let totalQuestions = 0;
+    progress.innerHTML = '';
+    moduleOrder.forEach((key) => {
+      const data = moduleScores[key];
+      const title = quizModules[key].title;
+      const div = document.createElement('div');
+      div.className = 'mini';
+      if (data) {
+        totalScore += data.score;
+        totalQuestions += data.total;
+        div.innerHTML = `<span class="muted">${title}</span><span class="big">${data.score}/${data.total}</span>`;
+      } else {
+        div.innerHTML = `<span class="muted">${title}</span><span class="big">–</span>`;
+      }
+      progress.appendChild(div);
+    });
+    const text = document.getElementById('finalScoreText');
+    const hint = document.getElementById('finalScoreHint');
+    if (totalQuestions === 0) {
+      text.textContent = 'Noch keine Auswertung. Bearbeite die Module und klicke jeweils auf „Auswerten“.';
+      hint.textContent = '';
+      return;
+    }
+    const percent = totalScore / totalQuestions;
+    text.innerHTML = `Insgesamt hast du <strong>${totalScore} von ${totalQuestions}</strong> Punkten erreicht (${Math.round(percent * 100)} %).`;
+    if (percent >= 0.9) hint.textContent = 'Sehr stark. Du bist für Klassenarbeiten in diesem Bereich gut vorbereitet.';
+    else if (percent >= 0.75) hint.textContent = 'Gute Leistung. Wiederhole gezielt die Aufgaben, die noch unsicher waren.';
+    else if (percent >= 0.5) hint.textContent = 'Ordentliche Grundlage. Nimm dir besonders Wortaufgaben und Umformungen noch einmal vor.';
+    else hint.textContent = 'Gehe die Module der Reihe nach durch und bearbeite sie erneut. Besonders wichtig: Sprache in Mathematik übersetzen.';
+  }
+
+  function showModule(moduleKey) {
+    document.querySelectorAll('.module-page').forEach(page => page.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`module-${moduleKey}`).classList.add('active');
+    document.querySelector(`.tab-btn[data-module="${moduleKey}"]`).classList.add('active');
+    typeset();
+  }
+
+  document.getElementById('moduleTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    showModule(btn.dataset.module);
+  });
+
+  document.getElementById('tvBtn').addEventListener('click', () => {
+    const x = Number(document.getElementById('tvX').value);
+    const y = Number(document.getElementById('tvY').value);
+    const value = 2 * x * x - 3 * y + 5;
+    document.getElementById('tvFormula').textContent = `2·(${x})² - 3·(${y}) + 5`;
+    document.getElementById('tvResult').textContent = value.toLocaleString('de-DE');
+    document.getElementById('tvHint').textContent = x < 0 || y < 0 ? 'Bei negativen Zahlen auf Klammern achten.' : 'Erst Potenz, dann mal, dann plus/minus.';
+    typeset();
+  });
+
+  document.getElementById('eqBtn').addEventListener('click', () => {
+    const x = Number(document.getElementById('eqGuess').value);
+    const left = 4 * x - 7;
+    document.getElementById('eqLeft').textContent = left.toLocaleString('de-DE');
+    document.getElementById('eqJudge').textContent = left === 13 ? 'passt – Lösung' : 'passt noch nicht';
+  });
+
+  moduleOrder.forEach(renderModuleQuiz);
+  updateFinalScore();
+  document.getElementById('tvBtn').click();
+  document.getElementById('eqBtn').click();
+  typeset();
+</script>
+</body>
+</html>

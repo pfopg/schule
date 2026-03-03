@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binomialverteilung</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #08101f;
+      --bg-soft: #101a33;
+      --card: rgba(18, 27, 53, 0.86);
+      --card-2: rgba(31, 43, 80, 0.95);
+      --line: rgba(255,255,255,0.1);
+      --text: #eef2ff;
+      --muted: #b8c2ea;
+      --accent: #6ee7ff;
+      --accent-2: #a78bfa;
+      --accent-3: #34d399;
+      --accent-4: #fbbf24;
+      --danger: #fb7185;
+      --shadow: 0 20px 50px rgba(0,0,0,0.35);
+      --radius: 22px;
+      --max: 1200px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(110,231,255,0.12), transparent 26%),
+        radial-gradient(circle at 90% 18%, rgba(167,139,250,0.15), transparent 28%),
+        radial-gradient(circle at 72% 82%, rgba(52,211,153,0.08), transparent 22%),
+        linear-gradient(180deg, #07101d 0%, #0b1222 45%, #10162a 100%);
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    .wrap { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(9, 16, 30, 0.76);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07111f;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+      font-size: 0.95rem;
+    }
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.08);
+    }
+    .hero { padding: 52px 0 28px; }
+    .hero-grid, .grid-2, .grid-3 {
+      display: grid;
+      gap: 22px;
+    }
+    .hero-grid { grid-template-columns: 1.15fr 0.85fr; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+.explorer-rechner-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+    .panel, .hero-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .hero-card {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110,231,255,0.18), transparent 62%);
+      pointer-events: none;
+    }
+    .panel { padding: 24px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      color: var(--accent);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    h1, h2, h3, h4 { line-height: 1.18; margin: 0 0 12px; }
+    h1 { font-size: clamp(2rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.35rem, 3vw, 2.2rem); }
+    h3 { font-size: 1.12rem; }
+    p { margin: 0 0 12px; color: var(--muted); }
+    strong { color: var(--text); }
+    section { padding: 18px 0; }
+    .chips, .hero-actions, .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      color: #071018;
+      background: linear-gradient(135deg, var(--accent), #8bf5d1);
+      box-shadow: 0 10px 24px rgba(110,231,255,0.2);
+    }
+    .btn.secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      padding: 20px;
+    }
+    .stat, .concept-card, .mini, .question, .formula-card, .table-card {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+    }
+    .stat, .concept-card, .mini, .question, .formula-card, .table-card { padding: 16px; }
+    .stat .value { font-size: 1.6rem; font-weight: 800; }
+    .stat .label { font-size: 0.95rem; color: var(--muted); }
+    .formula {
+      background: rgba(7,16,24,0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+    .callout {
+      margin-top: 12px;
+      border-left: 4px solid var(--accent-3);
+      background: rgba(52,211,153,0.08);
+      padding: 14px 16px;
+      border-radius: 0 16px 16px 0;
+      color: var(--text);
+    }
+    .warn { border-left-color: var(--accent-4); background: rgba(251,191,36,0.09); }
+    .example-box {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.16);
+    }
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    input[type="range"] { width: 100%; }
+    input[type="number"], select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      padding: 11px 12px;
+      font: inherit;
+    }
+	select option {
+  color: #1f2937;
+  background: #ffffff;
+}
+    input[type="checkbox"] { transform: translateY(1px); }
+    .value-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 74px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .toggle-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+    .viz {
+      margin-top: 18px;
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(7,16,24,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    #chart { width: 100%; height: auto; display: block; }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .mini .big { display: block; font-size: 1.08rem; font-weight: 800; color: var(--text); }
+	.result-grid .mini .big { font-weight: 500; }
+    .muted { color: var(--muted); }
+    .small { font-size: 0.92rem; }
+    .center { text-align: center; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+    th {
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      font-size: 0.95rem;
+    }
+    td { color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    .question h4 { font-size: 1.02rem; margin-bottom: 10px; }
+    .options { display: grid; gap: 8px; margin-top: 10px; }
+    .option {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .feedback {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      display: none;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .feedback.ok { display: block; background: rgba(52,211,153,0.1); color: #d9fff0; }
+    .feedback.bad { display: block; background: rgba(251,113,133,0.12); color: #ffe0e8; }
+    .score-box {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(110,231,255,0.11), rgba(167,139,250,0.12));
+      border: 1px solid rgba(255,255,255,0.1);
+      display: none;
+    }
+    footer { padding: 40px 0 60px; color: var(--muted); }
+    @media (max-width: 1080px) {
+      .hero-grid, .grid-2, .grid-3, .inputs, .result-grid, .explorer-rechner-layout { grid-template-columns: 1fr; }
+      .nav { flex-direction: column; align-items: flex-start; }
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 680px) {
+      .wrap { width: min(var(--max), calc(100% - 18px)); }
+      .panel, .hero-card { padding: 18px; }
+      .stats { grid-template-columns: 1fr; padding: 16px; }
+      th, td { font-size: 0.92rem; }
+    }
+	.table-card {
+  overflow-x: auto;
+}
+
+table {
+  min-width: 700px;
+}
+	
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="brand-badge">B</div>
+        <div>Binomialverteilung</div>
+      </div>
+      <nav class="nav-links">
+        <a href="#start">Start</a>
+        <a href="#theorie">Grundlagen</a>
+        <a href="#spickzettel">Intervalle</a>
+        <a href="#explorer">Darstellung</a>
+        <a href="#rechner">Rechner</a>
+        <a href="#quiz">Training</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="start">
+      <div class="wrap hero-grid">
+        <div class="hero-card">
+          
+          <h1>Binomialverteilung verstehen</h1>
+          <p>
+            Diese App führt dich Schritt für Schritt von der Grundidee bis zur sicheren Anwendung.
+            Du lernst nicht nur eine Formel auswendig, sondern verstehst, <strong>warum</strong> sie funktioniert,
+            <strong>wann</strong> man sie einsetzen darf und <strong>wie</strong> man typische Aufgaben sauber löst. Du kannst direkt sehen, welche Balken zu einer Formulierung wie
+            „höchstens“, „mehr als“ oder „zwischen“ gehören.
+          </p>
+        </div>
+        <div class="hero-card stats">
+          <div class="stat">
+            <div class="value">1</div>
+            <div class="label">Prüfe zuerst, ob die vier Bedingungen erfüllt sind</div>
+          </div>
+          <div class="stat">
+            <div class="value">2</div>
+            <div class="label">Ordne Sprachsignale sicher in passende Terme um</div>
+          </div>
+          <div class="stat">
+            <div class="value">3</div>
+            <div class="label">Nutze Gegenwahrscheinlichkeiten gezielt als Rechentrick</div>
+          </div>
+          <div class="stat">
+            <div class="value">4</div>
+            <div class="label">Lies Erwartungswert und Streuung direkt im Graphen ab</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="theorie">
+      <div class="wrap">
+        <div class="panel" style="margin-bottom:22px;">
+          <h2>Bernoulli-Experiment, Bernoulli-Kette und Binomialverteilung</h2>
+            <p>
+    Ein <strong>Bernoulli-Experiment</strong> ist ein Zufallsversuch mit genau
+    zwei möglichen Ausgängen: <em>Treffer</em> oder <em>Niete</em>.
+  </p>
+
+  <p>
+    Die <strong>Binomialverteilung</strong> beschreibt die Wahrscheinlichkeit,
+    dass in einer <strong>Bernoulli-Kette</strong> aus \(n\) unabhängigen
+    Bernoulli-Experimenten <strong>genau</strong>  \(k\) Treffer auftreten, wenn die
+    Trefferwahrscheinlichkeit in jedem Versuch \(p\) ist.
+  </p>
+  <p>
+    In Anwendungen ist häufig auch die Wahrscheinlichkeit für <strong>mindestens</strong> oder <strong>höchstens</strong>  \(k\) Treffer gesucht.
+  </p>
+          <div class="grid-3" style="margin-top:14px;">
+            <div class="concept-card">
+              <h3>Sport</h3>
+              <p>Ein Spieler trifft einen Freiwurf mit Wahrscheinlichkeit $0{,}7$. Wie wahrscheinlich sind genau 8 Treffer bei 10 Würfen?</p>
+            </div>
+            <div class="concept-card">
+              <h3>Technik</h3>
+              <p>Ein Bauteil ist mit Wahrscheinlichkeit $0{,}02$ defekt. Wie wahrscheinlich sind höchstens 1 Defekt unter 20 Teilen?</p>
+            </div>
+            <div class="concept-card">
+              <h3>Schule</h3>
+              <p>Bei einer Ja/Nein-Frage wird geraten. Wie viele richtige Antworten sind bei 12 Fragen typisch?</p>
+            </div>
+          </div>
+       
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h2>Bedingungen</h2>
+			<p> Die folgenden Bedingungen müssen erfüllt sein.</p>
+            <div class="concept-card">
+              <p><strong>1. Feste Anzahl Wiederholungen:</strong> Das Bernoulli-Experiment wird genau $n$ mal wiederholt</p>
+              <p><strong>2. Zwei Ausgänge:</strong> Treffer oder Nicht-Treffer.</p>
+              <p><strong>3. Gleiches $p$:</strong> Die Trefferwahrscheinlichkeit bleibt konstant.</p>
+              <p><strong>4. Unabhängigkeit:</strong> Ein Ergebnis beeinflusst die anderen nicht.</p>
+            </div>
+            <div class="example-box">
+              <strong>Wichtig:</strong> Ziehen <em>ohne Zurücklegen</em> aus einer kleinen Menge ist oft nicht unabhängig. Dann ist die Binomialverteilung häufig ungeeignet.
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Zufallsvariable und Bedeutung</h2>
+            <p>
+              Die Zufallsvariable $X$ zählt, wie oft der Treffer eintritt. Deshalb kann $X$ nur die Werte
+              $0,1,2,\dots,n$ annehmen.
+            </p>
+            <div class="formula">$$X \sim B(n,p)$$</div>
+            <p>Das liest man: „X ist binomialverteilt mit den Parametern $n$ und $p$.“</p>
+            <div class="concept-card">
+              <p><strong>$n$</strong> = Anzahl der Versuche</p>
+              <p><strong>$p$</strong> = Trefferwahrscheinlichkeit pro Versuch</p>
+              <p><strong>$k$</strong> = konkrete Zahl von Treffern, für die du eine Wahrscheinlichkeit berechnen willst</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:22px;">
+          <h2>Die Formel für „genau k Treffer“</h2>
+          <p>
+            Der wichtigste Fall ist die Wahrscheinlichkeit, dass <strong>genau</strong> $k$ Treffer auftreten.
+            Zur Berechnung dieser Wahrscheinlichkeit benutzt man die Formel:
+          </p>
+          <div class="formula">
+            $$P(X=k)=\binom{n}{k}\cdot p^k \cdot (1-p)^{n-k}$$
+          </div>
+          <div class="grid-3">
+            <div class="concept-card">
+              <h3>$\binom{n}{k} = \frac{n!}{k!\,(n-k)!}$</h3>
+              <p>Zählt, auf wie viele Arten die $k$ Treffer auf die $n$ Versuche verteilt sein können.</p>
+			  <p>
+			  Berechnung mit der TR/CAS: <strong>nCr(n,k)</strong>
+            </div>
+            <div class="concept-card">
+              <h3>$p^k$</h3>
+              <p>Wahrscheinlichkeit dafür, dass in den $k$ Trefferpositionen tatsächlich Treffer vorkommen.</p>
+            </div>
+            <div class="concept-card">
+              <h3>$(1-p)^{n-k}$</h3>
+              <p>Wahrscheinlichkeit dafür, dass in allen übrigen Positionen kein Treffer vorkommt.</p>
+            </div>
+          </div>
+          <div class="example-box">
+            <h3>Durchgerechnetes Beispiel</h3>
+            <p>
+              Eine Münze zeigt mit Wahrscheinlichkeit $p=0{,}5$ Kopf. Sie wird $n=4$ mal geworfen.
+              Wie groß ist $P(X=2)$, also die Wahrscheinlichkeit für genau 2-mal Kopf?
+            </p>
+            <div class="formula">
+              $$P(X=2)=\binom{4}{2}\cdot 0{,}5^2 \cdot 0{,}5^2 = 6\cdot 0{,}25\cdot 0{,}25 = 0{,}375$$
+            </div>
+            <p>Also beträgt die Wahrscheinlichkeit <strong>37,5 %</strong>.</p>
+          </div>
+		   <div class="example-box">
+            <h3>Berechnung mit CAS</h3>
+            <p>
+		  Der Befehl <strong>binompdf(n,p,k)</strong> berechnet allgemein die Wahrscheinlichkeit für $k$ Treffer bei $n$ Versuchen mit Trefferwahrscheinlichkeit $p$.
+		  <br>Für dieses Beispiel also <strong>binompdf(4,0.5,2)</strong>
+		  </p>
+          </div>
+		  
+        </div>
+
+      </div>
+    </section>
+
+    <section id="spickzettel">
+      <div class="wrap">
+        <div class="panel">
+          <h2>Intervallwahrscheinlichkeiten berechnen</h2>
+          <p>
+            In Anwendungsaufgaben interessiert man sich häufig für die Wahrscheinlichkeit von Treffer<strong>intervallen</strong>, also <strong>höchstens</strong>, <strong>mindestens</strong>, <strong>weniger als</strong> oder <strong>mehr als</strong> $k$ Treffer.
+          </p>
+		  <p>
+			Der CAS bietet für den Fall <strong>höchstens</strong> \(k\) Treffer ebenfalls eine schnelle Berechnungsformel:
+<strong>binomcdf(n,p,k)</strong> (das <strong>c</strong> steht für <em>cumulative</em>, also „aufsummiert“ bzw. „kumuliert“).
+			<br> <br>
+			Die anderen genannten Fälle müssen daher immer auf den <em>höchstens</em> zurückgeführt werden. Die folgende Übersicht zeigt für diese typischen Formulierungen die dahinterliegenden Ideen und die passenden Berechnungsansätze.
+		  </p>
+          
+ 
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Formulierung</th>
+                  <th>Mathematisch</th>
+                  <th>Direkt als Summe</th>
+                  <th>Rechenidee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>genau $k$</strong></td>
+                  <td>$P(X=k)$</td>
+                  <td>eine Einzelwahrscheinlichkeit</td>
+                  <td>CAS: <strong>binompdf(n,p,k)</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>höchstens $k$</strong></td>
+                  <td>$P(X\le k)$</td>
+                  <td>$P(0)+P(1)+\dots +P(k)$</td>
+                  <td>CAS: <strong>binomcdf(n,p,k)</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>weniger als $k$</strong></td>
+                  <td>$P(X&lt;k)$</td>
+                  <td>$P(0)+P(1)+\dots +P(k-1)$</td>
+                  <td>$P(X \le k-1)$</td>
+                </tr>
+                <tr>
+                  <td><strong>mindestens $k$</strong></td>
+                  <td>$P(X\ge k)$</td>
+                  <td>$P(k)+P(k+1)+\dots +P(n)$</td>
+                  <td>$1-P(X\le k-1)$</td>
+                </tr>
+                <tr>
+                  <td><strong>mehr als $k$</strong></td>
+                  <td>$P(X&gt;k)$</td>
+                  <td>$P(k+1)+P(k+2)+\dots +P(n)$</td>
+                  <td>$1-P(X\le k)$</td>
+                </tr>
+                <tr>
+                  <td><strong>$a$ bis $b$ Treffer</strong></td>
+                  <td>$P(a\le X\le b)$</td>
+                  <td>$P(a)+P(a+1)+\dots +P(b)$</td>
+                  <td>$P(X\le b)-P(X\le a-1)$ <br> CAS: <strong>binomcdf(n,p,a,b)</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid-2" style="margin-top:18px;">
+            <div class="formula-card">
+              <h3>Beispiel 1: mindestens</h3>
+              <p>Gesucht ist bei $X\sim B(10;0{,}3)$ die Wahrscheinlichkeit für <strong>mindestens 1 Treffer</strong>.</p>
+              <div class="formula">$$P(X\ge 1)=1-P(X=0)$$</div>
+              <p>Das ist oft viel schneller als $P(1)+P(2)+\dots+P(10)$.</p>
+            </div>
+            <div class="formula-card">
+              <h3>Beispiel 2: Intervall</h3>
+              <p>Gesucht ist bei $X\sim B(12;0{,}4)$ die Wahrscheinlichkeit für <strong>3 bis 6 Treffer</strong>.</p>
+              <div class="formula">$$P(3\le X\le 6)=P(X\le 6)-P(X\le 2)$$</div>
+              <p>Der CAS-Befehl <strong>binomcdf(12,0.4,3,6)</strong> liefert sofort das Ergebnis</p>
+            </div>
+          </div>
+
+          <div class="callout warn">
+            Hinweis: <strong>zwischen</strong> bedeutet meist <strong>ohne</strong> die Grenzen, d.h. „zwischen“ 3 und 6 bedeutet $P(4\le X\le 5)$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+<section id="spickzettel">
+  <div class="wrap">
+    
+    <div class="panel">
+      <h2>Erwartungswert und Standardabweichung</h2>
+
+      <p>
+        Der <strong>Erwartungswert</strong> sagt, mit wie vielen Treffern man im Mittel rechnen kann.
+      </p>
+      <div class="formula">$$\mu = E(X)=n\cdot p$$</div>
+
+      <p>
+        Die <strong>Standardabweichung</strong> zeigt, wie stark die Trefferzahl typischerweise schwankt.
+      </p>
+      <div class="formula">$$\sigma = \sqrt{n\cdot p\cdot (1-p)}$$</div>
+
+      <p>
+        Diese Werte helfen dir, eine Verteilung zu deuten.
+      </p>
+    </div>
+	
+	<div class="panel" style="margin-top:22px;">
+      <h2>Eigenschaften der Binomialverteilung</h2>
+
+      <p>
+        Die Form der Binomialverteilung hängt vor allem von \(p\) und \(n\) ab.
+      </p>
+
+      <ul>
+        <li>
+          Ist \(p &lt; 0{,}5\), sind wenige Treffer wahrscheinlicher und die hohen Balken liegen eher links.
+        </li>
+        <li>
+          Ist \(p &gt; 0{,}5\), sind viele Treffer wahrscheinlicher und die Verteilung verschiebt sich nach rechts.
+        </li>
+        <li>
+          Bei \(p = 0{,}5\) ist die Binomialverteilung symmetrisch.
+        </li>
+      </ul>
+
+      <p>
+        Auch \(n\) verändert die Darstellung:
+        Je größer \(n\) ist, desto mehr mögliche Trefferzahlen gibt es, desto breiter wird die Verteilung und desto flacher wirken die einzelnen Balken.
+      </p>
+
+      <p>
+        Der Erwartungswert \( \mu = n \cdot p \) zeigt, wo der Schwerpunkt der Verteilung liegt.
+        Der höchste Balken liegt aber nicht immer genau bei \( \mu \).
+      </p>
+
+      <ul>
+        <li>
+          Ist \( (n+1)p \) <strong>keine ganze Zahl</strong>, dann liegt der höchste Balken bei der
+          größten ganzen Zahl, die noch kleiner als \( (n+1)p \) ist.
+        </li>
+        <li>
+          Ist \( (n+1)p \) eine <strong>ganze Zahl</strong>, dann gibt es zwei gleich hohe höchste Balken:
+          bei \( (n+1)p - 1 \) und \( (n+1)p \).
+        </li>
+      </ul>
+
+      <p>
+        <strong>Beispiel:</strong> Bei \(n=10\) und \(p=0{,}3\) gilt:
+        \[
+          \mu = n \cdot p = 10 \cdot 0{,}3 = 3
+        \]
+        Außerdem ist
+        \[
+          (n+1)p = 11 \cdot 0{,}3 = 3{,}3
+        \]
+        Das ist keine ganze Zahl. Deshalb liegt der höchste Balken bei \(k=3\).
+      </p>
+
+      <p>
+        Bei \(n=9\) und \(p=0{,}5\) ist
+        \[
+          (n+1)p = 10 \cdot 0{,}5 = 5
+        \]
+        eine ganze Zahl. Deshalb gibt es zwei gleich hohe höchste Balken:
+        bei \(k=4\) und \(k=5\).
+      </p>
+    </div>
+
+  </div>
+</section>
+
+    <section id="explorer">
+      <div class="wrap explorer-rechner-layout">
+        <div class="panel">
+          <h2>Darstellung der Binomialverteilung</h2>
+  
+ <p>
+            Im Folgenden kannst du nun die Darstellung der Binomialverteilung unter unterschiedlichen Bedingungen erkunden.
+          </p>
+
+
+          <div class="inputs">
+            <div class="field">
+              <label for="nRange">Anzahl Versuche $n$</label>
+              <input id="nRange" type="range" min="1" max="30" value="10" />
+              <span class="value-pill" id="nValue">10</span>
+            </div>
+            <div class="field">
+              <label for="pRange">Wahrscheinlichkeit $p$</label>
+              <input id="pRange" type="range" min="0.05" max="0.95" step="0.01" value="0.5" />
+              <span class="value-pill" id="pValue">0,50</span>
+            </div>
+            <div class="field">
+              <label for="kRange">Anzahl Treffer $k$</label>
+              <input id="kRange" type="range" min="0" max="10" value="5" />
+              <span class="value-pill" id="kValue">5</span>
+            </div>
+            <div class="field">
+              <label for="highlightMode">Markierung im Diagramm</label>
+              <select id="highlightMode">
+                <option value="eq">genau k</option>
+                <option value="le">höchstens k</option>
+                <option value="lt">weniger als k</option>
+                <option value="ge">mindestens k</option>
+                <option value="gt">mehr als k</option>
+                <option value="between">Intervall [a,b]</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:14px; gap:14px;">
+            <div class="field">
+              <label for="rangeA">a</label>
+              <input id="rangeA" type="number" min="0" max="30" value="3" />
+            </div>
+            <div class="field">
+              <label for="rangeB">b</label>
+              <input id="rangeB" type="number" min="0" max="30" value="7" />
+            </div>
+          </div>
+
+          <div class="toggle-row" style="margin-top:14px;">
+            <label class="toggle-pill"><input type="checkbox" id="showMean" checked> Erwartungswert anzeigen</label>
+            <label class="toggle-pill"><input type="checkbox" id="showStd" checked> Standardabweichung anzeigen</label>
+          </div>
+
+          <div class="viz">
+            <svg id="chart" viewBox="0 0 940 360" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+
+          <div class="result-grid">
+            <div class="mini"><span class="muted" id="labelMain">$P(X=k)$</span><span class="big" id="mainProb"></span></div>
+            <div class="mini"><span class="muted">$P(X\le k)$</span><span class="big" id="pxLe"></span></div>
+            <div class="mini"><span class="muted">$P(X\ge k)$</span><span class="big" id="pxGe"></span></div>
+            <div class="mini"><span class="muted">Erwartungsw. $\mu$</span><span class="big" id="meanVal"></span></div>
+            <div class="mini"><span class="muted">Standardabw. $\sigma$</span><span class="big" id="stdVal"></span></div>
+          </div>
+        </div>
+		
+		 <div class="panel" id="rechner">
+      <h2>Rechner</h2>
+      <p>Hier kannst du typische Aufgaben direkt berechnen.</p>
+      <div class="field">
+        <label for="calcN">$n$</label>
+        <input id="calcN" type="number" min="1" max="100" value="12" />
+      </div>
+      <div class="field">
+        <label for="calcP">$p$</label>
+        <input id="calcP" type="number" min="0" max="1" step="0.01" value="0.3" />
+      </div>
+      <div class="field">
+        <label for="calcMode">Gesucht ist ...</label>
+        <select id="calcMode">
+          <option value="eq">genau k</option>
+          <option value="le">höchstens k</option>
+          <option value="lt">weniger als k</option>
+          <option value="ge">mindestens k</option>
+          <option value="gt">mehr als k</option>
+          <option value="between">a bis b</option>
+        </select>
+      </div>
+      <div class="grid-2" style="gap:12px; margin-top:12px;">
+        <div class="field">
+          <label for="calcA">k bzw. a</label>
+          <input id="calcA" type="number" min="0" max="100" value="4" />
+        </div>
+        <div class="field">
+          <label for="calcB">b</label>
+          <input id="calcB" type="number" min="0" max="100" value="7" />
+        </div>
+      </div>
+      <div class="hero-actions" style="margin-top:14px;">
+        <button class="btn" id="calcBtn">Berechnen</button>
+      </div>
+      <div class="score-box" id="calcBox" style="display:block; margin-top:14px;">
+        <div><strong>Ergebnis:</strong> <span id="calcOut">Noch keine Berechnung.</span></div>
+      </div>
+    </div>
+      </div>
+    </section>
+
+
+
+
+    <section id="quiz">
+      <div class="wrap">
+        <div class="panel">
+          <h2>Training</h2>
+          <div id="questions"></div>
+
+          <div class="hero-actions">
+            <button class="btn" id="checkQuiz">Auswerten</button>
+            <button class="btn secondary" id="resetQuiz">Zurücksetzen</button>
+          </div>
+
+          <div class="score-box" id="scoreBox">
+            <h3>Dein Ergebnis</h3>
+            <p id="scoreText"></p>
+            <p id="scoreHint" class="small"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap center small">
+     Lernapp zur Binomialverteilung
+    </div>
+  </footer>
+
+  <script>
+    function comb(n, k) {
+      if (k < 0 || k > n) return 0;
+      if (k === 0 || k === n) return 1;
+      k = Math.min(k, n - k);
+      let result = 1;
+      for (let i = 1; i <= k; i++) {
+        result = result * (n - k + i) / i;
+      }
+      return result;
+    }
+
+    function binomP(n, p, k) {
+      if (k < 0 || k > n) return 0;
+      return comb(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    }
+
+    function cumulative(n, p, k) {
+      let s = 0;
+      for (let i = 0; i <= k; i++) s += binomP(n, p, i);
+      return s;
+    }
+
+    function intervalProb(n, p, a, b) {
+      const lo = Math.max(0, Math.min(a, b));
+      const hi = Math.min(n, Math.max(a, b));
+      let s = 0;
+      for (let i = lo; i <= hi; i++) s += binomP(n, p, i);
+      return s;
+    }
+
+    function fmt(x, digits = 4) {
+      return x.toLocaleString('de-DE', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    }
+
+    function pct(x) {
+      return (x * 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+    }
+
+    function probabilityForMode(n, p, mode, k, a, b) {
+      const lo = Math.min(a, b);
+      const hi = Math.max(a, b);
+      switch (mode) {
+        case 'eq': return { value: binomP(n, p, k), label: `P(X = ${k})` };
+case 'le': return { value: cumulative(n, p, k), label: `P(X \\le ${k})` };
+case 'lt': return { value: cumulative(n, p, k - 1), label: `P(X < ${k})` };
+case 'ge': return { value: 1 - cumulative(n, p, k - 1), label: `P(X \\ge ${k})` };
+case 'gt': return { value: 1 - cumulative(n, p, k), label: `P(X > ${k})` };
+case 'between': return { value: intervalProb(n, p, lo, hi), label: `P(${lo} \\le X \\le ${hi})` };default: return { value: 0, label: 'P(?)' };
+      }
+    }
+
+    function isHighlighted(i, mode, k, a, b) {
+      const lo = Math.min(a, b);
+      const hi = Math.max(a, b);
+      switch (mode) {
+        case 'eq': return i === k;
+        case 'le': return i <= k;
+        case 'lt': return i < k;
+        case 'ge': return i >= k;
+        case 'gt': return i > k;
+        case 'between': return i >= lo && i <= hi;
+        default: return false;
+      }
+    }
+
+    const nRange = document.getElementById('nRange');
+    const pRange = document.getElementById('pRange');
+    const kRange = document.getElementById('kRange');
+    const rangeA = document.getElementById('rangeA');
+    const rangeB = document.getElementById('rangeB');
+    const highlightMode = document.getElementById('highlightMode');
+    const showMean = document.getElementById('showMean');
+    const showStd = document.getElementById('showStd');
+    const nValue = document.getElementById('nValue');
+    const pValue = document.getElementById('pValue');
+    const kValue = document.getElementById('kValue');
+    const chart = document.getElementById('chart');
+
+    function updateExplorer() {
+      const n = Number(nRange.value);
+      const p = Number(pRange.value);
+      kRange.max = n;
+      rangeA.max = n;
+      rangeB.max = n;
+      if (Number(kRange.value) > n) kRange.value = n;
+      if (Number(rangeA.value) > n) rangeA.value = n;
+      if (Number(rangeB.value) > n) rangeB.value = n;
+      const k = Number(kRange.value);
+      const a = Number(rangeA.value);
+      const b = Number(rangeB.value);
+      const mode = highlightMode.value;
+
+      nValue.textContent = n;
+      pValue.textContent = p.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      kValue.textContent = k;
+
+      const probs = [];
+      let maxP = 0;
+      for (let i = 0; i <= n; i++) {
+        const val = binomP(n, p, i);
+        probs.push(val);
+        if (val > maxP) maxP = val;
+      }
+
+      const width = 940, height = 360;
+      const margin = { top: 18, right: 22, bottom: 58, left: 48 };
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const barW = innerW / probs.length;
+      const mu = n * p;
+      const sigma = Math.sqrt(n * p * (1 - p));
+
+      function valueCenterX(v) {
+        return margin.left + (v + 0.5) * barW;
+      }
+
+      let svg = `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,0.012)" />
+        <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="rgba(255,255,255,0.2)" />
+        <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" stroke="rgba(255,255,255,0.2)" />
+      `;
+
+      if (showStd.checked) {
+        const startX = Math.max(margin.left, valueCenterX(mu - sigma));
+        const endX = Math.min(width - margin.right, valueCenterX(mu + sigma));
+        const bandW = Math.max(0, endX - startX);
+        svg += `<rect x="${startX}" y="${margin.top}" width="${bandW}" height="${innerH}" fill="rgba(52,211,153,0.10)" stroke="rgba(52,211,153,0.35)" stroke-dasharray="6 4" rx="10"></rect>`;
+        svg += `<text x="${(startX + endX) / 2}" y="${height - 16}" text-anchor="middle" fill="rgba(52,211,153,0.9)" font-size="14">Bereich μ ± σ</text>`;
+      }
+
+      for (let t = 0; t <= 4; t++) {
+        const y = margin.top + (innerH * t / 4);
+        const val = maxP * (1 - t / 4);
+        svg += `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="rgba(255,255,255,0.05)" />`;
+        svg += `<text x="${margin.left - 8}" y="${y + 4}" text-anchor="end" fill="rgba(238,242,255,0.62)" font-size="14">${fmt(val,3)}</text>`;
+      }
+
+      probs.forEach((value, i) => {
+        const barHeight = maxP === 0 ? 0 : (value / maxP) * (innerH - 4);
+        const x = margin.left + i * barW + 3;
+        const y = height - margin.bottom - barHeight;
+        const active = isHighlighted(i, mode, k, a, b);
+        const fill = active ? 'url(#gradHi)' : 'url(#gradBar)';
+        svg += `<rect x="${x}" y="${y}" width="${Math.max(6, barW - 6)}" height="${barHeight}" rx="8" fill="${fill}" opacity="0.96"></rect>`;
+        svg += `<text x="${x + Math.max(6, barW - 6)/2}" y="${height - margin.bottom + 18}" text-anchor="middle" fill="rgba(238,242,255,0.82)" font-size="14">${i}</text>`;
+      });
+
+      if (showMean.checked) {
+        const meanX = valueCenterX(mu);
+        svg += `<line x1="${meanX}" y1="${margin.top}" x2="${meanX}" y2="${height - margin.bottom}" stroke="rgba(22,163,74,0.95)" stroke-width="3"></line>`;
+        svg += `<text x="${meanX}" y="${margin.top + -5}" text-anchor="middle" fill="rgba(22,163,74,0.95)" font-size="14">μ = ${fmt(mu,2)}</text>`;
+      }
+
+      svg = `
+        <defs>
+          <linearGradient id="gradBar" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#6ee7ff"/>
+            <stop offset="100%" stop-color="#4f7cff"/>
+          </linearGradient>
+          <linearGradient id="gradHi" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#fbbf24"/>
+            <stop offset="100%" stop-color="#fb7185"/>
+          </linearGradient>
+        </defs>
+      ` + svg;
+
+      chart.innerHTML = svg;
+
+      const main = probabilityForMode(n, p, mode, k, a, b);
+      document.getElementById('labelMain').innerHTML = `$${main.label}$`;
+      document.getElementById('mainProb').textContent = pct(Math.max(0, Math.min(1, main.value)));
+      document.getElementById('pxLe').textContent = pct(cumulative(n, p, k));
+      document.getElementById('pxGe').textContent = pct(1 - cumulative(n, p, k - 1));
+      document.getElementById('meanVal').textContent = fmt(mu, 2);
+      document.getElementById('stdVal').textContent = fmt(sigma, 2);
+      if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    }
+
+    [nRange, pRange, kRange, rangeA, rangeB, highlightMode, showMean, showStd].forEach(el => {
+      el.addEventListener('input', updateExplorer);
+      el.addEventListener('change', updateExplorer);
+    });
+    updateExplorer();
+
+    document.getElementById('calcBtn').addEventListener('click', () => {
+      const n = Number(document.getElementById('calcN').value);
+      const p = Number(document.getElementById('calcP').value);
+      const mode = document.getElementById('calcMode').value;
+      const a = Number(document.getElementById('calcA').value);
+      const b = Number(document.getElementById('calcB').value);
+      const out = document.getElementById('calcOut');
+
+      if (!(n >= 1) || !(p >= 0 && p <= 1)) {
+        out.textContent = 'Bitte gültige Werte für n und p eingeben.';
+        return;
+      }
+
+      let result = 0;
+      let label = '';
+      if (mode === 'eq') {
+        result = binomP(n, p, a);
+        label = `P(X = ${a})`;
+      } else if (mode === 'le') {
+        result = cumulative(n, p, a);
+        label = `P(X \\le ${a})`;
+      } else if (mode === 'lt') {
+        result = cumulative(n, p, a - 1);
+        label = `P(X < ${a})`;
+      } else if (mode === 'ge') {
+        result = 1 - cumulative(n, p, a - 1);
+        label = `P(X \\ge ${a})`;
+      } else if (mode === 'gt') {
+        result = 1 - cumulative(n, p, a);
+        label = `P(X > ${a})`;
+      } else {
+        const lo = Math.min(a, b);
+        const hi = Math.max(a, b);
+        result = intervalProb(n, p, lo, hi);
+        label = `P(${lo} \\le X \\le ${hi})`;
+      }
+
+      result = Math.max(0, Math.min(1, result));
+      out.innerHTML = `<strong>$${label}$</strong> = ${fmt(result, 6)} = ${pct(result)}`;
+      if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    });
+
+const quizData = [
+  {
+    type: 'mc',
+    text: '1. Welche Aussage beschreibt ein Bernoulli-Experiment korrekt?',
+    options: [
+      'Es hat beliebig viele mögliche Ausgänge.',
+      'Es hat genau zwei mögliche Ausgänge.',
+      'Es muss immer mit einer Münze durchgeführt werden.',
+      'Die Trefferwahrscheinlichkeit darf sich ständig ändern.'
+    ],
+    answer: 1,
+    explanation: 'Ein Bernoulli-Experiment hat genau zwei Ausgänge, zum Beispiel Treffer und Niete.'
+  },
+  {
+  type: 'mc',
+  text: '2. Welche Aussage über die Form einer Binomialverteilung ist richtig?',
+  options: [
+    'Der Erwartungswert ist immer der einzige höchste Balken.',
+    'Je größer \(n\) ist, desto weniger mögliche Trefferzahlen gibt es.',
+    'Bei \(p<0{,}5\) liegen die höchsten Balken eher rechts.',
+    'Bei \(p=0{,}5\) ist die Binomialverteilung symmetrisch.'
+  ],
+  answer: 3,
+  explanation: 'Für \(p=0{,}5\) ist die Binomialverteilung symmetrisch. Bei kleinem \(p\) liegen die hohen Balken eher links, und der Erwartungswert ist nicht immer der eindeutig höchste Balken.'
+},
+  {
+    type: 'num',
+    text: '3. Eine faire Münze wird 6-mal geworfen. Wie groß ist der Erwartungswert der Zahl der Köpfe?',
+    answer: 3,
+    tolerance: 0.01,
+    explanation: 'Es gilt $E(X)=n\\cdot p=6\\cdot 0{,}5=3$.'
+  },
+  {
+    type: 'num',
+    text: '4. Für $X\\sim B(5;0{,}2)$: Wie groß ist $P(X=0)$? Gib den Dezimalwert an.',
+    answer: 0.32768,
+    tolerance: 0.005,
+    explanation: '$P(X=0)=(0{,}8)^5=0{,}32768$.'
+  },
+  {
+    type: 'mc',
+    text: '5. „Mindestens 1 Treffer“ kann man besonders geschickt berechnen als ...',
+    options: [
+      '$P(X=1)$',
+      '$1-P(X=0)$',
+      '$P(X\\le 1)$',
+      '$P(X>1)$'
+    ],
+    answer: 1,
+    explanation: 'Die Gegenwahrscheinlichkeit ist hier am schnellsten: mindestens 1 = 1 minus kein Treffer.'
+  },
+  {
+    type: 'num',
+    text: '6. Eine Trefferwahrscheinlichkeit beträgt $p=0{,}4$ und es gibt $n=10$ Versuche. Wie groß ist $E(X)$?',
+    answer: 4,
+    tolerance: 0.01,
+    explanation: '$E(X)=10\\cdot 0{,}4=4$.'
+  },
+  {
+    type: 'mc',
+    text: '7. Was bedeutet $X\\sim B(12;0{,}3)$?',
+    options: [
+      '12 Treffer sind sicher und 0,3 Versuche werden gemacht.',
+      '$X$ zählt Treffer in 12 unabhängigen Versuchen mit Trefferwahrscheinlichkeit 0,3.',
+      '$X$ kann nur die Werte 0, 3 und 12 annehmen.',
+      'Die Wahrscheinlichkeit für 12 Treffer ist 0,3.'
+    ],
+    answer: 1,
+    explanation: 'Genau diese Informationen stecken in der Schreibweise.'
+  },
+  {
+    type: 'num',
+    text: '8. Für $X\\sim B(4;0{,}5)$: Wie groß ist $P(X=2)$? Gib den Dezimalwert an.',
+    answer: 0.375,
+    tolerance: 0.005,
+    explanation: '$P(X=2)=\\binom{4}{2}\\cdot 0{,}5^2\\cdot 0{,}5^2=0{,}375$.'
+  },
+  {
+    type: 'mc',
+    text: '9. Welche Situation ist am ehesten nicht binomialverteilt?',
+    options: [
+      '20-mal eine faire Münze werfen',
+      '10 unabhängige Freiwürfe mit konstanter Trefferwahrscheinlichkeit',
+      '5-mal Ziehen ohne Zurücklegen aus einer kleinen Urne',
+      '12-mal Raten bei einer Ja/Nein-Frage'
+    ],
+    answer: 2,
+    explanation: 'Ohne Zurücklegen ändert sich die Wahrscheinlichkeit oft; die Versuche sind dann meist nicht unabhängig.'
+  },
+  {
+    type: 'num',
+    text: '10. Für $X\\sim B(8;0{,}25)$: Wie groß ist $E(X)$?',
+    answer: 2,
+    tolerance: 0.01,
+    explanation: '$E(X)=8\\cdot 0{,}25=2$.'
+  },
+  {
+    type: 'mc',
+    text: '11. Welche Umformung ist korrekt?',
+    options: [
+      '$P(X>4)=1-P(X<4)$',
+      '$P(X>4)=1-P(X\\le 4)$',
+      '$P(X\\ge 4)=1-P(X\\ge 4)$',
+      '$P(X<4)=1-P(X\\le 4)$'
+    ],
+    answer: 1,
+    explanation: 'Mehr als 4 bedeutet das Gegenereignis zu höchstens 4.'
+  },
+  {
+    type: 'mc',
+    text: '12. Welche Schreibweise passt zu „weniger als 3 Treffer“?',
+    options: [
+      '$P(X\\le 3)$',
+      '$P(X<3)$',
+      '$P(X\\ge 3)$',
+      '$P(X>3)$'
+    ],
+    answer: 1,
+    explanation: '„Weniger als 3“ bedeutet streng kleiner als 3.'
+  }
+];
+
+    const questionsEl = document.getElementById('questions');
+
+    function renderQuiz() {
+      questionsEl.innerHTML = '';
+      quizData.forEach((q, index) => {
+        const box = document.createElement('div');
+        box.className = 'question';
+        box.innerHTML = `<h4>${q.text}</h4>`;
+
+        if (q.type === 'mc') {
+          const options = document.createElement('div');
+          options.className = 'options';
+          q.options.forEach((opt, i) => {
+            const row = document.createElement('label');
+            row.className = 'option';
+            row.innerHTML = `<input type="radio" name="q${index}" value="${i}"> <span>${opt}</span>`;
+            options.appendChild(row);
+          });
+          box.appendChild(options);
+        } else {
+          const inp = document.createElement('input');
+          inp.type = 'number';
+          inp.step = '0.0001';
+          inp.dataset.index = index;
+          inp.style.marginTop = '8px';
+          inp.placeholder = 'Deine Antwort';
+          box.appendChild(inp);
+        }
+
+        const fb = document.createElement('div');
+        fb.className = 'feedback';
+        fb.id = `fb${index}`;
+        box.appendChild(fb);
+        questionsEl.appendChild(box);
+      });
+      if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    }
+
+    renderQuiz();
+
+    document.getElementById('checkQuiz').addEventListener('click', () => {
+      let score = 0;
+      quizData.forEach((q, index) => {
+        const fb = document.getElementById(`fb${index}`);
+        let correct = false;
+
+        if (q.type === 'mc') {
+          const selected = document.querySelector(`input[name="q${index}"]:checked`);
+          correct = !!selected && Number(selected.value) === q.answer;
+        } else {
+          const input = document.querySelector(`input[data-index="${index}"]`);
+          const val = Number(input.value);
+          correct = Number.isFinite(val) && Math.abs(val - q.answer) <= q.tolerance;
+        }
+
+        if (correct) {
+          score++;
+          fb.className = 'feedback ok';
+          fb.innerHTML = 'Richtig. ' + q.explanation;
+        } else {
+          fb.className = 'feedback bad';
+          fb.innerHTML = 'Noch nicht richtig. ' + q.explanation;
+        }
+      });
+
+      const total = quizData.length;
+      const percent = score / total;
+      let hint = '';
+
+      if (percent >= 0.9) {
+        hint = 'Sehr stark. Du kannst auch die Formulierungen mit Gegenereignissen sicher übersetzen.';
+      } else if (percent >= 0.7) {
+        hint = 'Gute Leistung. Wiederhole vor allem den Unterschied zwischen streng und nicht streng.';
+      } else if (percent >= 0.5) {
+        hint = 'Solide Grundlage. Nutze den Spickzettel und beobachte im Explorer, welche Balken markiert werden.';
+      } else {
+        hint = 'Gehe die Signalwörter noch einmal systematisch durch und übe das Übersetzen in Terme.';
+      }
+
+      const scoreBox = document.getElementById('scoreBox');
+      document.getElementById('scoreText').innerHTML = `Du hast <strong>${score} von ${total}</strong> Punkten erreicht (${Math.round(percent * 100)} %).`;
+      document.getElementById('scoreHint').textContent = hint;
+      scoreBox.style.display = 'block';
+      if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    });
+
+    document.getElementById('resetQuiz').addEventListener('click', () => {
+      renderQuiz();
+      document.getElementById('scoreBox').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
