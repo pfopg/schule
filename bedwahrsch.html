@@ -371,7 +371,7 @@
         <div class="hero-card stats">
           <div class="stat">
             <div class="value">1</div>
-            <div class="label">Unterscheide klar zwischen $P(A)$ und $P(A\mid B)$</div>
+            <div class="label">Unterscheide klar zwischen $P(A)$ und $P_B(A)$</div>
           </div>
           <div class="stat">
             <div class="value">2</div>
@@ -399,7 +399,7 @@
             Das zweite Ereignis schränkt also den betrachteten Ergebnisraum ein.
           </p>
           <div class="formula">
-            $$P(A\mid B)=\frac{P(A\cap B)}{P(B)} \qquad (P(B) &gt; 0)$$
+            $$P_B(A)=\frac{P(A\cap B)}{P(B)} \qquad (P(B) &gt; 0)$$
           </div>
           <div class="grid-3">
             <div class="concept-card">
@@ -411,12 +411,12 @@
               <p>Wahrscheinlichkeit, dass A und B gleichzeitig eintreten.</p>
             </div>
             <div class="concept-card">
-              <h3>$P(A\mid B)$</h3>
+              <h3>$P_B(A)$</h3>
               <p>Wahrscheinlichkeit von A unter der Voraussetzung, dass B schon sicher ist.</p>
             </div>
           </div>
           <div class="callout">
-            Merksatz: Bei $P(A\mid B)$ wird nur noch innerhalb von <strong>B</strong> gezählt. B ist jetzt der „neue Gesamtbereich“.
+            Merksatz: Bei $P_B(A)$ wird nur noch innerhalb von <strong>B</strong> gezählt. B ist jetzt der „neue Gesamtbereich“.
           </div>
         </div>
 
@@ -427,7 +427,7 @@
               Zwei Ereignisse A und B heißen <strong>stochastisch unabhängig</strong>, wenn das Wissen über B die Wahrscheinlichkeit von A nicht verändert.
             </p>
             <div class="formula">
-              $$P(A\mid B)=P(A)$$
+              $$P_B(A)=P(A)$$
             </div>
             <p>Gleichwertig dazu gilt:</p>
             <div class="formula">
@@ -448,7 +448,7 @@
               Zerlegt man ein Ereignis B über mehrere sich ausschließende Fälle, kann man seine Gesamtwahrscheinlichkeit aus Teilwahrscheinlichkeiten zusammensetzen.
             </p>
             <div class="formula">
-              $$P(B)=P(A)\cdot P(B\mid A)+P(\overline{A})\cdot P(B\mid \overline{A})$$
+              $$P(B)=P(A)\cdot P_A(B)+P(\overline{A})\cdot P_{\overline{A}}(B)$$
             </div>
             <p>
               Im Baumdiagramm bedeutet das: <strong>Alle passenden Pfadwahrscheinlichkeiten addieren</strong>.
@@ -517,7 +517,7 @@
           <div class="grid-2">
             <div class="formula-card">
               <h3>Pfadregel</h3>
-              <div class="formula">$$P(A\cap B)=P(A)\cdot P(B\mid A)$$</div>
+              <div class="formula">$$P(A\cap B)=P(A)\cdot P_A(B)$$</div>
             </div>
             <div class="formula-card">
               <h3>Summenregel</h3>
@@ -597,8 +597,8 @@
           </div>
 
           <div class="result-grid">
-            <div class="mini"><span class="muted">$P(A\mid B)$</span><span class="big" id="resPAgB"></span></div>
-            <div class="mini"><span class="muted">$P(B\mid A)$</span><span class="big" id="resPBgA"></span></div>
+            <div class="mini"><span class="muted">$P_B(A)$</span><span class="big" id="resPAgB"></span></div>
+            <div class="mini"><span class="muted">$P_A(B)$</span><span class="big" id="resPBgA"></span></div>
             <div class="mini"><span class="muted">$P(A)$</span><span class="big" id="resPA"></span></div>
             <div class="mini"><span class="muted">Unabhängig?</span><span class="big" id="resIndep"></span></div>
           </div>
@@ -616,12 +616,12 @@
             <span class="value-pill" id="pAVal">0,40</span>
           </div>
           <div class="field">
-            <label for="pBgA">$P(B\mid A)$</label>
+            <label for="pBgA">$P_A(B)$</label>
             <input id="pBgA" type="range" min="0.05" max="0.95" step="0.01" value="0.70" />
             <span class="value-pill" id="pBgAVal">0,70</span>
           </div>
           <div class="field">
-            <label for="pBgNotA">$P(B\mid \overline{A})$</label>
+            <label for="pBgNotA">$P_{\overline{A}}(B)$</label>
             <input id="pBgNotA" type="range" min="0.05" max="0.95" step="0.01" value="0.20" />
             <span class="value-pill" id="pBgNotAVal">0,20</span>
           </div>
@@ -634,7 +634,7 @@
             <div class="mini"><span class="muted">$P(A\cap B)$</span><span class="big" id="resABPath"></span></div>
             <div class="mini"><span class="muted">$P(\overline{A}\cap B)$</span><span class="big" id="resNotABPath"></span></div>
             <div class="mini"><span class="muted">$P(B)$</span><span class="big" id="resPBTotal"></span></div>
-            <div class="mini"><span class="muted">$P(A\mid B)$</span><span class="big" id="resBayes"></span></div>
+            <div class="mini"><span class="muted">$P_B(A)$</span><span class="big" id="resBayes"></span></div>
           </div>
         </div>
       </div>
@@ -828,7 +828,7 @@ document.getElementById('treeChart').innerHTML = svg;
     const quizData = [
       {
         type: 'mc',
-        text: '1. Was bedeutet $P(A\\mid B)$?',
+        text: '1. Was bedeutet $P_B(A)$?',
         options: [
           'Die Wahrscheinlichkeit, dass B unter A gilt.',
           'Die Wahrscheinlichkeit von A unter der Bedingung, dass B eingetreten ist.',
@@ -836,33 +836,33 @@ document.getElementById('treeChart').innerHTML = svg;
           'Die Wahrscheinlichkeit, dass weder A noch B eintritt.'
         ],
         answer: 1,
-        explanation: '$P(A\\mid B)$ bedeutet: A wird nur innerhalb des Ereignisses B betrachtet.'
+        explanation: '$P_B(A)$ bedeutet: A wird nur innerhalb des Ereignisses B betrachtet.'
       },
       {
         type: 'num',
-        text: '2. Es gilt $P(A\\cap B)=0{,}18$ und $P(B)=0{,}30$. Wie groß ist $P(A\\mid B)$?',
+        text: '2. Es gilt $P(A\\cap B)=0{,}18$ und $P(B)=0{,}30$. Wie groß ist $P_B(A)$?',
         answer: 0.6,
         tolerance: 0.01,
-        explanation: '$P(A\\mid B)=\\frac{0{,}18}{0{,}30}=0{,}6$.'
+        explanation: '$P_B(A)=\\frac{0{,}18}{0{,}30}=0{,}6$.'
       },
       {
         type: 'mc',
         text: '3. Welche Formel beschreibt stochastische Unabhängigkeit?',
         options: [
           '$P(A\\cap B)=P(A)+P(B)$',
-          '$P(A\\mid B)=P(B)$',
+          '$P_B(A)=P(B)$',
           '$P(A\\cap B)=P(A)\\cdot P(B)$',
-          '$P(A\\mid B)=1-P(A)$'
+          '$P_B(A)=1-P(A)$'
         ],
         answer: 2,
         explanation: 'Bei Unabhängigkeit gilt $P(A\\cap B)=P(A)\\cdot P(B)$.'
       },
       {
         type: 'num',
-        text: '4. In einer Vierfeldertafel stehen 12 Fälle bei A und B, insgesamt 30 Fälle bei B. Wie groß ist $P(A\\mid B)$?',
+        text: '4. In einer Vierfeldertafel stehen 12 Fälle bei A und B, insgesamt 30 Fälle bei B. Wie groß ist $P_B(A)$?',
         answer: 0.4,
         tolerance: 0.01,
-        explanation: '$P(A\\mid B)=\\frac{12}{30}=0{,}4$.'
+        explanation: '$P_B(A)=\\frac{12}{30}=0{,}4$.'
       },
       {
         type: 'mc',
@@ -878,7 +878,7 @@ document.getElementById('treeChart').innerHTML = svg;
       },
       {
         type: 'num',
-        text: '6. Es sei $P(A)=0{,}5$, $P(B\\mid A)=0{,}8$ und $P(B\\mid \\overline{A})=0{,}2$. Wie groß ist $P(B)$?',
+        text: '6. Es sei $P(A)=0{,}5$, $P_A(B)=0{,}8$ und $P_{\\overline{A}}(B)=0{,}2$. Wie groß ist $P(B)$?',
         answer: 0.5,
         tolerance: 0.01,
         explanation: '$P(B)=0{,}5\\cdot 0{,}8+0{,}5\\cdot 0{,}2=0{,}5$.'
@@ -887,9 +887,9 @@ document.getElementById('treeChart').innerHTML = svg;
         type: 'mc',
         text: '7. Welche Aussage ist richtig?',
         options: [
-          'Wenn $P(A\\mid B)=P(A)$, dann sind A und B unabhängig.',
-          'Wenn $P(A\\mid B)>P(A)$, dann sind A und B sicher unabhängig.',
-          'Wenn $P(B)=0$, darf man $P(A\\mid B)$ trotzdem normal berechnen.',
+          'Wenn $P_B(A)=P(A)$, dann sind A und B unabhängig.',
+          'Wenn $P_B(A)>P(A)$, dann sind A und B sicher unabhängig.',
+          'Wenn $P(B)=0$, darf man $P_B(A)$ trotzdem normal berechnen.',
           'Bedingte Wahrscheinlichkeit und Schnittwahrscheinlichkeit sind immer gleich.'
         ],
         answer: 0,
@@ -900,16 +900,16 @@ document.getElementById('treeChart').innerHTML = svg;
         text: '8. Welche Formel ist ein Beispiel für totale Wahrscheinlichkeit?',
         options: [
           '$P(B)=P(A\\cap B)$',
-          '$P(B)=P(A)\\cdot P(B\\mid A)+P(\\overline{A})\\cdot P(B\\mid \\overline{A})$',
+          '$P(B)=P(A)\\cdot P_A(B)+P(\\overline{A})\\cdot P_{\\overline{A}}(B)$',
           '$P(B)=1-P(A)$',
-          '$P(B\\mid A)=P(B)-P(A)$'
+          '$P_A(B)=P(B)-P(A)$'
         ],
         answer: 1,
         explanation: 'Hier wird B über zwei disjunkte Fälle zerlegt: A und Nicht-A.'
       },
       {
         type: 'num',
-        text: '9. In einer Klasse sind 8 von 20 Lernenden im Kurs A. Davon sind 6 weiblich. Wie groß ist $P(weiblich\\mid Kurs\ A)$?',
+        text: '9. In einer Klasse sind 8 von 20 Lernenden im Kurs A. Davon sind 6 weiblich. Wie groß ist $P_{Kurs\\ A}(weiblich)$?',
         answer: 0.75,
         tolerance: 0.01,
         explanation: 'Innerhalb von Kurs A sind 6 von 8 weiblich, also $\\frac{6}{8}=0{,}75$.'
@@ -1002,7 +1002,7 @@ document.getElementById('treeChart').innerHTML = svg;
       } else if (percent >= 0.7) {
         hint = 'Gute Leistung. Wiederhole besonders die Begriffe Unabhängigkeit und totale Wahrscheinlichkeit.';
       } else if (percent >= 0.5) {
-        hint = 'Solide Grundlage. Arbeite die Formel für P(A|B) noch einmal bewusst mit dem neuen Grundbereich durch.';
+        hint = 'Solide Grundlage. Arbeite die Formel für P_B(A) noch einmal bewusst mit dem neuen Grundbereich durch.';
       } else {
         hint = 'Gehe die Grundidee noch einmal langsam durch: Was ist der neue Gesamtbereich bei einer Bedingung?';
       }
