@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screenshot-Splitter für Unterricht</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS/dist/pptxgen.bundle.js"></script>
+
+  <style>
+    :root {
+      --blau: #2563eb;
+      --blau-dunkel: #1d4ed8;
+      --grau: #f3f4f6;
+      --rand: #d1d5db;
+      --text: #111827;
+      --rot: #dc2626;
+      --gruen: #16a34a;
+      --orange: #d97706;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: #eef2f7;
+    }
+
+    header {
+      padding: 22px;
+      color: white;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 0;
+    }
+
+    main {
+      width: min(1200px, calc(100% - 30px));
+      margin: 20px auto 40px;
+    }
+
+    .karte {
+      margin-bottom: 18px;
+      padding: 18px;
+      border: 1px solid var(--rand);
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, .06);
+    }
+
+    .karte h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button,
+    .datei-label {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 7px;
+      color: white;
+      background: var(--blau);
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover,
+    .datei-label:hover {
+      background: var(--blau-dunkel);
+    }
+
+    button.rot {
+      background: var(--rot);
+    }
+
+    button.gruen {
+      background: var(--gruen);
+    }
+
+    button.orange {
+      background: var(--orange);
+    }
+
+    button.grau {
+      color: #111827;
+      background: #e5e7eb;
+    }
+
+    button.aktiv {
+      outline: 3px solid #fbbf24;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .hinweis {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blau);
+      border-radius: 5px;
+      background: #eff6ff;
+      line-height: 1.5;
+    }
+
+    .warnung {
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+    }
+
+    #status {
+      min-height: 22px;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    #arbeitsbereich {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 800px) {
+      #arbeitsbereich {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bild-container {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      border: 1px solid var(--rand);
+      background:
+        linear-gradient(45deg, #eee 25%, transparent 25%),
+        linear-gradient(-45deg, #eee 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eee 75%),
+        linear-gradient(-45deg, transparent 75%, #eee 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+      touch-action: none;
+    }
+
+    #originalBild {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    #zeichnenCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .schnittlinie {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--rot);
+      z-index: 20;
+      cursor: ns-resize;
+    }
+
+    .schnittlinie::before {
+      content: "✂";
+      position: absolute;
+      top: -12px;
+      left: 5px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: white;
+      background: var(--rot);
+      font-size: 13px;
+    }
+
+    #vorschau {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 100px;
+      overflow: auto;
+      border: 1px dashed #9ca3af;
+      background: #f9fafb;
+    }
+
+    .vorschau-bild {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
+  margin: 0;
+}
+
+    .leertext {
+      padding: 30px 15px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .zaehler {
+      margin-top: 10px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .klein {
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Screenshot-Splitter</h1>
+  <p>Lösungsschritte aufteilen und als transparente PNGs, ZIP oder PowerPoint exportieren</p>
+</header>
+
+<main>
+  <section class="karte">
+    <h2>1. Screenshot laden</h2>
+
+    <div class="toolbar">
+      <label class="datei-label" for="dateiInput">📁 Bilddatei auswählen</label>
+      <input id="dateiInput" type="file" accept="image/*">
+
+      <button id="zwischenablageButton">📋 Aus Zwischenablage</button>
+      <button id="allesLoeschenButton" class="grau">Alles zurücksetzen</button>
+    </div>
+
+    <div class="hinweis">
+      Alternativ kannst du einen Screenshot erstellen und anschließend
+      <strong>Strg + V</strong> beziehungsweise <strong>Cmd + V</strong> drücken.
+    </div>
+
+    <div id="status"></div>
+  </section>
+
+  <section class="karte">
+    <h2>2. Bearbeitung</h2>
+
+    <div class="toolbar">
+      <button id="schnittlinieButton" disabled>✂ Schnittlinie hinzufügen</button>
+      <button id="letzteLoeschenButton" class="rot" disabled>Letzte Schnittlinie löschen</button>
+      <button id="alleSchnittlinienLoeschenButton" class="grau" disabled>
+        Alle Schnittlinien löschen
+      </button>
+      <button id="hintergrundButton" class="orange" disabled>
+        Hintergrund entfernen
+      </button>
+      <button id="freiesAusschneidenButton" disabled>
+        Freies Ausschneiden
+      </button>
+      <button id="freieBereicheLoeschenButton" class="rot" disabled>
+        Freie Bereiche löschen
+      </button>
+    </div>
+
+    <div class="hinweis warnung">
+      Beim freien Ausschneiden klickst du den Button an und umrundest anschließend
+      einen Bereich mit Maus oder Finger. Beim Loslassen wird der Bereich übernommen.
+      Wiederhole den Vorgang für weitere Bereiche.
+    </div>
+  </section>
+
+  <section id="arbeitsbereich">
+    <div class="karte">
+      <h2>Originalbild</h2>
+
+      <div id="bildContainer" class="bild-container">
+        <img id="originalBild" alt="Geladenes Bild">
+        <canvas id="zeichnenCanvas"></canvas>
+      </div>
+
+      <div id="schnittlinienInfo" class="zaehler">
+        Noch kein Bild geladen.
+      </div>
+    </div>
+
+    <div class="karte">
+      <h2>Vorschau</h2>
+
+      <div id="vorschau">
+        <div class="leertext">
+          Hier erscheinen die einzelnen Bildbereiche.
+        </div>
+      </div>
+
+      <div id="schritteInfo" class="zaehler"></div>
+    </div>
+  </section>
+
+  <section class="karte">
+    <h2>3. Export</h2>
+
+    <div class="toolbar">
+      <button id="zipButton" class="gruen" disabled>📦 Als ZIP exportieren</button>
+      <button id="pptxButton" class="gruen" disabled>📊 Als PowerPoint exportieren</button>
+    </div>
+
+    <p class="klein">
+      Weiße Bereiche werden bei aktiviertem transparentem Hintergrund als transparente
+      Pixel exportiert.
+    </p>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const dateiInput = document.getElementById("dateiInput");
+const zwischenablageButton = document.getElementById("zwischenablageButton");
+const allesLoeschenButton = document.getElementById("allesLoeschenButton");
+
+const schnittlinieButton = document.getElementById("schnittlinieButton");
+const letzteLoeschenButton = document.getElementById("letzteLoeschenButton");
+const alleSchnittlinienLoeschenButton =
+  document.getElementById("alleSchnittlinienLoeschenButton");
+
+const hintergrundButton = document.getElementById("hintergrundButton");
+const freiesAusschneidenButton =
+  document.getElementById("freiesAusschneidenButton");
+const freieBereicheLoeschenButton =
+  document.getElementById("freieBereicheLoeschenButton");
+
+const zipButton = document.getElementById("zipButton");
+const pptxButton = document.getElementById("pptxButton");
+
+const originalBild = document.getElementById("originalBild");
+const bildContainer = document.getElementById("bildContainer");
+const zeichnenCanvas = document.getElementById("zeichnenCanvas");
+const zeichnenContext = zeichnenCanvas.getContext("2d");
+const vorschau = document.getElementById("vorschau");
+const status = document.getElementById("status");
+const schnittlinienInfo = document.getElementById("schnittlinienInfo");
+const schritteInfo = document.getElementById("schritteInfo");
+
+let bildDataUrl = null;
+let originalBreite = 0;
+let originalHoehe = 0;
+let schnittPositionen = [];
+
+let hintergrundTransparent = false;
+let freieBereiche = [];
+let freiesAusschneidenAktiv = false;
+let aktuellerPfad = [];
+let zeichneGerade = false;
+
+function setStatus(text, farbe = "") {
+  status.textContent = text;
+  status.style.color = farbe;
+}
+
+function bildIstGeladen() {
+  return Boolean(bildDataUrl && originalBreite && originalHoehe);
+}
+
+function aktuelleSkalierung() {
+  if (!originalBild.naturalWidth) return 1;
+  return originalBild.clientWidth / originalBild.naturalWidth;
+}
+
+function sortiereSchnittpositionen() {
+  schnittPositionen.sort((a, b) => a - b);
+}
+
+function aktualisiereButtons() {
+  const geladen = bildIstGeladen();
+  const schnitte = schnittPositionen.length > 0;
+  const freie = freieBereiche.length > 0;
+
+  schnittlinieButton.disabled = !geladen || freie;
+  letzteLoeschenButton.disabled = !schnitte;
+  alleSchnittlinienLoeschenButton.disabled = !schnitte;
+  hintergrundButton.disabled = !geladen;
+  freiesAusschneidenButton.disabled = !geladen || schnitte;
+  freieBereicheLoeschenButton.disabled = !freie;
+  zipButton.disabled = !geladen;
+  pptxButton.disabled = !geladen;
+}
+
+function dateiAlsDataUrl(datei) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(datei);
+  });
+}
+
+function ladeBild(datei, quelle = "Datei") {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!datei || !datei.type.startsWith("image/")) {
+        reject(new Error("Ungültige Bilddatei"));
+        return;
+      }
+
+      bildDataUrl = await dateiAlsDataUrl(datei);
+
+      originalBild.onload = () => {
+        originalBreite = originalBild.naturalWidth;
+        originalHoehe = originalBild.naturalHeight;
+        schnittPositionen = [];
+        freieBereiche = [];
+        hintergrundTransparent = false;
+
+        zeichnenCanvas.width = originalBreite;
+        zeichnenCanvas.height = originalHoehe;
+
+        zeichneSchnittlinien();
+        aktualisiereVorschau();
+        aktualisiereButtons();
+
+        setStatus(
+          `${quelle} geladen: ${originalBreite} × ${originalHoehe} Pixel.`,
+          "#16a34a"
+        );
+
+        resolve();
+      };
+
+      originalBild.onerror = reject;
+      originalBild.src = bildDataUrl;
+    } catch (fehler) {
+      reject(fehler);
+    }
+  });
+}
+
+function positionZuProzent(y) {
+  return y / originalHoehe * 100;
+}
+
+function prozentZuPosition(prozent) {
+  return prozent / 100 * originalHoehe;
+}
+
+function zeichneSchnittlinien() {
+  document.querySelectorAll(".schnittlinie").forEach(e => e.remove());
+
+  sortiereSchnittpositionen();
+  const skalierung = aktuelleSkalierung();
+
+  schnittPositionen.forEach((y, index) => {
+    const linie = document.createElement("div");
+    linie.className = "schnittlinie";
+    linie.dataset.index = index;
+    linie.style.top = `${y * skalierung - 1}px`;
+
+    linie.addEventListener("pointerdown", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      linie.setPointerCapture(event.pointerId);
+
+      const rect = originalBild.getBoundingClientRect();
+
+      function bewegen(moveEvent) {
+        let sichtbaresY = moveEvent.clientY - rect.top;
+        sichtbaresY = Math.max(1, Math.min(rect.height - 1, sichtbaresY));
+
+        const echtesY = sichtbaresY / aktuelleSkalierung();
+        schnittPositionen[Number(linie.dataset.index)] = Math.round(echtesY);
+
+        sortiereSchnittpositionen();
+        zeichneSchnittlinien();
+        aktualisiereVorschau();
+      }
+
+      function beenden() {
+        linie.removeEventListener("pointermove", bewegen);
+        linie.removeEventListener("pointerup", beenden);
+        linie.removeEventListener("pointercancel", beenden);
+      }
+
+      linie.addEventListener("pointermove", bewegen);
+      linie.addEventListener("pointerup", beenden);
+      linie.addEventListener("pointercancel", beenden);
+    });
+
+    bildContainer.appendChild(linie);
+  });
+
+  schnittlinienInfo.textContent = bildIstGeladen()
+    ? `${schnittPositionen.length} Schnittlinie(n) gesetzt.`
+    : "Noch kein Bild geladen.";
+
+  aktualisiereButtons();
+}
+
+function fuegeSchnittlinieHinzu(y = null) {
+  if (!bildIstGeladen() || freieBereiche.length) return;
+
+  if (y === null) {
+    const grenzen = [0, ...schnittPositionen, originalHoehe];
+    let groessterAbstand = 0;
+    y = originalHoehe / 2;
+
+    for (let i = 0; i < grenzen.length - 1; i++) {
+      const abstand = grenzen[i + 1] - grenzen[i];
+
+      if (abstand > groessterAbstand) {
+        groessterAbstand = abstand;
+        y = grenzen[i] + abstand / 2;
+      }
+    }
+  }
+
+  y = Math.round(Math.max(1, Math.min(originalHoehe - 1, y)));
+  schnittPositionen.push(y);
+  zeichneSchnittlinien();
+  aktualisiereVorschau();
+}
+
+function ermittleBereiche() {
+  if (!bildIstGeladen()) return [];
+
+  const grenzen = [0, ...schnittPositionen, originalHoehe];
+  const bereiche = [];
+
+  for (let i = 0; i < grenzen.length - 1; i++) {
+    const y = Math.round(grenzen[i]);
+    const hoehe = Math.round(grenzen[i + 1] - grenzen[i]);
+
+    if (hoehe > 0) {
+      bereiche.push({ nummer: i + 1, y, hoehe });
+    }
+  }
+
+  return bereiche;
+}
+
+function punktInPolygon(x, y, polygon) {
+  let innerhalb = false;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].x;
+    const yi = polygon[i].y;
+    const xj = polygon[j].x;
+    const yj = polygon[j].y;
+
+    const schneiden =
+      ((yi > y) !== (yj > y)) &&
+      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+    if (schneiden) innerhalb = !innerhalb;
+  }
+
+  return innerhalb;
+}
+
+function bildCanvasMitTransparenz() {
+  const canvas = document.createElement("canvas");
+  canvas.width = originalBreite;
+  canvas.height = originalHoehe;
+
+  const context = canvas.getContext("2d");
+  context.drawImage(originalBild, 0, 0, originalBreite, originalHoehe);
+
+  if (hintergrundTransparent) {
+    const daten = context.getImageData(0, 0, originalBreite, originalHoehe);
+    const pixel = daten.data;
+
+    for (let i = 0; i < pixel.length; i += 4) {
+      const r = pixel[i];
+      const g = pixel[i + 1];
+      const b = pixel[i + 2];
+
+      if (r >= 245 && g >= 245 && b >= 245) {
+        pixel[i + 3] = 0;
+      }
+    }
+
+    context.putImageData(daten, 0, 0);
+  }
+
+  return canvas;
+}
+
+function erstelleCanvasBereich(bereich) {
+  const quelle = bildCanvasMitTransparenz();
+  const canvas = document.createElement("canvas");
+
+  canvas.width = originalBreite;
+  canvas.height = bereich.hoehe;
+
+  const context = canvas.getContext("2d");
+
+  context.drawImage(
+    quelle,
+    0,
+    bereich.y,
+    originalBreite,
+    bereich.hoehe,
+    0,
+    0,
+    originalBreite,
+    bereich.hoehe
+  );
+
+  return canvas;
+}
+
+function erstelleCanvasFreierBereich(polygon) {
+  const quelle = bildCanvasMitTransparenz();
+
+  let minX = originalBreite;
+  let minY = originalHoehe;
+  let maxX = 0;
+  let maxY = 0;
+
+  polygon.forEach(punkt => {
+    minX = Math.min(minX, punkt.x);
+    minY = Math.min(minY, punkt.y);
+    maxX = Math.max(maxX, punkt.x);
+    maxY = Math.max(maxY, punkt.y);
+  });
+
+  minX = Math.max(0, Math.floor(minX));
+  minY = Math.max(0, Math.floor(minY));
+  maxX = Math.min(originalBreite, Math.ceil(maxX));
+  maxY = Math.min(originalHoehe, Math.ceil(maxY));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, maxX - minX);
+  canvas.height = Math.max(1, maxY - minY);
+
+  const context = canvas.getContext("2d");
+  context.save();
+  context.beginPath();
+
+  polygon.forEach((punkt, index) => {
+    const x = punkt.x - minX;
+    const y = punkt.y - minY;
+
+    if (index === 0) context.moveTo(x, y);
+    else context.lineTo(x, y);
+  });
+
+  context.closePath();
+  context.clip();
+
+  context.drawImage(
+    quelle,
+    minX,
+    minY,
+    canvas.width,
+    canvas.height,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  context.restore();
+
+  canvas.bereichX = minX;
+canvas.bereichY = minY;
+canvas.bereichBreite = canvas.width;
+canvas.bereichHoehe = canvas.height;
+
+  return canvas;
+}
+
+function aktualisiereVorschau() {
+  vorschau.innerHTML = "";
+
+  if (!bildIstGeladen()) {
+    vorschau.innerHTML =
+      `<div class="leertext">Hier erscheinen die Bildbereiche.</div>`;
+    schritteInfo.textContent = "";
+    return;
+  }
+
+  if (freieBereiche.length) {
+    freieBereiche.forEach((polygon, index) => {
+      const canvas = erstelleCanvasFreierBereich(polygon);
+      const img = document.createElement("img");
+
+      img.className = "vorschau-bild";
+      img.alt = `Freier Bereich ${index + 1}`;
+      img.src = canvas.toDataURL("image/png");
+
+      vorschau.appendChild(img);
+    });
+
+    schritteInfo.textContent =
+      `${freieBereiche.length} freie(r) Bereich(e).`;
+
+    return;
+  }
+
+  ermittleBereiche().forEach(bereich => {
+    const canvas = erstelleCanvasBereich(bereich);
+    const img = document.createElement("img");
+
+    img.className = "vorschau-bild";
+    img.alt = `Schritt ${bereich.nummer}`;
+    img.src = canvas.toDataURL("image/png");
+
+    vorschau.appendChild(img);
+  });
+
+  schritteInfo.textContent =
+    `${ermittleBereiche().length} Bereich(e).`;
+}
+
+function fuegeFreienBereichHinzu(polygon) {
+  if (polygon.length < 3) return;
+
+  freieBereiche.push(polygon);
+  zeichneSchnittlinien();
+  aktualisiereVorschau();
+  aktualisiereButtons();
+
+  setStatus(
+    `Freier Bereich ${freieBereiche.length} wurde übernommen.`,
+    "#16a34a"
+  );
+}
+
+function punktAusPointerEvent(event) {
+  const rect = originalBild.getBoundingClientRect();
+  const skalierung = aktuelleSkalierung();
+
+  return {
+    x: Math.max(
+      0,
+      Math.min(originalBreite, (event.clientX - rect.left) / skalierung)
+    ),
+    y: Math.max(
+      0,
+      Math.min(originalHoehe, (event.clientY - rect.top) / skalierung)
+    )
+  };
+}
+
+zeichnenCanvas.addEventListener("pointerdown", event => {
+  if (!freiesAusschneidenAktiv || !bildIstGeladen()) return;
+
+  event.preventDefault();
+  zeichneGerade = true;
+  aktuellerPfad = [punktAusPointerEvent(event)];
+  zeichnenCanvas.setPointerCapture(event.pointerId);
+
+  zeichnenContext.clearRect(0, 0, originalBreite, originalHoehe);
+  zeichnenContext.beginPath();
+  zeichnenContext.moveTo(
+    aktuellerPfad[0].x,
+    aktuellerPfad[0].y
+  );
+});
+
+zeichnenCanvas.addEventListener("pointermove", event => {
+  if (!zeichneGerade) return;
+
+  event.preventDefault();
+
+  const punkt = punktAusPointerEvent(event);
+  aktuellerPfad.push(punkt);
+
+  zeichnenContext.lineTo(punkt.x, punkt.y);
+  zeichnenContext.strokeStyle = "#dc2626";
+  zeichnenContext.lineWidth = 4 / aktuelleSkalierung();
+  zeichnenContext.stroke();
+});
+
+zeichnenCanvas.addEventListener("pointerup", event => {
+  if (!zeichneGerade) return;
+
+  event.preventDefault();
+  zeichneGerade = false;
+
+  const punkt = punktAusPointerEvent(event);
+  aktuellerPfad.push(punkt);
+
+  zeichnenContext.clearRect(0, 0, originalBreite, originalHoehe);
+  fuegeFreienBereichHinzu(aktuellerPfad);
+  aktuellerPfad = [];
+});
+
+function entferneHintergrund() {
+  if (!bildIstGeladen()) return;
+
+  hintergrundTransparent = !hintergrundTransparent;
+
+  hintergrundButton.textContent = hintergrundTransparent
+    ? "⬜ Weißen Hintergrund wiederherstellen"
+    : "Hintergrund entfernen";
+
+  aktualisiereVorschau();
+
+  setStatus(
+    hintergrundTransparent
+      ? "Weiße und nahezu weiße Pixel werden jetzt transparent exportiert."
+      : "Der weiße Hintergrund wird wieder angezeigt.",
+    "#16a34a"
+  );
+}
+
+async function exportiereZIP() {
+  const zip = new JSZip();
+
+  if (freieBereiche.length) {
+    freieBereiche.forEach((polygon, index) => {
+      const canvas = erstelleCanvasFreierBereich(polygon);
+      const daten = canvas.toDataURL("image/png").split(",")[1];
+
+      zip.file(
+        `Freier_Bereich_${String(index + 1).padStart(2, "0")}.png`,
+        daten,
+        { base64: true }
+      );
+    });
+  } else {
+    ermittleBereiche().forEach(bereich => {
+      const canvas = erstelleCanvasBereich(bereich);
+      const daten = canvas.toDataURL("image/png").split(",")[1];
+
+      zip.file(
+        `Schritt_${String(bereich.nummer).padStart(2, "0")}.png`,
+        daten,
+        { base64: true }
+      );
+    });
+  }
+
+  const blob = await zip.generateAsync({ type: "blob" });
+  downloadBlob(blob, "Loesungsschritte.zip");
+
+  setStatus("ZIP-Datei wurde erstellt.", "#16a34a");
+}
+
+async function exportierePowerPoint() {
+  if (typeof window.PptxGenJS === "undefined") {
+    throw new Error("PptxGenJS wurde nicht geladen.");
+  }
+
+  const bilder = [];
+
+  if (freieBereiche.length) {
+    freieBereiche.forEach(polygon => {
+      bilder.push(erstelleCanvasFreierBereich(polygon));
+    });
+  } else {
+    ermittleBereiche().forEach(bereich => {
+      bilder.push(erstelleCanvasBereich(bereich));
+    });
+  }
+
+  if (!bilder.length) throw new Error("Keine Bildbereiche vorhanden.");
+
+  const pixelProZoll = 96;
+  const folienBreite = originalBreite / pixelProZoll;
+
+  const folienHoehe = bilder.reduce(
+    (summe, canvas) => summe + canvas.height,
+    0
+  ) / pixelProZoll;
+
+  const pptx = new window.PptxGenJS();
+
+  pptx.defineLayout({
+    name: "SCREENSHOT_LAYOUT",
+    width: folienBreite,
+    height: folienHoehe
+  });
+
+  pptx.layout = "SCREENSHOT_LAYOUT";
+
+  const folie = pptx.addSlide();
+  folie.background = { color: "FFFFFF" };
+
+  let y = 0;
+
+bilder.forEach(canvas => {
+  const hoehe = canvas.height / pixelProZoll;
+  const breite = canvas.width / pixelProZoll;
+
+  const xPosition = canvas.bereichX
+    ? canvas.bereichX / pixelProZoll
+    : 0;
+
+  folie.addImage({
+    data: canvas.toDataURL("image/png"),
+    x: xPosition,
+    y,
+    w: breite,
+    h: hoehe
+  });
+
+  y += hoehe;
+});
+
+  await pptx.writeFile({
+    fileName: "Loesungsschritte.pptx",
+    compression: true
+  });
+
+  setStatus("PowerPoint-Datei wurde erstellt.", "#16a34a");
+}
+
+function downloadBlob(blob, dateiname) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = dateiname;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function ladeBildAusZwischenablage(event) {
+  const bilder = Array.from(event.clipboardData?.items || [])
+    .filter(item => item.type.startsWith("image/"));
+
+  if (!bilder.length) return;
+
+  const datei = bilder[0].getAsFile();
+
+  if (datei) {
+    event.preventDefault();
+    ladeBild(datei, "Screenshot aus der Zwischenablage");
+  }
+}
+
+dateiInput.addEventListener("change", event => {
+  const datei = event.target.files[0];
+  if (datei) ladeBild(datei);
+});
+
+document.addEventListener("paste", ladeBildAusZwischenablage);
+
+zwischenablageButton.addEventListener("click", async () => {
+  try {
+    const items = await navigator.clipboard.read();
+
+    for (const item of items) {
+      const typ = item.types.find(t => t.startsWith("image/"));
+
+      if (typ) {
+        const blob = await item.getType(typ);
+        await ladeBild(blob, "Bild aus der Zwischenablage");
+        return;
+      }
+    }
+
+    setStatus("Kein Bild in der Zwischenablage gefunden.", "#b45309");
+  } catch {
+    setStatus(
+      "Zwischenablage nicht verfügbar. Bitte Strg + V verwenden.",
+      "#b45309"
+    );
+  }
+});
+
+bildContainer.addEventListener("click", event => {
+  if (!bildIstGeladen()) return;
+  if (freiesAusschneidenAktiv) return;
+  if (event.target.classList.contains("schnittlinie")) return;
+
+  const rect = originalBild.getBoundingClientRect();
+  const y = (event.clientY - rect.top) / aktuelleSkalierung();
+
+  fuegeSchnittlinieHinzu(y);
+});
+
+schnittlinieButton.addEventListener("click", () => {
+  fuegeSchnittlinieHinzu();
+});
+
+letzteLoeschenButton.addEventListener("click", () => {
+  schnittPositionen.pop();
+  zeichneSchnittlinien();
+  aktualisiereVorschau();
+});
+
+alleSchnittlinienLoeschenButton.addEventListener("click", () => {
+  schnittPositionen = [];
+  zeichneSchnittlinien();
+  aktualisiereVorschau();
+});
+
+hintergrundButton.addEventListener("click", entferneHintergrund);
+
+freiesAusschneidenButton.addEventListener("click", () => {
+  freiesAusschneidenAktiv = !freiesAusschneidenAktiv;
+  freiesAusschneidenButton.classList.toggle(
+    "aktiv",
+    freiesAusschneidenAktiv
+  );
+
+  zeichnenCanvas.style.pointerEvents =
+    freiesAusschneidenAktiv ? "auto" : "none";
+
+  setStatus(
+    freiesAusschneidenAktiv
+      ? "Zeichne jetzt einen freien Bereich mit Maus oder Finger."
+      : "Freies Ausschneiden beendet.",
+    "#2563eb"
+  );
+});
+
+freieBereicheLoeschenButton.addEventListener("click", () => {
+  freieBereiche = [];
+  zeichnenContext.clearRect(0, 0, originalBreite, originalHoehe);
+  aktualisiereVorschau();
+  aktualisiereButtons();
+
+  setStatus("Alle freien Bereiche wurden gelöscht.", "#16a34a");
+});
+
+zipButton.addEventListener("click", async () => {
+  zipButton.disabled = true;
+
+  try {
+    await exportiereZIP();
+  } catch (fehler) {
+    console.error(fehler);
+    setStatus("Fehler beim ZIP-Export.", "#dc2626");
+  }
+
+  aktualisiereButtons();
+});
+
+pptxButton.addEventListener("click", async () => {
+  pptxButton.disabled = true;
+
+  try {
+    await exportierePowerPoint();
+  } catch (fehler) {
+    console.error(fehler);
+    setStatus(
+      "PowerPoint-Export fehlgeschlagen: " + fehler.message,
+      "#dc2626"
+    );
+  }
+
+  aktualisiereButtons();
+});
+
+allesLoeschenButton.addEventListener("click", () => {
+  bildDataUrl = null;
+  originalBreite = 0;
+  originalHoehe = 0;
+  schnittPositionen = [];
+  freieBereiche = [];
+  hintergrundTransparent = false;
+  freiesAusschneidenAktiv = false;
+
+  originalBild.removeAttribute("src");
+  zeichnenContext.clearRect(
+    0,
+    0,
+    zeichnenCanvas.width,
+    zeichnenCanvas.height
+  );
+
+  document.querySelectorAll(".schnittlinie").forEach(e => e.remove());
+
+  vorschau.innerHTML =
+    `<div class="leertext">Hier erscheinen die Bildbereiche.</div>`;
+
+  schnittlinienInfo.textContent = "Noch kein Bild geladen.";
+  schritteInfo.textContent = "";
+  dateiInput.value = "";
+
+  freiesAusschneidenButton.classList.remove("aktiv");
+  zeichnenCanvas.style.pointerEvents = "none";
+  hintergrundButton.textContent = "Hintergrund entfernen";
+
+  setStatus("");
+  aktualisiereButtons();
+});
+
+window.addEventListener("resize", () => {
+  if (bildIstGeladen()) {
+    zeichneSchnittlinien();
+  }
+});
+
+zeichnenCanvas.style.pointerEvents = "none";
+aktualisiereButtons();
+</script>
+</body>
+</html>
