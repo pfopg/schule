@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Screenshot-Splitter für Unterricht</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -18,6 +19,7 @@
       --rot: #dc2626;
       --gruen: #16a34a;
       --orange: #d97706;
+      --gelb: #fbbf24;
     }
 
     * {
@@ -107,7 +109,8 @@
     }
 
     button.aktiv {
-      outline: 3px solid #fbbf24;
+      outline: 3px solid var(--gelb);
+      outline-offset: 1px;
     }
 
     button:disabled {
@@ -186,6 +189,10 @@
       touch-action: none;
     }
 
+    /*
+      Waagerechte Schnittlinie:
+      Teilt das Bild in Bereiche von oben nach unten.
+    */
     .schnittlinie {
       position: absolute;
       left: 0;
@@ -194,6 +201,7 @@
       background: var(--rot);
       z-index: 20;
       cursor: ns-resize;
+      touch-action: none;
     }
 
     .schnittlinie::before {
@@ -208,23 +216,53 @@
       font-size: 13px;
     }
 
+    /*
+      Senkrechte Schnittlinie:
+      Teilt das Bild in Bereiche von links nach rechts.
+    */
+    .schnittlinie.senkrecht {
+      top: 0;
+      bottom: 0;
+      left: auto;
+      right: auto;
+      width: 3px;
+      height: auto;
+      cursor: ew-resize;
+    }
+
+    .schnittlinie.senkrecht::before {
+      top: 5px;
+      left: -12px;
+    }
+
     #vorschau {
       display: flex;
       flex-direction: column;
       gap: 0;
       min-height: 100px;
+      max-width: 100%;
       overflow: auto;
       border: 1px dashed #9ca3af;
       background: #f9fafb;
     }
 
+    /*
+      Bei senkrechter Aufteilung werden die Bilder in der Vorschau
+      von links nach rechts angezeigt.
+    */
+    #vorschau.links-nach-rechts {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
     .vorschau-bild {
-  display: block;
-  width: auto;
-  max-width: none;
-  height: auto;
-  margin: 0;
-}
+      display: block;
+      width: auto;
+      max-width: none;
+      height: auto;
+      margin: 0;
+      flex: 0 0 auto;
+    }
 
     .leertext {
       padding: 30px 15px;
@@ -249,7 +287,10 @@
 <body>
 <header>
   <h1>Screenshot-Splitter</h1>
-  <p>Lösungsschritte aufteilen und als transparente PNGs, ZIP oder PowerPoint exportieren</p>
+  <p>
+    Lösungsschritte aufteilen und als transparente PNGs,
+    ZIP oder PowerPoint exportieren
+  </p>
 </header>
 
 <main>
@@ -257,16 +298,25 @@
     <h2>1. Screenshot laden</h2>
 
     <div class="toolbar">
-      <label class="datei-label" for="dateiInput">📁 Bilddatei auswählen</label>
+      <label class="datei-label" for="dateiInput">
+        📁 Bilddatei auswählen
+      </label>
+
       <input id="dateiInput" type="file" accept="image/*">
 
-      <button id="zwischenablageButton">📋 Aus Zwischenablage</button>
-      <button id="allesLoeschenButton" class="grau">Alles zurücksetzen</button>
+      <button id="zwischenablageButton">
+        📋 Aus Zwischenablage
+      </button>
+
+      <button id="allesLoeschenButton" class="grau">
+        Alles zurücksetzen
+      </button>
     </div>
 
     <div class="hinweis">
       Alternativ kannst du einen Screenshot erstellen und anschließend
-      <strong>Strg + V</strong> beziehungsweise <strong>Cmd + V</strong> drücken.
+      <strong>Strg + V</strong> beziehungsweise
+      <strong>Cmd + V</strong> drücken.
     </div>
 
     <div id="status"></div>
@@ -276,26 +326,59 @@
     <h2>2. Bearbeitung</h2>
 
     <div class="toolbar">
-      <button id="schnittlinieButton" disabled>✂ Schnittlinie hinzufügen</button>
-      <button id="letzteLoeschenButton" class="rot" disabled>Letzte Schnittlinie löschen</button>
-      <button id="alleSchnittlinienLoeschenButton" class="grau" disabled>
+      <button id="horizontalModusButton" class="aktiv" disabled>
+        ↕ Oben nach unten
+      </button>
+
+      <button id="vertikalModusButton" disabled>
+        ↔ Links nach rechts
+      </button>
+
+      <button id="schnittlinieButton" disabled>
+        ✂ Waagerechte Schnittlinie hinzufügen
+      </button>
+
+      <button id="letzteLoeschenButton" class="rot" disabled>
+        Letzte Schnittlinie löschen
+      </button>
+
+      <button
+        id="alleSchnittlinienLoeschenButton"
+        class="grau"
+        disabled
+      >
         Alle Schnittlinien löschen
       </button>
+
       <button id="hintergrundButton" class="orange" disabled>
         Hintergrund entfernen
       </button>
+
       <button id="freiesAusschneidenButton" disabled>
         Freies Ausschneiden
       </button>
-      <button id="freieBereicheLoeschenButton" class="rot" disabled>
+
+      <button
+        id="freieBereicheLoeschenButton"
+        class="rot"
+        disabled
+      >
         Freie Bereiche löschen
       </button>
     </div>
 
+    <div class="hinweis">
+      Wähle <strong>„Oben nach unten“</strong> für waagerechte
+      Schnittlinien oder <strong>„Links nach rechts“</strong> für
+      senkrechte Schnittlinien. Du kannst eine Schnittlinie auch direkt
+      durch einen Klick auf das Bild setzen.
+    </div>
+
     <div class="hinweis warnung">
-      Beim freien Ausschneiden klickst du den Button an und umrundest anschließend
-      einen Bereich mit Maus oder Finger. Beim Loslassen wird der Bereich übernommen.
-      Wiederhole den Vorgang für weitere Bereiche.
+      Beim freien Ausschneiden klickst du den Button an und umrundest
+      anschließend einen Bereich mit Maus oder Finger. Beim Loslassen
+      wird der Bereich übernommen. Wiederhole den Vorgang für weitere
+      Bereiche.
     </div>
   </section>
 
@@ -330,13 +413,20 @@
     <h2>3. Export</h2>
 
     <div class="toolbar">
-      <button id="zipButton" class="gruen" disabled>📦 Als ZIP exportieren</button>
-      <button id="pptxButton" class="gruen" disabled>📊 Als PowerPoint exportieren</button>
+      <button id="zipButton" class="gruen" disabled>
+        📦 Als ZIP exportieren
+      </button>
+
+      <button id="pptxButton" class="gruen" disabled>
+        📊 Als PowerPoint exportieren
+      </button>
     </div>
 
     <p class="klein">
-      Weiße Bereiche werden bei aktiviertem transparentem Hintergrund als transparente
-      Pixel exportiert.
+      Weiße Bereiche werden bei aktiviertem transparentem Hintergrund
+      als transparente Pixel exportiert. In PowerPoint bleiben alle
+      Ausschnitte eigenständige Bildobjekte und werden ohne Abstand
+      untereinander oder nebeneinander angeordnet.
     </p>
   </section>
 </main>
@@ -344,43 +434,104 @@
 <script>
 "use strict";
 
-const dateiInput = document.getElementById("dateiInput");
-const zwischenablageButton = document.getElementById("zwischenablageButton");
-const allesLoeschenButton = document.getElementById("allesLoeschenButton");
+/* =========================================================
+   DOM-ELEMENTE
+   ========================================================= */
 
-const schnittlinieButton = document.getElementById("schnittlinieButton");
-const letzteLoeschenButton = document.getElementById("letzteLoeschenButton");
+const dateiInput =
+  document.getElementById("dateiInput");
+
+const zwischenablageButton =
+  document.getElementById("zwischenablageButton");
+
+const allesLoeschenButton =
+  document.getElementById("allesLoeschenButton");
+
+const horizontalModusButton =
+  document.getElementById("horizontalModusButton");
+
+const vertikalModusButton =
+  document.getElementById("vertikalModusButton");
+
+const schnittlinieButton =
+  document.getElementById("schnittlinieButton");
+
+const letzteLoeschenButton =
+  document.getElementById("letzteLoeschenButton");
+
 const alleSchnittlinienLoeschenButton =
   document.getElementById("alleSchnittlinienLoeschenButton");
 
-const hintergrundButton = document.getElementById("hintergrundButton");
+const hintergrundButton =
+  document.getElementById("hintergrundButton");
+
 const freiesAusschneidenButton =
   document.getElementById("freiesAusschneidenButton");
+
 const freieBereicheLoeschenButton =
   document.getElementById("freieBereicheLoeschenButton");
 
-const zipButton = document.getElementById("zipButton");
-const pptxButton = document.getElementById("pptxButton");
+const zipButton =
+  document.getElementById("zipButton");
 
-const originalBild = document.getElementById("originalBild");
-const bildContainer = document.getElementById("bildContainer");
-const zeichnenCanvas = document.getElementById("zeichnenCanvas");
-const zeichnenContext = zeichnenCanvas.getContext("2d");
-const vorschau = document.getElementById("vorschau");
-const status = document.getElementById("status");
-const schnittlinienInfo = document.getElementById("schnittlinienInfo");
-const schritteInfo = document.getElementById("schritteInfo");
+const pptxButton =
+  document.getElementById("pptxButton");
+
+const originalBild =
+  document.getElementById("originalBild");
+
+const bildContainer =
+  document.getElementById("bildContainer");
+
+const zeichnenCanvas =
+  document.getElementById("zeichnenCanvas");
+
+const zeichnenContext =
+  zeichnenCanvas.getContext("2d");
+
+const vorschau =
+  document.getElementById("vorschau");
+
+const status =
+  document.getElementById("status");
+
+const schnittlinienInfo =
+  document.getElementById("schnittlinienInfo");
+
+const schritteInfo =
+  document.getElementById("schritteInfo");
+
+
+/* =========================================================
+   STATUSVARIABLEN
+   ========================================================= */
 
 let bildDataUrl = null;
 let originalBreite = 0;
 let originalHoehe = 0;
+
+/*
+  "horizontal":
+  Waagerechte Linien, Aufteilung von oben nach unten.
+
+  "vertikal":
+  Senkrechte Linien, Aufteilung von links nach rechts.
+*/
+let schnittRichtung = "horizontal";
+
 let schnittPositionen = [];
 
 let hintergrundTransparent = false;
+
 let freieBereiche = [];
 let freiesAusschneidenAktiv = false;
 let aktuellerPfad = [];
 let zeichneGerade = false;
+
+
+/* =========================================================
+   ALLGEMEINE HILFSFUNKTIONEN
+   ========================================================= */
 
 function setStatus(text, farbe = "") {
   status.textContent = text;
@@ -388,75 +539,200 @@ function setStatus(text, farbe = "") {
 }
 
 function bildIstGeladen() {
-  return Boolean(bildDataUrl && originalBreite && originalHoehe);
+  return Boolean(
+    bildDataUrl &&
+    originalBreite &&
+    originalHoehe
+  );
 }
 
 function aktuelleSkalierung() {
-  if (!originalBild.naturalWidth) return 1;
-  return originalBild.clientWidth / originalBild.naturalWidth;
+  if (
+    !originalBild.naturalWidth ||
+    !originalBild.naturalHeight
+  ) {
+    return {
+      x: 1,
+      y: 1
+    };
+  }
+
+  return {
+    x:
+      originalBild.clientWidth /
+      originalBild.naturalWidth,
+
+    y:
+      originalBild.clientHeight /
+      originalBild.naturalHeight
+  };
+}
+
+function maximaleSchnittPosition() {
+  return schnittRichtung === "horizontal"
+    ? originalHoehe
+    : originalBreite;
 }
 
 function sortiereSchnittpositionen() {
   schnittPositionen.sort((a, b) => a - b);
 }
 
+function aktualisiereSchnittModusAnzeige() {
+  const horizontal =
+    schnittRichtung === "horizontal";
+
+  horizontalModusButton.classList.toggle(
+    "aktiv",
+    horizontal
+  );
+
+  vertikalModusButton.classList.toggle(
+    "aktiv",
+    !horizontal
+  );
+
+  schnittlinieButton.textContent = horizontal
+    ? "✂ Waagerechte Schnittlinie hinzufügen"
+    : "✂ Senkrechte Schnittlinie hinzufügen";
+
+  if (!bildIstGeladen()) {
+    schnittlinienInfo.textContent =
+      "Noch kein Bild geladen.";
+
+    return;
+  }
+
+  const art = horizontal
+    ? "waagerechte"
+    : "senkrechte";
+
+  schnittlinienInfo.textContent =
+    `${schnittPositionen.length} ${art} Schnittlinie(n) gesetzt.`;
+}
+
 function aktualisiereButtons() {
   const geladen = bildIstGeladen();
-  const schnitte = schnittPositionen.length > 0;
-  const freie = freieBereiche.length > 0;
+  const schnitte =
+    schnittPositionen.length > 0;
+  const freie =
+    freieBereiche.length > 0;
 
-  schnittlinieButton.disabled = !geladen || freie;
-  letzteLoeschenButton.disabled = !schnitte;
-  alleSchnittlinienLoeschenButton.disabled = !schnitte;
-  hintergrundButton.disabled = !geladen;
-  freiesAusschneidenButton.disabled = !geladen || schnitte;
-  freieBereicheLoeschenButton.disabled = !freie;
-  zipButton.disabled = !geladen;
-  pptxButton.disabled = !geladen;
+  horizontalModusButton.disabled =
+    !geladen || freie;
+
+  vertikalModusButton.disabled =
+    !geladen || freie;
+
+  schnittlinieButton.disabled =
+    !geladen || freie;
+
+  letzteLoeschenButton.disabled =
+    !schnitte;
+
+  alleSchnittlinienLoeschenButton.disabled =
+    !schnitte;
+
+  hintergrundButton.disabled =
+    !geladen;
+
+  freiesAusschneidenButton.disabled =
+    !geladen || schnitte;
+
+  freieBereicheLoeschenButton.disabled =
+    !freie;
+
+  zipButton.disabled =
+    !geladen;
+
+  pptxButton.disabled =
+    !geladen;
 }
 
 function dateiAlsDataUrl(datei) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
     reader.onerror = reject;
+
     reader.readAsDataURL(datei);
   });
 }
 
+
+/* =========================================================
+   BILD LADEN
+   ========================================================= */
+
 function ladeBild(datei, quelle = "Datei") {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!datei || !datei.type.startsWith("image/")) {
-        reject(new Error("Ungültige Bilddatei"));
+      if (
+        !datei ||
+        !datei.type.startsWith("image/")
+      ) {
+        reject(
+          new Error("Ungültige Bilddatei")
+        );
         return;
       }
 
-      bildDataUrl = await dateiAlsDataUrl(datei);
+      bildDataUrl =
+        await dateiAlsDataUrl(datei);
 
       originalBild.onload = () => {
-        originalBreite = originalBild.naturalWidth;
-        originalHoehe = originalBild.naturalHeight;
+        originalBreite =
+          originalBild.naturalWidth;
+
+        originalHoehe =
+          originalBild.naturalHeight;
+
         schnittPositionen = [];
         freieBereiche = [];
         hintergrundTransparent = false;
+        freiesAusschneidenAktiv = false;
+        aktuellerPfad = [];
+        zeichneGerade = false;
 
-        zeichnenCanvas.width = originalBreite;
-        zeichnenCanvas.height = originalHoehe;
+        zeichnenCanvas.width =
+          originalBreite;
+
+        zeichnenCanvas.height =
+          originalHoehe;
+
+        zeichnenCanvas.style.pointerEvents =
+          "none";
+
+        freiesAusschneidenButton.classList.remove(
+          "aktiv"
+        );
+
+        hintergrundButton.textContent =
+          "Hintergrund entfernen";
 
         zeichneSchnittlinien();
         aktualisiereVorschau();
         aktualisiereButtons();
 
         setStatus(
-          `${quelle} geladen: ${originalBreite} × ${originalHoehe} Pixel.`,
+          `${quelle} geladen: ` +
+          `${originalBreite} × ${originalHoehe} Pixel.`,
           "#16a34a"
         );
 
         resolve();
       };
 
-      originalBild.onerror = reject;
+      originalBild.onerror = () => {
+        reject(
+          new Error("Das Bild konnte nicht geladen werden.")
+        );
+      };
+
       originalBild.src = bildDataUrl;
     } catch (fehler) {
       reject(fehler);
@@ -464,181 +740,439 @@ function ladeBild(datei, quelle = "Datei") {
   });
 }
 
-function positionZuProzent(y) {
-  return y / originalHoehe * 100;
-}
 
-function prozentZuPosition(prozent) {
-  return prozent / 100 * originalHoehe;
-}
+/* =========================================================
+   SCHNITTLINIEN
+   ========================================================= */
 
 function zeichneSchnittlinien() {
-  document.querySelectorAll(".schnittlinie").forEach(e => e.remove());
+  document
+    .querySelectorAll(".schnittlinie")
+    .forEach(element => element.remove());
 
   sortiereSchnittpositionen();
-  const skalierung = aktuelleSkalierung();
 
-  schnittPositionen.forEach((y, index) => {
-    const linie = document.createElement("div");
-    linie.className = "schnittlinie";
-    linie.dataset.index = index;
-    linie.style.top = `${y * skalierung - 1}px`;
+  if (!bildIstGeladen()) {
+    aktualisiereSchnittModusAnzeige();
+    aktualisiereButtons();
+    return;
+  }
 
-    linie.addEventListener("pointerdown", event => {
-      event.preventDefault();
-      event.stopPropagation();
-      linie.setPointerCapture(event.pointerId);
+  const skalierung =
+    aktuelleSkalierung();
 
-      const rect = originalBild.getBoundingClientRect();
+  schnittPositionen.forEach((position, index) => {
+    const linie =
+      document.createElement("div");
 
-      function bewegen(moveEvent) {
-        let sichtbaresY = moveEvent.clientY - rect.top;
-        sichtbaresY = Math.max(1, Math.min(rect.height - 1, sichtbaresY));
+    linie.className =
+      schnittRichtung === "horizontal"
+        ? "schnittlinie"
+        : "schnittlinie senkrecht";
 
-        const echtesY = sichtbaresY / aktuelleSkalierung();
-        schnittPositionen[Number(linie.dataset.index)] = Math.round(echtesY);
+    linie.dataset.index =
+      String(index);
 
-        sortiereSchnittpositionen();
-        zeichneSchnittlinien();
-        aktualisiereVorschau();
+    if (schnittRichtung === "horizontal") {
+      linie.style.top =
+        `${position * skalierung.y - 1}px`;
+    } else {
+      linie.style.left =
+        `${position * skalierung.x - 1}px`;
+    }
+
+    linie.addEventListener(
+      "pointerdown",
+      event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const indexDerLinie =
+          Number(linie.dataset.index);
+
+        const rect =
+          originalBild.getBoundingClientRect();
+
+        linie.setPointerCapture(
+          event.pointerId
+        );
+
+        function bewegen(moveEvent) {
+          moveEvent.preventDefault();
+          moveEvent.stopPropagation();
+
+          const aktuelleSkalierungWerte =
+            aktuelleSkalierung();
+
+          let neuePosition;
+
+          if (schnittRichtung === "horizontal") {
+            let sichtbaresY =
+              moveEvent.clientY - rect.top;
+
+            sichtbaresY = Math.max(
+              1,
+              Math.min(
+                rect.height - 1,
+                sichtbaresY
+              )
+            );
+
+            neuePosition =
+              sichtbaresY /
+              aktuelleSkalierungWerte.y;
+
+            neuePosition = Math.max(
+              1,
+              Math.min(
+                originalHoehe - 1,
+                neuePosition
+              )
+            );
+
+            linie.style.top =
+              `${
+                neuePosition *
+                aktuelleSkalierungWerte.y -
+                1
+              }px`;
+          } else {
+            let sichtbaresX =
+              moveEvent.clientX - rect.left;
+
+            sichtbaresX = Math.max(
+              1,
+              Math.min(
+                rect.width - 1,
+                sichtbaresX
+              )
+            );
+
+            neuePosition =
+              sichtbaresX /
+              aktuelleSkalierungWerte.x;
+
+            neuePosition = Math.max(
+              1,
+              Math.min(
+                originalBreite - 1,
+                neuePosition
+              )
+            );
+
+            linie.style.left =
+              `${
+                neuePosition *
+                aktuelleSkalierungWerte.x -
+                1
+              }px`;
+          }
+
+          schnittPositionen[indexDerLinie] =
+            Math.round(neuePosition);
+
+          aktualisiereVorschau();
+        }
+
+        function beenden() {
+          linie.removeEventListener(
+            "pointermove",
+            bewegen
+          );
+
+          linie.removeEventListener(
+            "pointerup",
+            beenden
+          );
+
+          linie.removeEventListener(
+            "pointercancel",
+            beenden
+          );
+
+          sortiereSchnittpositionen();
+          zeichneSchnittlinien();
+          aktualisiereVorschau();
+        }
+
+        linie.addEventListener(
+          "pointermove",
+          bewegen
+        );
+
+        linie.addEventListener(
+          "pointerup",
+          beenden
+        );
+
+        linie.addEventListener(
+          "pointercancel",
+          beenden
+        );
       }
-
-      function beenden() {
-        linie.removeEventListener("pointermove", bewegen);
-        linie.removeEventListener("pointerup", beenden);
-        linie.removeEventListener("pointercancel", beenden);
-      }
-
-      linie.addEventListener("pointermove", bewegen);
-      linie.addEventListener("pointerup", beenden);
-      linie.addEventListener("pointercancel", beenden);
-    });
+    );
 
     bildContainer.appendChild(linie);
   });
 
-  schnittlinienInfo.textContent = bildIstGeladen()
-    ? `${schnittPositionen.length} Schnittlinie(n) gesetzt.`
-    : "Noch kein Bild geladen.";
-
+  aktualisiereSchnittModusAnzeige();
   aktualisiereButtons();
 }
 
-function fuegeSchnittlinieHinzu(y = null) {
-  if (!bildIstGeladen() || freieBereiche.length) return;
+function fuegeSchnittlinieHinzu(position = null) {
+  if (
+    !bildIstGeladen() ||
+    freieBereiche.length
+  ) {
+    return;
+  }
 
-  if (y === null) {
-    const grenzen = [0, ...schnittPositionen, originalHoehe];
+  const maximum =
+    maximaleSchnittPosition();
+
+  if (position === null) {
+    const grenzen = [
+      0,
+      ...schnittPositionen,
+      maximum
+    ];
+
     let groessterAbstand = 0;
-    y = originalHoehe / 2;
+    position = maximum / 2;
 
-    for (let i = 0; i < grenzen.length - 1; i++) {
-      const abstand = grenzen[i + 1] - grenzen[i];
+    for (
+      let i = 0;
+      i < grenzen.length - 1;
+      i++
+    ) {
+      const abstand =
+        grenzen[i + 1] - grenzen[i];
 
       if (abstand > groessterAbstand) {
         groessterAbstand = abstand;
-        y = grenzen[i] + abstand / 2;
+
+        position =
+          grenzen[i] + abstand / 2;
       }
     }
   }
 
-  y = Math.round(Math.max(1, Math.min(originalHoehe - 1, y)));
-  schnittPositionen.push(y);
+  position = Math.round(
+    Math.max(
+      1,
+      Math.min(
+        maximum - 1,
+        position
+      )
+    )
+  );
+
+  /*
+    Verhindert doppelte oder nahezu identische Linien.
+  */
+  const bereitsVorhanden =
+    schnittPositionen.some(
+      vorhandenePosition =>
+        Math.abs(
+          vorhandenePosition - position
+        ) < 2
+    );
+
+  if (bereitsVorhanden) {
+    setStatus(
+      "An dieser Stelle befindet sich bereits eine Schnittlinie.",
+      "#b45309"
+    );
+    return;
+  }
+
+  schnittPositionen.push(position);
+
   zeichneSchnittlinien();
   aktualisiereVorschau();
 }
 
-function ermittleBereiche() {
-  if (!bildIstGeladen()) return [];
 
-  const grenzen = [0, ...schnittPositionen, originalHoehe];
+/* =========================================================
+   BEREICHE ERMITTELN
+   ========================================================= */
+
+function ermittleBereiche() {
+  if (!bildIstGeladen()) {
+    return [];
+  }
+
+  sortiereSchnittpositionen();
+
+  const maximum =
+    maximaleSchnittPosition();
+
+  const grenzen = [
+    0,
+    ...schnittPositionen,
+    maximum
+  ];
+
   const bereiche = [];
 
-  for (let i = 0; i < grenzen.length - 1; i++) {
-    const y = Math.round(grenzen[i]);
-    const hoehe = Math.round(grenzen[i + 1] - grenzen[i]);
+  for (
+    let i = 0;
+    i < grenzen.length - 1;
+    i++
+  ) {
+    const start =
+      Math.round(grenzen[i]);
 
-    if (hoehe > 0) {
-      bereiche.push({ nummer: i + 1, y, hoehe });
+    const groesse =
+      Math.round(
+        grenzen[i + 1] - grenzen[i]
+      );
+
+    if (groesse <= 0) {
+      continue;
+    }
+
+    if (schnittRichtung === "horizontal") {
+      bereiche.push({
+        nummer: i + 1,
+        x: 0,
+        y: start,
+        breite: originalBreite,
+        hoehe: groesse
+      });
+    } else {
+      bereiche.push({
+        nummer: i + 1,
+        x: start,
+        y: 0,
+        breite: groesse,
+        hoehe: originalHoehe
+      });
     }
   }
 
   return bereiche;
 }
 
-function punktInPolygon(x, y, polygon) {
-  let innerhalb = false;
 
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x;
-    const yi = polygon[i].y;
-    const xj = polygon[j].x;
-    const yj = polygon[j].y;
-
-    const schneiden =
-      ((yi > y) !== (yj > y)) &&
-      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-
-    if (schneiden) innerhalb = !innerhalb;
-  }
-
-  return innerhalb;
-}
+/* =========================================================
+   TRANSPARENZ UND CANVAS
+   ========================================================= */
 
 function bildCanvasMitTransparenz() {
-  const canvas = document.createElement("canvas");
-  canvas.width = originalBreite;
-  canvas.height = originalHoehe;
+  const canvas =
+    document.createElement("canvas");
 
-  const context = canvas.getContext("2d");
-  context.drawImage(originalBild, 0, 0, originalBreite, originalHoehe);
+  canvas.width =
+    originalBreite;
+
+  canvas.height =
+    originalHoehe;
+
+  const context =
+    canvas.getContext("2d");
+
+  context.drawImage(
+    originalBild,
+    0,
+    0,
+    originalBreite,
+    originalHoehe
+  );
 
   if (hintergrundTransparent) {
-    const daten = context.getImageData(0, 0, originalBreite, originalHoehe);
-    const pixel = daten.data;
+    const daten =
+      context.getImageData(
+        0,
+        0,
+        originalBreite,
+        originalHoehe
+      );
 
-    for (let i = 0; i < pixel.length; i += 4) {
+    const pixel =
+      daten.data;
+
+    for (
+      let i = 0;
+      i < pixel.length;
+      i += 4
+    ) {
       const r = pixel[i];
       const g = pixel[i + 1];
       const b = pixel[i + 2];
 
-      if (r >= 245 && g >= 245 && b >= 245) {
+      if (
+        r >= 245 &&
+        g >= 245 &&
+        b >= 245
+      ) {
         pixel[i + 3] = 0;
       }
     }
 
-    context.putImageData(daten, 0, 0);
+    context.putImageData(
+      daten,
+      0,
+      0
+    );
   }
 
   return canvas;
 }
 
 function erstelleCanvasBereich(bereich) {
-  const quelle = bildCanvasMitTransparenz();
-  const canvas = document.createElement("canvas");
+  const quelle =
+    bildCanvasMitTransparenz();
 
-  canvas.width = originalBreite;
-  canvas.height = bereich.hoehe;
+  const canvas =
+    document.createElement("canvas");
 
-  const context = canvas.getContext("2d");
+  canvas.width =
+    bereich.breite;
+
+  canvas.height =
+    bereich.hoehe;
+
+  const context =
+    canvas.getContext("2d");
 
   context.drawImage(
     quelle,
-    0,
+
+    bereich.x,
     bereich.y,
-    originalBreite,
+    bereich.breite,
     bereich.hoehe,
+
     0,
     0,
-    originalBreite,
+    bereich.breite,
     bereich.hoehe
   );
+
+  canvas.bereichX =
+    bereich.x;
+
+  canvas.bereichY =
+    bereich.y;
+
+  canvas.bereichBreite =
+    bereich.breite;
+
+  canvas.bereichHoehe =
+    bereich.hoehe;
 
   return canvas;
 }
 
+
+/* =========================================================
+   FREIES AUSSCHNEIDEN
+   ========================================================= */
+
 function erstelleCanvasFreierBereich(polygon) {
-  const quelle = bildCanvasMitTransparenz();
+  const quelle =
+    bildCanvasMitTransparenz();
 
   let minX = originalBreite;
   let minY = originalHoehe;
@@ -652,25 +1186,53 @@ function erstelleCanvasFreierBereich(polygon) {
     maxY = Math.max(maxY, punkt.y);
   });
 
-  minX = Math.max(0, Math.floor(minX));
-  minY = Math.max(0, Math.floor(minY));
-  maxX = Math.min(originalBreite, Math.ceil(maxX));
-  maxY = Math.min(originalHoehe, Math.ceil(maxY));
+  minX = Math.max(
+    0,
+    Math.floor(minX)
+  );
 
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, maxX - minX);
-  canvas.height = Math.max(1, maxY - minY);
+  minY = Math.max(
+    0,
+    Math.floor(minY)
+  );
 
-  const context = canvas.getContext("2d");
+  maxX = Math.min(
+    originalBreite,
+    Math.ceil(maxX)
+  );
+
+  maxY = Math.min(
+    originalHoehe,
+    Math.ceil(maxY)
+  );
+
+  const canvas =
+    document.createElement("canvas");
+
+  canvas.width =
+    Math.max(1, maxX - minX);
+
+  canvas.height =
+    Math.max(1, maxY - minY);
+
+  const context =
+    canvas.getContext("2d");
+
   context.save();
   context.beginPath();
 
   polygon.forEach((punkt, index) => {
-    const x = punkt.x - minX;
-    const y = punkt.y - minY;
+    const x =
+      punkt.x - minX;
 
-    if (index === 0) context.moveTo(x, y);
-    else context.lineTo(x, y);
+    const y =
+      punkt.y - minY;
+
+    if (index === 0) {
+      context.moveTo(x, y);
+    } else {
+      context.lineTo(x, y);
+    }
   });
 
   context.closePath();
@@ -678,10 +1240,12 @@ function erstelleCanvasFreierBereich(polygon) {
 
   context.drawImage(
     quelle,
+
     minX,
     minY,
     canvas.width,
     canvas.height,
+
     0,
     0,
     canvas.width,
@@ -691,60 +1255,20 @@ function erstelleCanvasFreierBereich(polygon) {
   context.restore();
 
   canvas.bereichX = minX;
-canvas.bereichY = minY;
-canvas.bereichBreite = canvas.width;
-canvas.bereichHoehe = canvas.height;
+  canvas.bereichY = minY;
+  canvas.bereichBreite = canvas.width;
+  canvas.bereichHoehe = canvas.height;
 
   return canvas;
 }
 
-function aktualisiereVorschau() {
-  vorschau.innerHTML = "";
-
-  if (!bildIstGeladen()) {
-    vorschau.innerHTML =
-      `<div class="leertext">Hier erscheinen die Bildbereiche.</div>`;
-    schritteInfo.textContent = "";
-    return;
-  }
-
-  if (freieBereiche.length) {
-    freieBereiche.forEach((polygon, index) => {
-      const canvas = erstelleCanvasFreierBereich(polygon);
-      const img = document.createElement("img");
-
-      img.className = "vorschau-bild";
-      img.alt = `Freier Bereich ${index + 1}`;
-      img.src = canvas.toDataURL("image/png");
-
-      vorschau.appendChild(img);
-    });
-
-    schritteInfo.textContent =
-      `${freieBereiche.length} freie(r) Bereich(e).`;
-
-    return;
-  }
-
-  ermittleBereiche().forEach(bereich => {
-    const canvas = erstelleCanvasBereich(bereich);
-    const img = document.createElement("img");
-
-    img.className = "vorschau-bild";
-    img.alt = `Schritt ${bereich.nummer}`;
-    img.src = canvas.toDataURL("image/png");
-
-    vorschau.appendChild(img);
-  });
-
-  schritteInfo.textContent =
-    `${ermittleBereiche().length} Bereich(e).`;
-}
-
 function fuegeFreienBereichHinzu(polygon) {
-  if (polygon.length < 3) return;
+  if (polygon.length < 3) {
+    return;
+  }
 
   freieBereiche.push(polygon);
+
   zeichneSchnittlinien();
   aktualisiereVorschau();
   aktualisiereButtons();
@@ -756,73 +1280,259 @@ function fuegeFreienBereichHinzu(polygon) {
 }
 
 function punktAusPointerEvent(event) {
-  const rect = originalBild.getBoundingClientRect();
-  const skalierung = aktuelleSkalierung();
+  const rect =
+    originalBild.getBoundingClientRect();
+
+  const skalierung =
+    aktuelleSkalierung();
 
   return {
     x: Math.max(
       0,
-      Math.min(originalBreite, (event.clientX - rect.left) / skalierung)
+      Math.min(
+        originalBreite,
+        (
+          event.clientX -
+          rect.left
+        ) / skalierung.x
+      )
     ),
+
     y: Math.max(
       0,
-      Math.min(originalHoehe, (event.clientY - rect.top) / skalierung)
+      Math.min(
+        originalHoehe,
+        (
+          event.clientY -
+          rect.top
+        ) / skalierung.y
+      )
     )
   };
 }
 
-zeichnenCanvas.addEventListener("pointerdown", event => {
-  if (!freiesAusschneidenAktiv || !bildIstGeladen()) return;
+zeichnenCanvas.addEventListener(
+  "pointerdown",
+  event => {
+    if (
+      !freiesAusschneidenAktiv ||
+      !bildIstGeladen()
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    zeichneGerade = true;
+
+    aktuellerPfad = [
+      punktAusPointerEvent(event)
+    ];
+
+    zeichnenCanvas.setPointerCapture(
+      event.pointerId
+    );
+
+    zeichnenContext.clearRect(
+      0,
+      0,
+      originalBreite,
+      originalHoehe
+    );
+
+    zeichnenContext.beginPath();
+
+    zeichnenContext.moveTo(
+      aktuellerPfad[0].x,
+      aktuellerPfad[0].y
+    );
+  }
+);
+
+zeichnenCanvas.addEventListener(
+  "pointermove",
+  event => {
+    if (!zeichneGerade) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const punkt =
+      punktAusPointerEvent(event);
+
+    aktuellerPfad.push(punkt);
+
+    zeichnenContext.lineTo(
+      punkt.x,
+      punkt.y
+    );
+
+    zeichnenContext.strokeStyle =
+      "#dc2626";
+
+    zeichnenContext.lineWidth =
+      4 / aktuelleSkalierung().x;
+
+    zeichnenContext.stroke();
+  }
+);
+
+function beendeFreiesZeichnen(event) {
+  if (!zeichneGerade) {
+    return;
+  }
 
   event.preventDefault();
-  zeichneGerade = true;
-  aktuellerPfad = [punktAusPointerEvent(event)];
-  zeichnenCanvas.setPointerCapture(event.pointerId);
 
-  zeichnenContext.clearRect(0, 0, originalBreite, originalHoehe);
-  zeichnenContext.beginPath();
-  zeichnenContext.moveTo(
-    aktuellerPfad[0].x,
-    aktuellerPfad[0].y
-  );
-});
-
-zeichnenCanvas.addEventListener("pointermove", event => {
-  if (!zeichneGerade) return;
-
-  event.preventDefault();
-
-  const punkt = punktAusPointerEvent(event);
-  aktuellerPfad.push(punkt);
-
-  zeichnenContext.lineTo(punkt.x, punkt.y);
-  zeichnenContext.strokeStyle = "#dc2626";
-  zeichnenContext.lineWidth = 4 / aktuelleSkalierung();
-  zeichnenContext.stroke();
-});
-
-zeichnenCanvas.addEventListener("pointerup", event => {
-  if (!zeichneGerade) return;
-
-  event.preventDefault();
   zeichneGerade = false;
 
-  const punkt = punktAusPointerEvent(event);
+  const punkt =
+    punktAusPointerEvent(event);
+
   aktuellerPfad.push(punkt);
 
-  zeichnenContext.clearRect(0, 0, originalBreite, originalHoehe);
-  fuegeFreienBereichHinzu(aktuellerPfad);
+  zeichnenContext.clearRect(
+    0,
+    0,
+    originalBreite,
+    originalHoehe
+  );
+
+  fuegeFreienBereichHinzu(
+    aktuellerPfad
+  );
+
   aktuellerPfad = [];
-});
+}
+
+zeichnenCanvas.addEventListener(
+  "pointerup",
+  beendeFreiesZeichnen
+);
+
+zeichnenCanvas.addEventListener(
+  "pointercancel",
+  event => {
+    if (!zeichneGerade) {
+      return;
+    }
+
+    zeichneGerade = false;
+    aktuellerPfad = [];
+
+    zeichnenContext.clearRect(
+      0,
+      0,
+      originalBreite,
+      originalHoehe
+    );
+  }
+);
+
+
+/* =========================================================
+   VORSCHAU
+   ========================================================= */
+
+function aktualisiereVorschau() {
+  vorschau.innerHTML = "";
+
+  vorschau.classList.remove(
+    "links-nach-rechts"
+  );
+
+  if (!bildIstGeladen()) {
+    vorschau.innerHTML =
+      `<div class="leertext">
+        Hier erscheinen die Bildbereiche.
+      </div>`;
+
+    schritteInfo.textContent = "";
+    return;
+  }
+
+  if (freieBereiche.length) {
+    freieBereiche.forEach(
+      (polygon, index) => {
+        const canvas =
+          erstelleCanvasFreierBereich(
+            polygon
+          );
+
+        const img =
+          document.createElement("img");
+
+        img.className =
+          "vorschau-bild";
+
+        img.alt =
+          `Freier Bereich ${index + 1}`;
+
+        img.src =
+          canvas.toDataURL("image/png");
+
+        vorschau.appendChild(img);
+      }
+    );
+
+    schritteInfo.textContent =
+      `${freieBereiche.length} freie(r) Bereich(e).`;
+
+    return;
+  }
+
+  if (schnittRichtung === "vertikal") {
+    vorschau.classList.add(
+      "links-nach-rechts"
+    );
+  }
+
+  const bereiche =
+    ermittleBereiche();
+
+  bereiche.forEach(bereich => {
+    const canvas =
+      erstelleCanvasBereich(bereich);
+
+    const img =
+      document.createElement("img");
+
+    img.className =
+      "vorschau-bild";
+
+    img.alt =
+      `Schritt ${bereich.nummer}`;
+
+    img.src =
+      canvas.toDataURL("image/png");
+
+    vorschau.appendChild(img);
+  });
+
+  schritteInfo.textContent =
+    schnittRichtung === "horizontal"
+      ? `${bereiche.length} Bereich(e) von oben nach unten.`
+      : `${bereiche.length} Bereich(e) von links nach rechts.`;
+}
+
+
+/* =========================================================
+   HINTERGRUND
+   ========================================================= */
 
 function entferneHintergrund() {
-  if (!bildIstGeladen()) return;
+  if (!bildIstGeladen()) {
+    return;
+  }
 
-  hintergrundTransparent = !hintergrundTransparent;
+  hintergrundTransparent =
+    !hintergrundTransparent;
 
-  hintergrundButton.textContent = hintergrundTransparent
-    ? "⬜ Weißen Hintergrund wiederherstellen"
-    : "Hintergrund entfernen";
+  hintergrundButton.textContent =
+    hintergrundTransparent
+      ? "⬜ Weißen Hintergrund wiederherstellen"
+      : "Hintergrund entfernen";
 
   aktualisiereVorschau();
 
@@ -834,67 +1544,216 @@ function entferneHintergrund() {
   );
 }
 
+
+/* =========================================================
+   ZIP-EXPORT
+   ========================================================= */
+
 async function exportiereZIP() {
+  if (typeof JSZip === "undefined") {
+    throw new Error(
+      "JSZip wurde nicht geladen."
+    );
+  }
+
   const zip = new JSZip();
 
   if (freieBereiche.length) {
-    freieBereiche.forEach((polygon, index) => {
-      const canvas = erstelleCanvasFreierBereich(polygon);
-      const daten = canvas.toDataURL("image/png").split(",")[1];
+    freieBereiche.forEach(
+      (polygon, index) => {
+        const canvas =
+          erstelleCanvasFreierBereich(
+            polygon
+          );
 
-      zip.file(
-        `Freier_Bereich_${String(index + 1).padStart(2, "0")}.png`,
-        daten,
-        { base64: true }
-      );
-    });
+        const daten =
+          canvas
+            .toDataURL("image/png")
+            .split(",")[1];
+
+        zip.file(
+          `Freier_Bereich_${
+            String(index + 1).padStart(2, "0")
+          }.png`,
+          daten,
+          { base64: true }
+        );
+      }
+    );
   } else {
-    ermittleBereiche().forEach(bereich => {
-      const canvas = erstelleCanvasBereich(bereich);
-      const daten = canvas.toDataURL("image/png").split(",")[1];
+    const richtungsName =
+      schnittRichtung === "horizontal"
+        ? "Oben_nach_unten"
+        : "Links_nach_rechts";
 
-      zip.file(
-        `Schritt_${String(bereich.nummer).padStart(2, "0")}.png`,
-        daten,
-        { base64: true }
-      );
-    });
+    ermittleBereiche().forEach(
+      bereich => {
+        const canvas =
+          erstelleCanvasBereich(
+            bereich
+          );
+
+        const daten =
+          canvas
+            .toDataURL("image/png")
+            .split(",")[1];
+
+        zip.file(
+          `${richtungsName}_${
+            String(bereich.nummer).padStart(2, "0")
+          }.png`,
+          daten,
+          { base64: true }
+        );
+      }
+    );
   }
 
-  const blob = await zip.generateAsync({ type: "blob" });
-  downloadBlob(blob, "Loesungsschritte.zip");
+  const blob =
+    await zip.generateAsync({
+      type: "blob"
+    });
 
-  setStatus("ZIP-Datei wurde erstellt.", "#16a34a");
+  downloadBlob(
+    blob,
+    "Loesungsschritte.zip"
+  );
+
+  setStatus(
+    "ZIP-Datei wurde erstellt.",
+    "#16a34a"
+  );
 }
 
+
+/* =========================================================
+   POWERPOINT-EXPORT
+   ========================================================= */
+
 async function exportierePowerPoint() {
-  if (typeof window.PptxGenJS === "undefined") {
-    throw new Error("PptxGenJS wurde nicht geladen.");
+  if (
+    typeof window.PptxGenJS ===
+    "undefined"
+  ) {
+    throw new Error(
+      "PptxGenJS wurde nicht geladen."
+    );
   }
 
   const bilder = [];
 
-  if (freieBereiche.length) {
-    freieBereiche.forEach(polygon => {
-      bilder.push(erstelleCanvasFreierBereich(polygon));
-    });
+  const freieAuswahlAktiv =
+    freieBereiche.length > 0;
+
+  if (freieAuswahlAktiv) {
+    freieBereiche.forEach(
+      polygon => {
+        bilder.push(
+          erstelleCanvasFreierBereich(
+            polygon
+          )
+        );
+      }
+    );
   } else {
-    ermittleBereiche().forEach(bereich => {
-      bilder.push(erstelleCanvasBereich(bereich));
-    });
+    ermittleBereiche().forEach(
+      bereich => {
+        bilder.push(
+          erstelleCanvasBereich(
+            bereich
+          )
+        );
+      }
+    );
   }
 
-  if (!bilder.length) throw new Error("Keine Bildbereiche vorhanden.");
+  if (!bilder.length) {
+    throw new Error(
+      "Keine Bildbereiche vorhanden."
+    );
+  }
 
   const pixelProZoll = 96;
-  const folienBreite = originalBreite / pixelProZoll;
 
-  const folienHoehe = bilder.reduce(
-    (summe, canvas) => summe + canvas.height,
-    0
-  ) / pixelProZoll;
+  let folienBreite;
+  let folienHoehe;
 
-  const pptx = new window.PptxGenJS();
+  /*
+    Freie Bereiche werden wie bisher untereinander
+    auf einer Folie angeordnet.
+  */
+  if (freieAuswahlAktiv) {
+    folienBreite =
+      Math.max(
+        ...bilder.map(canvas => {
+          return (
+            Number(canvas.bereichX || 0) +
+            canvas.width
+          );
+        })
+      ) / pixelProZoll;
+
+    folienHoehe =
+      bilder.reduce(
+        (summe, canvas) =>
+          summe + canvas.height,
+        0
+      ) / pixelProZoll;
+  }
+
+  /*
+    Waagerechte Schnittlinien:
+    Ausschnitte werden untereinander angeordnet.
+  */
+  else if (
+    schnittRichtung === "horizontal"
+  ) {
+    folienBreite =
+      Math.max(
+        ...bilder.map(
+          canvas => canvas.width
+        )
+      ) / pixelProZoll;
+
+    folienHoehe =
+      bilder.reduce(
+        (summe, canvas) =>
+          summe + canvas.height,
+        0
+      ) / pixelProZoll;
+  }
+
+  /*
+    Senkrechte Schnittlinien:
+    Ausschnitte werden nebeneinander angeordnet.
+  */
+  else {
+    folienBreite =
+      bilder.reduce(
+        (summe, canvas) =>
+          summe + canvas.width,
+        0
+      ) / pixelProZoll;
+
+    folienHoehe =
+      Math.max(
+        ...bilder.map(
+          canvas => canvas.height
+        )
+      ) / pixelProZoll;
+  }
+
+  /*
+    Schutz vor ungültigen Layoutgrößen.
+  */
+  folienBreite =
+    Math.max(1, folienBreite);
+
+  folienHoehe =
+    Math.max(1, folienHoehe);
+
+  const pptx =
+    new window.PptxGenJS();
 
   pptx.defineLayout({
     name: "SCREENSHOT_LAYOUT",
@@ -902,224 +1761,656 @@ async function exportierePowerPoint() {
     height: folienHoehe
   });
 
-  pptx.layout = "SCREENSHOT_LAYOUT";
+  pptx.layout =
+    "SCREENSHOT_LAYOUT";
 
-  const folie = pptx.addSlide();
-  folie.background = { color: "FFFFFF" };
+  const folie =
+    pptx.addSlide();
 
-  let y = 0;
+  folie.background = {
+    color: "FFFFFF"
+  };
 
-bilder.forEach(canvas => {
-  const hoehe = canvas.height / pixelProZoll;
-  const breite = canvas.width / pixelProZoll;
+  /*
+    Freie Auswahl:
+    Untereinander, mit ursprünglicher horizontaler Position.
+  */
+  if (freieAuswahlAktiv) {
+    let y = 0;
 
-  const xPosition = canvas.bereichX
-    ? canvas.bereichX / pixelProZoll
-    : 0;
+    bilder.forEach(canvas => {
+      const hoehe =
+        canvas.height / pixelProZoll;
 
-  folie.addImage({
-    data: canvas.toDataURL("image/png"),
-    x: xPosition,
-    y,
-    w: breite,
-    h: hoehe
-  });
+      const breite =
+        canvas.width / pixelProZoll;
 
-  y += hoehe;
-});
+      const xPosition =
+        Number(canvas.bereichX || 0) /
+        pixelProZoll;
+
+      folie.addImage({
+        data:
+          canvas.toDataURL("image/png"),
+
+        x:
+          xPosition,
+
+        y:
+          y,
+
+        w:
+          breite,
+
+        h:
+          hoehe
+      });
+
+      y += hoehe;
+    });
+  }
+
+  /*
+    Oben nach unten:
+    Jedes Teilbild bleibt ein eigenes Bildobjekt.
+  */
+  else if (
+    schnittRichtung === "horizontal"
+  ) {
+    let y = 0;
+
+    bilder.forEach(canvas => {
+      const hoehe =
+        canvas.height / pixelProZoll;
+
+      const breite =
+        canvas.width / pixelProZoll;
+
+      folie.addImage({
+        data:
+          canvas.toDataURL("image/png"),
+
+        x:
+          0,
+
+        y:
+          y,
+
+        w:
+          breite,
+
+        h:
+          hoehe
+      });
+
+      y += hoehe;
+    });
+  }
+
+  /*
+    Links nach rechts:
+    Jedes Teilbild bleibt ein eigenes Bildobjekt.
+  */
+  else {
+    let x = 0;
+
+    bilder.forEach(canvas => {
+      const hoehe =
+        canvas.height / pixelProZoll;
+
+      const breite =
+        canvas.width / pixelProZoll;
+
+      folie.addImage({
+        data:
+          canvas.toDataURL("image/png"),
+
+        x:
+          x,
+
+        y:
+          0,
+
+        w:
+          breite,
+
+        h:
+          hoehe
+      });
+
+      x += breite;
+    });
+  }
 
   await pptx.writeFile({
-    fileName: "Loesungsschritte.pptx",
-    compression: true
+    fileName:
+      "Loesungsschritte.pptx",
+
+    compression:
+      true
   });
 
-  setStatus("PowerPoint-Datei wurde erstellt.", "#16a34a");
+  if (freieAuswahlAktiv) {
+    setStatus(
+      "PowerPoint mit den freien Bereichen wurde erstellt.",
+      "#16a34a"
+    );
+  } else {
+    setStatus(
+      schnittRichtung === "horizontal"
+        ? "PowerPoint mit Bereichen von oben nach unten wurde erstellt."
+        : "PowerPoint mit Bereichen von links nach rechts wurde erstellt.",
+      "#16a34a"
+    );
+  }
 }
 
+
+/* =========================================================
+   DOWNLOAD
+   ========================================================= */
+
 function downloadBlob(blob, dateiname) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
 
   link.href = url;
   link.download = dateiname;
+
   document.body.appendChild(link);
+
   link.click();
   link.remove();
 
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setTimeout(
+    () => URL.revokeObjectURL(url),
+    1000
+  );
 }
 
+
+/* =========================================================
+   ZWISCHENABLAGE
+   ========================================================= */
+
 function ladeBildAusZwischenablage(event) {
-  const bilder = Array.from(event.clipboardData?.items || [])
-    .filter(item => item.type.startsWith("image/"));
+  const bilder = Array.from(
+    event.clipboardData?.items || []
+  ).filter(
+    item =>
+      item.type.startsWith("image/")
+  );
 
-  if (!bilder.length) return;
+  if (!bilder.length) {
+    return;
+  }
 
-  const datei = bilder[0].getAsFile();
+  const datei =
+    bilder[0].getAsFile();
 
   if (datei) {
     event.preventDefault();
-    ladeBild(datei, "Screenshot aus der Zwischenablage");
+
+    ladeBild(
+      datei,
+      "Screenshot aus der Zwischenablage"
+    ).catch(fehler => {
+      console.error(fehler);
+
+      setStatus(
+        "Das Bild aus der Zwischenablage konnte nicht geladen werden.",
+        "#dc2626"
+      );
+    });
   }
 }
 
-dateiInput.addEventListener("change", event => {
-  const datei = event.target.files[0];
-  if (datei) ladeBild(datei);
-});
 
-document.addEventListener("paste", ladeBildAusZwischenablage);
+/* =========================================================
+   MODUS WECHSELN
+   ========================================================= */
 
-zwischenablageButton.addEventListener("click", async () => {
-  try {
-    const items = await navigator.clipboard.read();
+function setzeSchnittRichtung(neueRichtung) {
+  if (!bildIstGeladen()) {
+    return;
+  }
 
-    for (const item of items) {
-      const typ = item.types.find(t => t.startsWith("image/"));
-
-      if (typ) {
-        const blob = await item.getType(typ);
-        await ladeBild(blob, "Bild aus der Zwischenablage");
-        return;
-      }
-    }
-
-    setStatus("Kein Bild in der Zwischenablage gefunden.", "#b45309");
-  } catch {
+  if (freieBereiche.length) {
     setStatus(
-      "Zwischenablage nicht verfügbar. Bitte Strg + V verwenden.",
+      "Lösche zuerst die freien Bereiche, um die Schnittrichtung zu wechseln.",
       "#b45309"
     );
+    return;
   }
-});
 
-bildContainer.addEventListener("click", event => {
-  if (!bildIstGeladen()) return;
-  if (freiesAusschneidenAktiv) return;
-  if (event.target.classList.contains("schnittlinie")) return;
+  if (schnittRichtung === neueRichtung) {
+    return;
+  }
 
-  const rect = originalBild.getBoundingClientRect();
-  const y = (event.clientY - rect.top) / aktuelleSkalierung();
+  if (schnittPositionen.length > 0) {
+    const bestaetigt =
+      window.confirm(
+        "Beim Wechsel der Schnittrichtung werden " +
+        "die vorhandenen Schnittlinien gelöscht. " +
+        "Möchtest du fortfahren?"
+      );
 
-  fuegeSchnittlinieHinzu(y);
-});
+    if (!bestaetigt) {
+      return;
+    }
+  }
 
-schnittlinieButton.addEventListener("click", () => {
-  fuegeSchnittlinieHinzu();
-});
+  schnittRichtung =
+    neueRichtung;
 
-letzteLoeschenButton.addEventListener("click", () => {
-  schnittPositionen.pop();
-  zeichneSchnittlinien();
-  aktualisiereVorschau();
-});
-
-alleSchnittlinienLoeschenButton.addEventListener("click", () => {
   schnittPositionen = [];
+
   zeichneSchnittlinien();
   aktualisiereVorschau();
-});
-
-hintergrundButton.addEventListener("click", entferneHintergrund);
-
-freiesAusschneidenButton.addEventListener("click", () => {
-  freiesAusschneidenAktiv = !freiesAusschneidenAktiv;
-  freiesAusschneidenButton.classList.toggle(
-    "aktiv",
-    freiesAusschneidenAktiv
-  );
-
-  zeichnenCanvas.style.pointerEvents =
-    freiesAusschneidenAktiv ? "auto" : "none";
+  aktualisiereButtons();
 
   setStatus(
-    freiesAusschneidenAktiv
-      ? "Zeichne jetzt einen freien Bereich mit Maus oder Finger."
-      : "Freies Ausschneiden beendet.",
+    schnittRichtung === "horizontal"
+      ? "Modus aktiviert: Aufteilung von oben nach unten."
+      : "Modus aktiviert: Aufteilung von links nach rechts.",
     "#2563eb"
   );
-});
+}
 
-freieBereicheLoeschenButton.addEventListener("click", () => {
-  freieBereiche = [];
-  zeichnenContext.clearRect(0, 0, originalBreite, originalHoehe);
-  aktualisiereVorschau();
-  aktualisiereButtons();
 
-  setStatus("Alle freien Bereiche wurden gelöscht.", "#16a34a");
-});
+/* =========================================================
+   EREIGNISSE
+   ========================================================= */
 
-zipButton.addEventListener("click", async () => {
-  zipButton.disabled = true;
+dateiInput.addEventListener(
+  "change",
+  event => {
+    const datei =
+      event.target.files[0];
 
-  try {
-    await exportiereZIP();
-  } catch (fehler) {
-    console.error(fehler);
-    setStatus("Fehler beim ZIP-Export.", "#dc2626");
+    if (!datei) {
+      return;
+    }
+
+    ladeBild(datei).catch(fehler => {
+      console.error(fehler);
+
+      setStatus(
+        "Das Bild konnte nicht geladen werden.",
+        "#dc2626"
+      );
+    });
   }
+);
 
-  aktualisiereButtons();
-});
+document.addEventListener(
+  "paste",
+  ladeBildAusZwischenablage
+);
 
-pptxButton.addEventListener("click", async () => {
-  pptxButton.disabled = true;
+zwischenablageButton.addEventListener(
+  "click",
+  async () => {
+    try {
+      const items =
+        await navigator.clipboard.read();
 
-  try {
-    await exportierePowerPoint();
-  } catch (fehler) {
-    console.error(fehler);
-    setStatus(
-      "PowerPoint-Export fehlgeschlagen: " + fehler.message,
-      "#dc2626"
+      for (const item of items) {
+        const typ =
+          item.types.find(
+            t => t.startsWith("image/")
+          );
+
+        if (typ) {
+          const blob =
+            await item.getType(typ);
+
+          await ladeBild(
+            blob,
+            "Bild aus der Zwischenablage"
+          );
+
+          return;
+        }
+      }
+
+      setStatus(
+        "Kein Bild in der Zwischenablage gefunden.",
+        "#b45309"
+      );
+    } catch (fehler) {
+      console.error(fehler);
+
+      setStatus(
+        "Zwischenablage nicht verfügbar. Bitte Strg + V verwenden.",
+        "#b45309"
+      );
+    }
+  }
+);
+
+horizontalModusButton.addEventListener(
+  "click",
+  () => {
+    setzeSchnittRichtung(
+      "horizontal"
     );
   }
+);
 
-  aktualisiereButtons();
-});
-
-allesLoeschenButton.addEventListener("click", () => {
-  bildDataUrl = null;
-  originalBreite = 0;
-  originalHoehe = 0;
-  schnittPositionen = [];
-  freieBereiche = [];
-  hintergrundTransparent = false;
-  freiesAusschneidenAktiv = false;
-
-  originalBild.removeAttribute("src");
-  zeichnenContext.clearRect(
-    0,
-    0,
-    zeichnenCanvas.width,
-    zeichnenCanvas.height
-  );
-
-  document.querySelectorAll(".schnittlinie").forEach(e => e.remove());
-
-  vorschau.innerHTML =
-    `<div class="leertext">Hier erscheinen die Bildbereiche.</div>`;
-
-  schnittlinienInfo.textContent = "Noch kein Bild geladen.";
-  schritteInfo.textContent = "";
-  dateiInput.value = "";
-
-  freiesAusschneidenButton.classList.remove("aktiv");
-  zeichnenCanvas.style.pointerEvents = "none";
-  hintergrundButton.textContent = "Hintergrund entfernen";
-
-  setStatus("");
-  aktualisiereButtons();
-});
-
-window.addEventListener("resize", () => {
-  if (bildIstGeladen()) {
-    zeichneSchnittlinien();
+vertikalModusButton.addEventListener(
+  "click",
+  () => {
+    setzeSchnittRichtung(
+      "vertikal"
+    );
   }
-});
+);
 
-zeichnenCanvas.style.pointerEvents = "none";
+bildContainer.addEventListener(
+  "click",
+  event => {
+    if (!bildIstGeladen()) {
+      return;
+    }
+
+    if (freiesAusschneidenAktiv) {
+      return;
+    }
+
+    if (
+      event.target.classList.contains(
+        "schnittlinie"
+      )
+    ) {
+      return;
+    }
+
+    const rect =
+      originalBild.getBoundingClientRect();
+
+    /*
+      Es wird nur reagiert, wenn der Klick tatsächlich
+      innerhalb des sichtbaren Bildes liegt.
+    */
+    if (
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom
+    ) {
+      return;
+    }
+
+    const skalierung =
+      aktuelleSkalierung();
+
+    let position;
+
+    if (
+      schnittRichtung === "horizontal"
+    ) {
+      position =
+        (
+          event.clientY -
+          rect.top
+        ) / skalierung.y;
+    } else {
+      position =
+        (
+          event.clientX -
+          rect.left
+        ) / skalierung.x;
+    }
+
+    fuegeSchnittlinieHinzu(
+      position
+    );
+  }
+);
+
+schnittlinieButton.addEventListener(
+  "click",
+  () => {
+    fuegeSchnittlinieHinzu();
+  }
+);
+
+letzteLoeschenButton.addEventListener(
+  "click",
+  () => {
+    /*
+      Löscht die zuletzt in der räumlichen Reihenfolge
+      vorhandene Linie.
+    */
+    sortiereSchnittpositionen();
+    schnittPositionen.pop();
+
+    zeichneSchnittlinien();
+    aktualisiereVorschau();
+  }
+);
+
+alleSchnittlinienLoeschenButton.addEventListener(
+  "click",
+  () => {
+    schnittPositionen = [];
+
+    zeichneSchnittlinien();
+    aktualisiereVorschau();
+
+    setStatus(
+      "Alle Schnittlinien wurden gelöscht.",
+      "#16a34a"
+    );
+  }
+);
+
+hintergrundButton.addEventListener(
+  "click",
+  entferneHintergrund
+);
+
+freiesAusschneidenButton.addEventListener(
+  "click",
+  () => {
+    freiesAusschneidenAktiv =
+      !freiesAusschneidenAktiv;
+
+    freiesAusschneidenButton.classList.toggle(
+      "aktiv",
+      freiesAusschneidenAktiv
+    );
+
+    zeichnenCanvas.style.pointerEvents =
+      freiesAusschneidenAktiv
+        ? "auto"
+        : "none";
+
+    if (!freiesAusschneidenAktiv) {
+      zeichneGerade = false;
+      aktuellerPfad = [];
+
+      zeichnenContext.clearRect(
+        0,
+        0,
+        originalBreite,
+        originalHoehe
+      );
+    }
+
+    setStatus(
+      freiesAusschneidenAktiv
+        ? "Zeichne jetzt einen freien Bereich mit Maus oder Finger."
+        : "Freies Ausschneiden beendet.",
+      "#2563eb"
+    );
+  }
+);
+
+freieBereicheLoeschenButton.addEventListener(
+  "click",
+  () => {
+    freieBereiche = [];
+
+    zeichnenContext.clearRect(
+      0,
+      0,
+      originalBreite,
+      originalHoehe
+    );
+
+    aktualisiereVorschau();
+    aktualisiereButtons();
+    aktualisiereSchnittModusAnzeige();
+
+    setStatus(
+      "Alle freien Bereiche wurden gelöscht.",
+      "#16a34a"
+    );
+  }
+);
+
+zipButton.addEventListener(
+  "click",
+  async () => {
+    zipButton.disabled = true;
+
+    try {
+      await exportiereZIP();
+    } catch (fehler) {
+      console.error(fehler);
+
+      setStatus(
+        "ZIP-Export fehlgeschlagen: " +
+        fehler.message,
+        "#dc2626"
+      );
+    }
+
+    aktualisiereButtons();
+  }
+);
+
+pptxButton.addEventListener(
+  "click",
+  async () => {
+    pptxButton.disabled = true;
+
+    try {
+      await exportierePowerPoint();
+    } catch (fehler) {
+      console.error(fehler);
+
+      setStatus(
+        "PowerPoint-Export fehlgeschlagen: " +
+        fehler.message,
+        "#dc2626"
+      );
+    }
+
+    aktualisiereButtons();
+  }
+);
+
+allesLoeschenButton.addEventListener(
+  "click",
+  () => {
+    bildDataUrl = null;
+    originalBreite = 0;
+    originalHoehe = 0;
+
+    schnittRichtung =
+      "horizontal";
+
+    schnittPositionen = [];
+    freieBereiche = [];
+
+    hintergrundTransparent =
+      false;
+
+    freiesAusschneidenAktiv =
+      false;
+
+    zeichneGerade =
+      false;
+
+    aktuellerPfad = [];
+
+    originalBild.removeAttribute(
+      "src"
+    );
+
+    zeichnenContext.clearRect(
+      0,
+      0,
+      zeichnenCanvas.width,
+      zeichnenCanvas.height
+    );
+
+    zeichnenCanvas.width = 0;
+    zeichnenCanvas.height = 0;
+
+    document
+      .querySelectorAll(".schnittlinie")
+      .forEach(element => element.remove());
+
+    vorschau.classList.remove(
+      "links-nach-rechts"
+    );
+
+    vorschau.innerHTML =
+      `<div class="leertext">
+        Hier erscheinen die Bildbereiche.
+      </div>`;
+
+    schnittlinienInfo.textContent =
+      "Noch kein Bild geladen.";
+
+    schritteInfo.textContent = "";
+
+    dateiInput.value = "";
+
+    freiesAusschneidenButton.classList.remove(
+      "aktiv"
+    );
+
+    zeichnenCanvas.style.pointerEvents =
+      "none";
+
+    hintergrundButton.textContent =
+      "Hintergrund entfernen";
+
+    setStatus("");
+
+    aktualisiereSchnittModusAnzeige();
+    aktualisiereButtons();
+  }
+);
+
+window.addEventListener(
+  "resize",
+  () => {
+    if (bildIstGeladen()) {
+      zeichneSchnittlinien();
+    }
+  }
+);
+
+
+/* =========================================================
+   INITIALISIERUNG
+   ========================================================= */
+
+zeichnenCanvas.style.pointerEvents =
+  "none";
+
+aktualisiereSchnittModusAnzeige();
 aktualisiereButtons();
+
 </script>
 </body>
 </html>
