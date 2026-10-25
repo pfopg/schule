@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LGS-Lernatelier · Klasse 9</title>
+<style>
+:root{--ink:#172b40;--muted:#536579;--bg:#f1f5fa;--card:#fff;--line:#d7e1eb;--blue:#1456a0;--teal:#006e67;--gold:#fff3ce;--red:#a12c36;--radius:18px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #d78000;outline-offset:3px}
+button,.btn{border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);padding:11px 16px;min-height:46px}
+button:hover{border-color:var(--blue);background:#f0f6fd}
+.primary{background:var(--blue);color:white;border-color:var(--blue)}
+.primary:hover{background:#0c427e;color:white}
+header{background:#102e4e;color:white;padding:24px max(20px,calc((100vw - 1240px)/2))}
+header h1{font-size:clamp(1.65rem,4vw,2.5rem);line-height:1.2;margin:6px 0}
+header p{max-width:850px;color:#dbe7f5}
+.headerbuttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.headerbuttons button{font-size:.92rem}
+.shell{max-width:1280px;margin:auto;display:grid;grid-template-columns:255px minmax(0,1fr);gap:24px;padding:24px}
+aside{align-self:start;position:sticky;top:15px}
+nav{display:grid;gap:8px}
+nav button{text-align:left;font-size:.94rem;padding:12px}
+nav button.active{background:#dcecff;border:2px solid var(--blue);font-weight:750}
+nav small{display:block;color:var(--muted);font-size:.78rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:25px;margin-bottom:20px;box-shadow:0 3px 13px #19314905}
+h2{font-size:1.75rem;line-height:1.25;margin:0 0 14px}h3{font-size:1.27rem;margin:0 0 12px}h4{font-size:1.08rem;margin:15px 0 8px}
+p{margin:9px 0 15px}ul,ol{padding-left:24px}li{margin:7px 0}
+.tag{display:inline-block;padding:3px 10px;background:#e8f0fb;color:#234d7d;border-radius:30px;font-size:.8rem;margin:0 5px 8px 0}
+.problem{border-left:6px solid #df9400;background:#fffaf0}
+.notebook{position:relative;border:2px solid var(--teal);border-top:7px solid var(--teal);background:linear-gradient(180deg,#f1fbf9 0%,#f8fdfc 100%);padding-top:30px}
+.notebook::before{content:"TAFELBILD";display:block;margin:-19px 0 12px;color:#006e67;font-size:.72rem;letter-spacing:.12em;font-weight:850}
+.notebook h3{color:var(--teal);margin-top:0;margin-bottom:14px}
+.notebook .tb-section{margin-bottom:14px}
+.notebook .tb-section:last-child{margin-bottom:0}
+.notebook .tb-label{display:inline-block;font-size:.7rem;letter-spacing:.14em;font-weight:850;color:#005a55;background:#cdeee8;padding:3px 9px;border-radius:6px;margin-bottom:6px;text-transform:uppercase}
+.notebook .tb-content{font-size:1rem;line-height:1.55}
+.notebook .tb-content p{margin:4px 0}
+.notebook .tb-content .equation{background:#fff;border-left-color:var(--teal);box-shadow:0 1px 2px #1931490b;margin:8px 0}
+.equation{font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.18rem;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere;background:#f2f6fc;padding:13px 16px;border-left:4px solid #9cb7d5;border-radius:8px;margin:14px 0;font-variant-numeric:lining-nums}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.8em;line-height:1;margin:0 .08em;white-space:nowrap}
+.frac>span:first-child{padding:0 .16em .1em;border-bottom:1px solid currentColor}
+.frac>span:last-child{padding:.1em .16em 0}
+.visual-card{margin:18px 0 22px;background:#fff;border:1px solid #cad8e7;border-radius:15px;overflow:hidden;box-shadow:0 3px 12px #19314908}
+.visual-title{display:block;padding:13px 17px;background:#eaf2fb;border-bottom:1px solid #d6e2ef;color:#173e67;font-weight:800}
+.visual-svg{display:block;width:100%;height:auto;background:#fff}
+.visual-caption{margin:0;padding:11px 16px 14px;color:#42566b;font-size:.93rem;background:#fbfdff}
+.diagram-tick{font:12px "DejaVu Sans",Arial,sans-serif;fill:#617286}
+.diagram-axis{font:700 14px "DejaVu Sans",Arial,sans-serif;fill:#334b62}
+.diagram-line-label{font:700 14px "DejaVu Sans",Arial,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.diagram-point-label{font:700 13px "DejaVu Sans",Arial,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.diagram-measure{font:700 12px "DejaVu Sans",Arial,sans-serif;fill:#a34f00;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.case-label{font:700 12px "DejaVu Sans",Arial,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.case-axis{font:700 11px "DejaVu Sans",Arial,sans-serif;fill:#617286}
+.visual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:16px 0 22px}
+.case-card{min-width:0;background:#fff;border:1px solid #cad8e7;border-radius:13px;overflow:hidden}
+.case-card h4{margin:0;padding:12px 12px 2px;color:#173e67;font-size:1.02rem}
+.case-card p{font-size:.9rem;line-height:1.45;margin:0;padding:0 12px 13px;color:#42566b}
+.case-svg{display:block;width:100%;height:auto;background:#fff}
+input[type=text],input[type=number],select,textarea{border:1px solid #aebdce;border-radius:8px;padding:10px;color:var(--ink);background:white;max-width:100%;min-height:44px}
+input.answer{width:120px;max-width:100%;font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.05rem;text-align:center;font-variant-numeric:tabular-nums}
+.fields label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.choices input[type=radio]{accent-color:var(--blue);flex:0 0 auto}
+.checklist input{accent-color:var(--teal)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hintbox{background:#eff5fc;border-radius:10px;padding:14px;margin-top:12px}
+.success{background:#e4f6ed;color:#145638;border-radius:10px;padding:13px}
+.error{background:#fff0ef;color:#81212c;border-radius:10px;padding:13px}
+.neutral{background:#fff6d9;color:#604b0c;border-radius:10px;padding:13px}
+.small{font-size:.9rem;color:var(--muted)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+label{display:block;margin:8px 0}
+textarea{width:100%;min-height:110px}
+.fields{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:14px}
+.choices{display:grid;gap:9px;margin:14px 0}
+.choices label{margin:0;padding:12px;background:#f4f7fb;border:1px solid var(--line);border-radius:10px;display:flex;align-items:flex-start;gap:10px}
+.choices input{margin-top:7px;min-width:20px;min-height:20px}
+.task{scroll-margin-top:20px}
+.task.done{border-left:6px solid var(--teal)}
+.taskhead{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.taskhead h3{margin-bottom:6px}
+.status{font-size:.8rem;color:var(--teal);font-weight:700}
+details{margin:12px 0;border:1px solid var(--line);border-radius:10px;padding:12px 15px;background:white}
+summary{cursor:pointer;font-weight:650}
+.progressbar{height:9px;background:#dce4ee;border-radius:20px;overflow:hidden;margin:10px 0}
+.progressbar span{height:100%;display:block;background:var(--teal)}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#142c45;color:white;padding:12px 20px;border-radius:12px;z-index:100;max-width:90%;display:none}
+.graphwrap{max-width:650px;margin:14px auto}
+.graph{width:100%;height:auto;display:block;background:white;border:1px solid #cad5e0;border-radius:12px;touch-action:none;user-select:none}
+.graph .handle{cursor:grab;touch-action:none}
+.graphtext{font:13px system-ui;fill:#536579;pointer-events:none}
+.graphbuttons{display:flex;gap:10px;flex-wrap:wrap}
+.graphbuttons button{min-height:44px}
+.graph-eq{display:flex;flex-wrap:wrap;gap:8px 22px;margin:10px 2px 8px;padding:10px 14px;background:#f7fafd;border:1px solid #e0e9f2;border-radius:10px;font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.05rem;align-items:center}
+.graph-eq .lineI{color:#1456a0}
+.graph-eq .lineII{color:#9a4b00}
+.graph-eq .meta{font-family:system-ui;font-size:.78rem;color:var(--muted);margin-left:6px}
+.graph-eq .graph-status{font-family:system-ui;font-size:.8rem;color:var(--muted);font-weight:700;margin-left:auto;letter-spacing:.02em}
+.graph-eq .graph-status .ok{color:var(--teal)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button.active{background:#dcecff;border-color:var(--blue)}
+table{border-collapse:collapse;width:100%;font-size:.93rem;margin:15px 0}
+th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid var(--line)}
+th{background:#eef4fb}
+.tablewrap{overflow-x:auto}
+.footer{padding:20px;text-align:center;color:var(--muted);font-size:.85rem}
+.checklist label{display:flex;align-items:start;gap:10px}
+.checklist input{width:21px;height:21px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:900px){.shell{grid-template-columns:1fr;padding:14px;gap:14px}aside{position:static}nav{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.card{padding:19px}header{padding:22px}.sidebarinfo{display:none}.visual-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){body{font-size:16px}nav button{font-size:.83rem}.card{padding:16px}.equation{font-size:1.06rem;line-height:1.9;padding:11px 12px}.fields{gap:8px}h2{font-size:1.5rem}.visual-title{padding:11px 13px}.visual-caption{padding:10px 13px 12px}.visual-grid{grid-template-columns:1fr}.case-card{max-width:420px;width:100%;margin:0 auto}.fields label{width:100%}.fields input.answer{width:112px}}
+@media print{header,.headerbuttons,aside,.actions,.tabs,.graphbuttons,.footer,#toast,button{display:none!important}.shell{display:block;padding:0}.card{box-shadow:none;break-inside:avoid;border:1px solid #aaa}.task{break-inside:avoid}body{background:white;font-size:11pt}details{display:block}input{border:1px solid #999}}
+</style>
+</head>
+<body>
+<header>
+<span class="tag">Mathematik · Klasse 9 · Gymnasium</span>
+<h1>LGS-Lernatelier</h1>
+<p>Zwei Unbekannte, mehrere Aussagen – gibt es eine gemeinsame Lösung? Entdecke lineare Gleichungssysteme Schritt für Schritt. Dieses Lernbuch hilft dir dabei, Zusammenhänge auszuprobieren, zu verstehen und selbstständig zu üben.</p>
+<div class="headerbuttons">
+<button onclick="downloadHTML()">↓ HTML herunterladen</button>
+<button onclick="exportProgress()">Lernstand sichern</button>
+<button onclick="document.getElementById('importfile').click()">Lernstand laden</button>
+<button onclick="go('start')">Start & Arbeitsplan</button>
+<button onclick="go('reference')">Nachschlagen</button>
+<button onclick="go('coach')">Für die Lehrkraft</button>
+</div>
+<input id="importfile" type="file" accept=".json,application/json" hidden>
+</header>
+<div class="shell">
+<aside>
+<nav id="nav" aria-label="Lernkapitel"></nav>
+<div class="card sidebarinfo" style="margin-top:15px;padding:16px">
+<strong>Dein Lernfortschritt</strong>
+<div class="progressbar"><span id="overallbar"></span></div>
+<div id="overall" class="small"></div>
+<p class="small">Ohne Anmeldung. Speicherung nur in diesem Browser. Sichere deinen Lernstand vor einem Geräte- oder Browserwechsel.</p>
+</div>
+</aside>
+<main id="main" tabindex="-1"></main>
+</div>
+<footer class="footer">LGS-Lernatelier · Offline nutzbar · Kein Versand deiner Eingaben · Rechne im Heft, überprüfe deine Ergebnisse und erkläre deinen Lösungsweg bei Bedarf einer anderen Person.</footer>
+<div id="toast" role="status"></div>
+<script>
+"use strict";
+const KEY="lgs-lernatelier-v2";
+let storageOK=true;
+let state={page:"start",solved:{},hints:{},revealed:{},answers:{},notes:{},checks:{},graphs:{},fineGrid:{},filters:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.version===1&&s.data)state={...state,...s.data}}catch(e){storageOK=false}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({version:1,data:state}))}catch(e){storageOK=false}}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function toast(s){const el=document.getElementById("toast");el.textContent=s;el.style.display="block";clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.style.display="none",4200)}
+function gcd(a,b){a=Math.abs(Math.round(a));b=Math.abs(Math.round(b));while(b){[a,b]=[b,a%b]}return a||1}
+function fmt(n){if(Math.abs(n)<1e-10)return"0";if(Math.abs(n-Math.round(n))<1e-9)return String(Math.round(n));for(let d=2;d<=100;d++){if(Math.abs(n*d-Math.round(n*d))<1e-8)return (n<0?"−":"")+Math.abs(Math.round(n*d))+"/"+d}return String(Math.round(n*10000)/10000).replace(".",",")}
+function signed(n){return n<0?" − "+fmt(-n):" + "+fmt(n)}
+function lin(a,b,v="x"){let s=Math.abs(a)<1e-10?"":(a===1?"":a===-1?"−":fmt(a))+v;if(Math.abs(b)>1e-10)s+=(s?signed(b):fmt(b));return s||"0"}
+function expression(a,b,c){let s=lin(a,0);if(b)s+=(s?(b<0?" − ":" + "):(b<0?"−":""))+(Math.abs(b)===1?"":fmt(Math.abs(b)))+"y";return(s||"0")+" = "+fmt(c)}
+function eqBlock(eqs){return '<div class="equation">'+typesetFractions(eqs.map((r,i)=>(eqs.length>1?["I","II","III","IV"][i]+":   ":"")+expression(...r)).join("\n"))+'</div>'}
+function E(s){return '<div class="equation">'+typesetFractions(s)+'</div>'}
+function sys(id,title,rows,xy,opt={}){
+return{id,title,type:"system",eqs:rows.map(([a,b])=>[a,b,a*xy[0]+b*xy[1]]),answer:xy,level:1,...opt}
+}
+function graphTask(id,title,rows,xy,opt={}){return sys(id,title,rows,xy,{type:"graph",...opt})}
+function choice(id,title,prompt,options,correct,explain,opt={}){return{id,title,prompt,options,correct,explain,type:"choice",level:1,...opt}}
+function num(id,title,prompt,answer,opt={}){return{id,title,prompt,answer,type:"number",level:1,...opt}}
+function pair(id,title,prompt,a,b,c,opt={}){return{id,title,prompt,eqs:[[a,b,c]],type:"pair",level:1,...opt}}
+function typesetFractions(s){
+return String(s).replace(/([−-]?\d+)\s*\/\s*(\d+)/g,'<span class="frac" aria-label="$1 geteilt durch $2"><span>$1</span><span>$2</span></span>');
+}
+function fractionHTML(n,d){return '<span class="frac" aria-label="'+esc(n)+' geteilt durch '+esc(d)+'"><span>'+esc(n)+'</span><span>'+esc(d)+'</span></span>';}
+function visualFigure(title,svg,caption){
+return '<figure class="visual-card"><figcaption class="visual-title">'+title+'</figcaption>'+svg+'<p class="visual-caption">'+caption+'</p></figure>';
+}
+function graphVisualSVG(cfg){
+const W=660,H=310,L=54,R=28,T=24,B=36;
+const px=x=>L+(x-cfg.xMin)*(W-L-R)/(cfg.xMax-cfg.xMin);
+const py=y=>H-B-(y-cfg.yMin)*(H-T-B)/(cfg.yMax-cfg.yMin);
+let out='<svg class="visual-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+cfg.aria+'"><rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#ffffff"/>';
+for(let x=Math.ceil(cfg.xMin);x<=Math.floor(cfg.xMax);x++){
+const xx=px(x);out+='<line x1="'+xx+'" y1="'+T+'" x2="'+xx+'" y2="'+(H-B)+'" stroke="#e5edf5" stroke-width="1"/>';
+if(x!==0)out+='<text x="'+xx+'" y="'+(py(0)+17)+'" text-anchor="middle" class="diagram-tick">'+x+'</text>';
+}
+for(let y=Math.ceil(cfg.yMin);y<=Math.floor(cfg.yMax);y++){
+const yy=py(y);out+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#e5edf5" stroke-width="1"/>';
+if(y!==0)out+='<text x="'+(px(0)-9)+'" y="'+(yy+4)+'" text-anchor="end" class="diagram-tick">'+y+'</text>';
+}
+if(cfg.xMin<=0&&cfg.xMax>=0)out+='<line x1="'+px(0)+'" y1="'+T+'" x2="'+px(0)+'" y2="'+(H-B)+'" stroke="#61778d" stroke-width="2"/>';
+if(cfg.yMin<=0&&cfg.yMax>=0)out+='<line x1="'+L+'" y1="'+py(0)+'" x2="'+(W-R)+'" y2="'+py(0)+'" stroke="#61778d" stroke-width="2"/>';
+out+='<text x="'+(W-R-3)+'" y="'+(py(0)-8)+'" text-anchor="end" class="diagram-axis">x</text><text x="'+(px(0)+8)+'" y="'+(T+10)+'" class="diagram-axis">y</text>';
+for(const ln of (cfg.lines||[])){
+out+='<line x1="'+px(ln.x1)+'" y1="'+py(ln.y1)+'" x2="'+px(ln.x2)+'" y2="'+py(ln.y2)+'" stroke="'+ln.color+'" stroke-width="3.5" stroke-linecap="round"'+(ln.dash?' stroke-dasharray="'+ln.dash+'"':'')+'/>';
+if(ln.label){const at=ln.labelAt||[(ln.x1+ln.x2)/2,(ln.y1+ln.y2)/2];out+='<text x="'+(px(at[0])+(ln.labelDx||8))+'" y="'+(py(at[1])+(ln.labelDy||-9))+'" class="diagram-line-label" fill="'+ln.color+'">'+ln.label+'</text>';}
+}
+out+=(cfg.extras?cfg.extras(px,py):'');
+for(const p of (cfg.points||[])){
+out+='<circle cx="'+px(p.x)+'" cy="'+py(p.y)+'" r="6" fill="'+(p.color||'#1456a0')+'" stroke="#ffffff" stroke-width="2.2"/>';
+if(p.label)out+='<text x="'+(px(p.x)+(p.dx===undefined?10:p.dx))+'" y="'+(py(p.y)+(p.dy===undefined?-10:p.dy))+'" class="diagram-point-label" fill="'+(p.color||'#1456a0')+'">'+p.label+'</text>';
+}
+out+='</svg>';return out;
+}
+function diagramFunctionLine(){
+const svg=graphVisualSVG({xMin:-2,xMax:5,yMin:-1,yMax:7,aria:'Koordinatensystem mit der Geraden y gleich 2x plus 1, markierten Punkten und Steigungsdreieck',lines:[{x1:-1,y1:-1,x2:3,y2:7,color:'#1456a0',label:'y = 2x + 1',labelAt:[2.05,5.1],labelDx:7,labelDy:-9}],points:[{x:0,y:1,label:'(0 | 1)',dx:-48,dy:22},{x:1,y:3,label:'(1 | 3)',dx:10,dy:-10}],extras:(px,py)=>'<path d="M '+px(0)+' '+py(1)+' L '+px(1)+' '+py(1)+' L '+px(1)+' '+py(3)+'" fill="none" stroke="#bd6100" stroke-width="2.2" stroke-dasharray="6 4"/><text x="'+((px(0)+px(1))/2)+'" y="'+(py(1)+20)+'" text-anchor="middle" class="diagram-measure">Δx = 1</text><text x="'+(px(1)+12)+'" y="'+((py(1)+py(3))/2)+'" class="diagram-measure">Δy = 2</text>'});
+return visualFigure('Von der Funktionsgleichung zur Geraden',svg,'Jedes Wertepaar, das y = 2x + 1 erfüllt, entspricht einem Punkt auf der Geraden. Das Steigungsdreieck zeigt: Gehst du 1 nach rechts, geht es 2 nach oben.');
+}
+function diagramEquationLine(){
+const svg=graphVisualSVG({xMin:-1,xMax:5,yMin:-2,yMax:10,aria:'Die Lösungsmenge der Gleichung 2x plus y gleich 8 als Gerade mit mehreren markierten Lösungspaaren',lines:[{x1:-1,y1:10,x2:5,y2:-2,color:'#1456a0',label:'2x + y = 8',labelAt:[0.15,7.7],labelDx:10,labelDy:-9}],points:[{x:0,y:8},{x:1,y:6,label:'(1 | 6)',dx:9,dy:-8},{x:2,y:4,label:'(2 | 4)',dx:9,dy:-8},{x:3,y:2,label:'(3 | 2)',dx:9,dy:-8},{x:4,y:0,label:'(4 | 0)',dx:9,dy:-8}]});
+return visualFigure('Eine Gleichung mit zwei Variablen beschreibt eine Gerade',svg,'Alle markierten Punkte erfüllen 2x + y = 8 bzw. y = −2x + 8. Es gibt unendlich viele reelle Lösungspaare; in einer Einkaufssituation sind davon nur bestimmte ganzzahlige, nichtnegative Paare sinnvoll.');
+}
+function diagramSystemIntersection(){
+const svg=graphVisualSVG({xMin:-1,xMax:5,yMin:-2,yMax:10,aria:'Zwei Geraden y gleich minus 2x plus 8 und y gleich minus x plus 5 mit dem gemeinsamen Schnittpunkt S bei 3 und 2',lines:[{x1:-1,y1:10,x2:5,y2:-2,color:'#1456a0',label:'I:  y = -2x + 8',labelAt:[0.45,7.1],labelDx:7,labelDy:-10},{x1:-1,y1:6,x2:5,y2:0,color:'#bd6100',dash:'8 5',label:'II:  y = -x + 5',labelAt:[0.15,4.85],labelDx:8,labelDy:-10}],points:[{x:3,y:2,label:'S(3 | 2)',color:'#006e67',dx:11,dy:-12}]});
+return visualFigure('Zwei Gleichungen – ein gemeinsamer Punkt',svg,'Der Schnittpunkt S(3 | 2) liegt auf beiden Geraden. Deshalb erfüllt x = 3 und y = 2 beide Gleichungen gleichzeitig. Die gemeinsame Lösung ist L = {(3 | 2)}.');
+}
+function casePlotSVG(kind){
+const W=250,H=154,L=48,R=42,T=12,B=25, xmin=-3,xmax=3,ymin=-2,ymax=4;
+const px=x=>L+(x-xmin)*(W-L-R)/(xmax-xmin),py=y=>H-B-(y-ymin)*(H-T-B)/(ymax-ymin);
+let o='<svg class="case-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+({cross:'Zwei sich schneidende Geraden',parallel:'Zwei verschiedene parallele Geraden',same:'Zwei deckungsgleiche Geraden'}[kind])+'"><rect width="'+W+'" height="'+H+'" fill="#fff"/>';
+for(let x=xmin;x<=xmax;x++)o+='<line x1="'+px(x)+'" y1="'+T+'" x2="'+px(x)+'" y2="'+(H-B)+'" stroke="#e7eef5"/>';
+for(let y=ymin;y<=ymax;y++)o+='<line x1="'+L+'" y1="'+py(y)+'" x2="'+(W-R)+'" y2="'+py(y)+'" stroke="#e7eef5"/>';
+o+='<line x1="'+px(0)+'" y1="'+T+'" x2="'+px(0)+'" y2="'+(H-B)+'" stroke="#71869a" stroke-width="1.5"/><line x1="'+L+'" y1="'+py(0)+'" x2="'+(W-R)+'" y2="'+py(0)+'" stroke="#71869a" stroke-width="1.5"/>';
+if(kind==='cross'){
+o+='<line x1="'+px(-3)+'" y1="'+py(-.5)+'" x2="'+px(3)+'" y2="'+py(2.5)+'" stroke="#1456a0" stroke-width="3.2" stroke-linecap="round"/><line x1="'+px(-3)+'" y1="'+py(2.5)+'" x2="'+px(3)+'" y2="'+py(-.5)+'" stroke="#bd6100" stroke-width="3.2" stroke-dasharray="7 4" stroke-linecap="round"/><circle cx="'+px(0)+'" cy="'+py(1)+'" r="4.5" fill="#006e67" stroke="#fff" stroke-width="1.5"/><text x="'+(px(0)+7)+'" y="'+(py(1)-6)+'" class="case-label" fill="#006e67">S</text>';
+}else if(kind==='parallel'){
+o+='<line x1="'+px(-3)+'" y1="'+py(-1.3)+'" x2="'+px(3)+'" y2="'+py(1.7)+'" stroke="#1456a0" stroke-width="3.2" stroke-linecap="round"/><line x1="'+px(-3)+'" y1="'+py(.1)+'" x2="'+px(3)+'" y2="'+py(3.1)+'" stroke="#bd6100" stroke-width="3.2" stroke-dasharray="7 4" stroke-linecap="round"/>';
+}else{
+o+='<line x1="'+px(-3)+'" y1="'+py(-.5)+'" x2="'+px(3)+'" y2="'+py(2.5)+'" stroke="#1456a0" stroke-width="5" stroke-linecap="round"/><line x1="'+px(-3)+'" y1="'+py(-.5)+'" x2="'+px(3)+'" y2="'+py(2.5)+'" stroke="#bd6100" stroke-width="2.3" stroke-dasharray="7 4" stroke-linecap="round"/>';
+}
+o+='<text x="'+(W-R-2)+'" y="'+(py(0)-5)+'" text-anchor="end" class="case-axis">x</text><text x="'+(px(0)+5)+'" y="'+(T+8)+'" class="case-axis">y</text></svg>';return o;
+}
+function diagramSolutionCases(){
+return '<div class="visual-grid"><article class="case-card"><h4>Eine Lösung</h4>'+casePlotSVG('cross')+'<p>Die Geraden schneiden sich in genau einem Punkt. Dieses Wertepaar erfüllt beide Gleichungen.</p></article><article class="case-card"><h4>Keine Lösung</h4>'+casePlotSVG('parallel')+'<p>Die Geraden sind parallel und verschieden. Sie haben keinen gemeinsamen Punkt.</p></article><article class="case-card"><h4>Unendlich viele Lösungen</h4>'+casePlotSVG('same')+'<p>Die Geraden liegen genau aufeinander. Jeder Punkt auf dieser Geraden ist eine gemeinsame Lösung.</p></article></div>';
+}
+
+const modules=[
+{
+id:"m1",title:"1 · Das Vorwissen aktivieren",short:"Gleichungen & Geraden",time:"Doppelstunde 1",goal:"Ich löse lineare Gleichungen, zeichne Geraden und überprüfe Punkte.",
+intro:`<div class="card problem"><h3>Einstieg · Welcher Lieferdienst ist günstiger?</h3><p>Für eine Klassenaktion liefert Dienst A für 3 € Grundgebühr und 2 € je Kilometer. Dienst B verlangt 7 € Grundgebühr und 1 € je Kilometer.</p><p><strong>Probiere zuerst:</strong> Was kosten beide Dienste bei 0, 2, 4 und 6 km? Erstelle im Heft eine kleine Wertetabelle. Überlege: Wann kosten beide gleich viel?</p><details><summary>Selbstkontrolle des Einstiegs</summary><p>A: 3; 7; 11; 15 €. B: 7; 9; 11; 13 €. Bei 4 km sind beide gleich teuer: 11 €. Damit hast du bereits die Grundidee eines LGS entdeckt.</p></details></div>
+<div class="card"><h3>Wieder verstehen</h3><p>Eine <strong>Gleichung</strong> ist eine Aussage mit einem Gleichheitszeichen. Gesucht sind Zahlen, die sie wahr machen. Forme auf beiden Seiten gleich um: addiere, subtrahiere, multipliziere oder dividiere durch dieselbe Zahl – aber nie durch 0.</p><p>Bei einer <strong>linearen Funktion</strong> gehört zu jedem x genau ein y. In <strong>y = mx + b</strong> ist b der y-Achsenabschnitt. Die Steigung m beschreibt: Wie stark ändert sich y, wenn x um 1 steigt?</p><p>Zum Zeichnen genügen zwei verschiedene Punkte. Beginne bei (0 | b). Nutze dann ein Steigungsdreieck: Bei m = ${fractionHTML("3","2")} gehst du 2 nach rechts und 3 nach oben. Bei m = −2 gehst du 1 nach rechts und 2 nach unten.</p><p><strong>Konstante Funktion:</strong> Bei m = 0 bleibt y gleich. y = 3 ist eine waagerechte Gerade.</p></div>
+${diagramFunctionLine()}
+<section class="card">
+  <h3>GeoGebra Rechner</h3>
+  <p>Nutze für die folgenden Übungen bei Bedarf den Grafikrechner:</p>
+  <div style="width: 100%; height: 500px; border: 1px solid #cad5e0; border-radius: 12px; overflow: hidden;">
+    <iframe src="https://www.geogebra.org/graphing?embed" width="100%" height="100%" style="border: none;" allowfullscreen></iframe>
+  </div>
+</section>
+<div class="card notebook">
+<h3>Lineare Funktionen</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Lineare Funktion: <strong>y = mx + b</strong></p>
+<p>m = Steigung &nbsp;·&nbsp; b = y-Achsenabschnitt</p>
+<p>Alle Punkte (x | y), die die Gleichung erfüllen, liegen auf einer Geraden.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("y = 2x + 1\nPunktprobe für P(2 | 5):   5 = 2·2 + 1   ✓")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Bei der Punktprobe setzt du x und y ein. Nur wenn beide Seiten gleich sind, liegt der Punkt auf der Geraden.</p>
+</div></div>
+</div>`,
+tasks:[
+num("m1r1","Klammern und Variable auf beiden Seiten",`Löse die Gleichung <strong>4(2x − 3) − 5 = 3x + 8</strong>.`,5,{hints:["Multipliziere zuerst beide Terme in der Klammer mit 4.","Fasse links zusammen und bringe alle x-Terme auf eine Seite."],solution:"8x − 12 − 5 = 3x + 8 → 8x − 17 = 3x + 8 → 5x = 25 → x = 5. Probe: links 23, rechts 23."}),
+num("m1r2","Minus vor der Klammer",`Bestimme x: <strong>5 − 2(3 − x) = 3x − 4</strong>.`,3,{hints:["Achte darauf, dass beim Ausmultiplizieren −2 · (−x) = +2x gilt.","Nach dem Auflösen lautet die Gleichung 2x − 1 = 3x − 4."],solution:"5 − 6 + 2x = 3x − 4 → 2x − 1 = 3x − 4 → x = 3. Probe: links 5, rechts 5."}),
+num("m1r3","Mit einem Bruchkoeffizienten",`Löse <strong>(3/4)x − 2 = 7</strong>. Gib x als exakte Zahl an.`,12,{hints:["Addiere zunächst 2 auf beiden Seiten.","Multipliziere anschließend beide Seiten mit 4/3."],solution:"(3/4)x = 9 → x = 9 · 4/3 = 12."}),
+choice("m1r4","Fehler beim Ausmultiplizieren","Mara schreibt aus 2(3x − 4) = 5x + 7 die Zeile 6x − 4 = 5x + 7. Welche Diagnose ist richtig?",["Die Umformung ist korrekt.","Die 2 muss auch mit −4 multipliziert werden: 6x − 8 = 5x + 7.","Die 2 darf nicht mit x multipliziert werden."],1,"Ein Faktor vor einer Klammer multipliziert jeden Term in der Klammer."),
+choice("m1r5","Steigung aus zwei Punkten",`Eine Gerade geht durch A(−2 | 5) und B(2 | −3). Welche Steigung hat sie?`,["m = −2","m = 2","m = −1/2"],0,"Die x-Koordinate steigt um 4, die y-Koordinate sinkt um 8. Daher ist m = −8/4 = −2."),
+choice("m1r6","Steigung und Achsenabschnitt zusammen",`Für <strong>f(x) = −(3/2)x + 4</strong> trifft welche Aussage zu?`,["Der Graph schneidet die y-Achse bei −3/2 und steigt.","Bei x = 0 ist y = 4; bei 2 Schritten nach rechts sinkt y um 3.","Die Gerade ist waagerecht und liegt bei y = 4."],1,"In y = mx + b gilt m = −3/2 und b = 4. Zwei Einheiten nach rechts ändern y um −3."),
+num("m1r7","Eine Punktkoordinate berechnen",`Der Punkt P(x | −7) liegt auf der Geraden <strong>y = −2,5x + 3</strong>. Bestimme x.`,4,{hints:["Setze y = −7 in die Funktionsgleichung ein.","Es gilt −10 = −2,5x."],solution:"−7 = −2,5x + 3 → −10 = −2,5x → x = 4."}),
+choice("m1r8","Funktionsgleichung aus Eigenschaften","Eine Gerade schneidet die y-Achse bei −2. Wenn x um 2 zunimmt, steigt y um 3. Welche Funktionsgleichung passt?",["y = 1,5x − 2","y = 3x − 2","y = −1,5x + 2"],0,"Die Steigung ist 3/2 = 1,5, der y-Achsenabschnitt ist −2." ,{level:2}),
+num("m1r9","Zwei Klammern vergleichen",`Löse <strong>2(3x − 5) = 4(x + 1) + 6</strong>.`,10,{level:2,hints:["Löse beide Klammern auf.","Nach dem Zusammenfassen erhältst du 6x − 10 = 4x + 10."],solution:"6x − 10 = 4x + 10 → 2x = 20 → x = 10."}),
+choice("m1r10","Eine Umformung begründen","Aus 3(2x − 1) = 6x − 3 teilt jemand beide Seiten durch 3 und erhält 2x − 1 = 6x − 3. Warum ist das falsch?",["Weil man eine Gleichung niemals durch eine Zahl teilen darf.","Weil auch die rechte Seite vollständig durch 3 geteilt werden muss; es entsteht 2x − 1 = 2x − 1.","Weil beim Teilen das Minuszeichen verschwindet."],1,"Bei einer Äquivalenzumformung muss dieselbe Rechenoperation auf die gesamte linke und rechte Seite angewendet werden.",{level:3})
+],
+exit:[
+["Bei f(x) = −1,5x + 6 ist der y-Achsenabschnitt …",["−1,5","6","−6"],1,"Der y-Achsenabschnitt ist b, also 6."],
+["Welcher Punkt liegt auf y = 3x − 6?",["(2 | 0)","(0 | 3)","(−2 | 0)"],0,"Für x = 2 ergibt sich y = 6 − 6 = 0."],
+["Löse 5x − 7 = 2x + 8.",["x = 5","x = 3","x = −5"],0,"5x − 7 = 2x + 8 → 3x = 15 → x = 5."]
+],
+group:"Begründe schriftlich, warum zwei verschiedene Punkte zum Zeichnen einer Geraden genügen. Zeichne zusätzlich y = −2x + 1 und y = 2 in dein Heft. Vergleiche deine Zeichnung anschließend mit deiner Partnerin oder deinem Partner."
+},
+{
+id:"m2",title:"2 · Eine Gleichung – viele Paare",short:"Zwei Variablen verstehen",time:"Doppelstunde 2",goal:"Ich verstehe Wertepaare als Lösungen und den Zusammenhang zwischen Gleichung, Gerade und Funktionsgleichung.",
+intro:`<div class="card problem"><h3>Einstieg · Getränkeverkauf</h3><p>Ein Saft kostet 2 €, ein Wasser 1 €. Eine Gruppe bezahlt insgesamt 8 €. <strong>Wie viele Säfte und wie viele Wasser könnten es sein?</strong></p><p>Lege eine Tabelle an: x = Anzahl Säfte, y = Anzahl Wasser. Finde mindestens vier Möglichkeiten. Achte darauf: Stückzahlen sind hier ganze, nichtnegative Zahlen.</p><details><summary>Ideen und Kontrolle</summary>${E("2x + y = 8\n(x | y): (0 | 8), (1 | 6), (2 | 4), (3 | 2), (4 | 0)")}<p>Ein Wertepaar bedeutet zum Beispiel: 2 Säfte und 4 Wasser kosten zusammen 8 €.</p></details></div>
+<div class="card"><h3>Warum plötzlich so viele Lösungen?</h3><p>In <strong>2x + y = 8</strong> stecken zwei unbekannte Zahlen. Wählst du x, kannst du y passend berechnen. Ein Lösungspaar muss die Gleichung wahr machen. Die Reihenfolge ist fest: <strong>(x | y)</strong>.</p>${E("Die Gleichung <strong>2x + y = 8</strong> ist äquivalent zur Gleichung <strong>y = −2x + 8</strong>")}<p>Beide Schreibweisen meinen dieselbe Beziehung. Ohne die Einschränkung auf Stückzahlen dürfen x und y beliebige reelle Zahlen sein: Auch (1,5 | 5), (−1 | 10) und unendlich viele weitere Paare lösen die Gleichung.</p><p><strong>Zusammenhang:</strong> Bei einer Gleichung mit zwei Variablen hängen zwei Größen zusammen: Wählst du eine der beiden Zahlen, ist die andere festgelegt. Jedes passende Wertepaar ist ein Punkt im Koordinatensystem, und bei einer linearen Gleichung liegen alle diese Punkte auf einer Geraden. Die Funktionsgleichung y = mx + b ist einfach die nach y umgeformte Darstellung derselben Aussage – sie macht das Zeichnen besonders leicht, weil du den y-Achsenabschnitt direkt ablesen und die Steigung als Auf und Ab nutzen kannst.</p></div>
+${diagramEquationLine()}
+<div class="card"><h3>Wenn eine zweite Gleichung dazukommt</h3><p>Eine einzelne Gleichung mit zwei Variablen hat – wie im vorherigen Beispiel – unendlich viele Lösungspaare, und alle liegen auf einer Geraden. Für eine <strong>eindeutige Lösung</strong> brauchst du deshalb eine zweite Information: eine zweite Gleichung über dieselben Variablen x und y. Beide Gleichungen zusammen bilden ein <strong>lineares Gleichungssystem</strong> (LGS). Gesucht ist das Wertepaar, das beide Bedingungen gleichzeitig erfüllt. Anschaulich heißt das: Du hast zwei Geraden im Koordinatensystem – jede Gleichung beschreibt eine davon. Der einzige Punkt, der auf beiden Geraden liegt, ist ihr <strong>Schnittpunkt</strong>. Dieses Wertepaar (x | y) ist die gemeinsame Lösung des LGS.</p></div>
+<div class="card problem"><h3>Nun kommt eine zweite Aussage dazu</h3><p>Die Gruppe hat <strong>insgesamt 5 Getränke</strong> gekauft. Damit gilt zusätzlich die Gleichung x + y = 5. Welche deiner vorherigen Lösungsmöglichkeiten passt jetzt noch?</p><p>Gehe systematisch vor: Beginne mit x = 0 und erhöhe x jeweils um 1. Nutze immer die Kostenbedingung, um y zu bestimmen. Prüfe anschließend die Getränkeanzahl.</p><details><summary>Vergleichstabelle und inhaltlicher Lösungsweg</summary><div class="tablewrap"><table><tr><th>x</th><th>y aus 2x + y = 8</th><th>x + y</th></tr><tr><td>0</td><td>8</td><td>8</td></tr><tr><td>1</td><td>6</td><td>7</td></tr><tr><td>2</td><td>4</td><td>6</td></tr><tr><td>3</td><td>2</td><td>5 ✓</td></tr><tr><td>4</td><td>0</td><td>4</td></tr></table></div><p><strong>Inhaltlich:</strong> Wenn alle 5 Getränke Wasser wären, kosteten sie 5 €. Tatsächlich sind es 3 € mehr. Jeder Saft statt Wasser erhöht den Preis um 1 €. Also gibt es 3 Säfte und 2 Wasser.</p></details></div>
+<div class="card"><h3>Ein lineares Gleichungssystem entsteht</h3><p>Zwei Aussagen über <strong>dieselben</strong> Größen bilden zusammen ein lineares Gleichungssystem. Gesucht ist das Paar, das beide Aussagen gleichzeitig wahr macht – also der Punkt, der auf beiden Geraden liegt.</p><p>Jede Gleichung für sich hat viele Lösungen. Nur das Paar (3 | 2) erfüllt beide Bedingungen des Beispiels. Ob ein LGS immer genau eine Lösung hat, wirst du später genauer untersuchen – du wirst sehen, es kann auch keine oder unendlich viele Lösungen geben.</p></div>
+${diagramSystemIntersection()}
+<div class="card notebook">
+<h3>Lineares Gleichungssystem (LGS)</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Ein LGS besteht aus mehreren Gleichungen mit denselben Variablen. Alle müssen gleichzeitig gelten.</p>
+<p>Lösung eines LGS: das Paar (x | y), das alle Gleichungen erfüllt.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("I:   2x + y = 8\nII:  x + y = 5\nL = {(3 | 2)}\nProbe I:   2·3 + 2 = 8   ✓\nProbe II:  3 + 2 = 5     ✓")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Reihenfolge beachten: <strong>(x | y)</strong> – erst x, dann y. Ein Paar ist nur Lösung, wenn <strong>beide</strong> Proben stimmen.</p>
+</div></div>
+</div>`,
+tasks:[
+pair("m2r1","Ein Lösungspaar selbst finden",`Gib ein beliebiges reelles Lösungspaar für <strong>4x − 3y = 11</strong> an. Trage x und y getrennt ein.`,4,-3,11,{hints:["Wähle einen einfachen x-Wert und setze ihn ein.","Bei x = 2 muss 8 − 3y = 11 gelten."],solution:"Ein mögliches Paar ist (2 | −1), denn 4·2 − 3·(−1) = 11. Weitere Paare sind ebenfalls richtig, wenn sie die Gleichung erfüllen."}),
+pair("m2r2","Lösung im Stückzahlkontext",`Ein Modell wird durch <strong>5x + 2y = 29</strong> beschrieben. x und y sind ganze, nichtnegative Stückzahlen. Nenne ein passendes Paar.`,5,2,29,{whole:true,hints:["Probiere einen x-Wert, für den 29 − 5x gerade ist.","Bei x = 3 bleiben 14 Einheiten für 2y."],solution:"Zum Beispiel (3 | 7): 5·3 + 2·7 = 15 + 14 = 29. Das Paar muss außerdem aus ganzen, nichtnegativen Zahlen bestehen."}),
+choice("m2r3","Die Reihenfolge macht einen Unterschied","Es gilt x = Zeit in Minuten und y = Temperatur in Grad. Was bedeutet das Wertepaar (−2 | 4,5)?",["Die Zeit beträgt 4,5 Minuten und die Temperatur −2 Grad.","Die Zeit beträgt −2 Minuten und die Temperatur 4,5 Grad.","Die Zeit und die Temperatur sind beide −2."],1,"Die erste Koordinate gehört zu x, die zweite zu y. Der Sachkontext kann manche mathematischen Paare zusätzlich ausschließen."),
+choice("m2r4","Eine Gleichung nach y umstellen","Welche Gleichung ist gleichbedeutend mit <strong>4x − 2y = 10</strong>?",["y = 2x − 5","y = −2x + 5","y = 5 − 2x"],0,"4x − 2y = 10 → −2y = 10 − 4x → y = 2x − 5."),
+choice("m2r5","Eine Situation als LGS beschreiben","Erwachsenenkarten kosten 9 €, Jugendkarten 6 €. Insgesamt werden 12 Karten verkauft und 90 € eingenommen. x zählt Erwachsenenkarten, y Jugendkarten. Welches LGS passt?",["x + y = 90 und 9x + 6y = 12","x + y = 12 und 9x + 6y = 90","9x + y = 12 und x + 6y = 90"],1,"Die Gesamtzahl ergibt x + y = 12, die Einnahmen ergeben 9x + 6y = 90."),
+sys("m2r6","Zwei Einkaufslisten vergleichen",[[2,3],[4,1]],[5,2],{prompt:"Für zwei Einkaufslisten gelten die beiden angezeigten Gleichungen. x ist der Preis eines Notizbuchs, y der Preis eines Stifts. Bestimme beide Preise und kontrolliere sie in beiden Listen.",method:"trial",hints:["Vergleiche die Koeffizienten oder probiere zunächst kleine ganzzahlige Preise.","Das Paar muss beide Gleichungen gleichzeitig erfüllen."],customSolution:"Die Gleichungen lauten 2x + 3y = 16 und 4x + y = 22. Das Paar (5 | 2) passt: 10 + 6 = 16 und 20 + 2 = 22. Ein Notizbuch kostet 5 €, ein Stift 2 €."}),
+choice("m2r7","Ein Paar überprüfen","Welches Wertepaar erfüllt <strong>3x + 2y = 7</strong>?",["(1 | 2)","(2 | 1)","(0 | 4)"],0,"3·1 + 2·2 = 3 + 4 = 7. Bei den anderen Paaren ergibt sich 8."),
+sys("m2r8","Systematisch probieren",[[1,1],[2,5]],[3,5],{prompt:"Bei einer Veranstaltung werden x Erwachsenen- und y Jugendpakete ausgegeben. Insgesamt gibt es 8 Pakete; jedes Erwachsenenpaket enthält 2 Marken, jedes Jugendpaket 5 Marken. Insgesamt sind es 31 Marken. Bestimme x und y.",method:"trial",hints:["Aus der ersten Bedingung folgt y = 8 − x.","Setze mögliche ganzzahlige Werte in die Markenbedingung ein."],customSolution:"Die Bedingungen sind x + y = 8 und 2x + 5y = 31. Mit y = 8 − x folgt 2x + 5(8 − x) = 31 → −3x = −9 → x = 3 und y = 5. Probe: 3 + 5 = 8 und 2·3 + 5·5 = 31."}),
+choice("m2r9","Mathematische Lösung oder sinnvolle Lösung?","Das Paar (−1 | 5) erfüllt 3x + 4y = 17. x und y sollen aber Anzahlen von Gegenständen darstellen. Welche Aussage stimmt?",["Das Paar ist im Kontext gültig, weil die Gleichung stimmt.","Es ist eine mathematische Lösung der Gleichung, aber keine sinnvolle Stückzahllösung.","Negative Zahlen können niemals Gleichungen lösen."],1,"3·(−1) + 4·5 = −3 + 20 = 17. Die zusätzliche Kontextbedingung verlangt aber nichtnegative ganze Zahlen.",{level:2}),
+choice("m2r10","Achsenabschnitte ablesen","Die Gerade <strong>4x + 2y = 12</strong> schneidet die Achsen in P auf der x-Achse und Q auf der y-Achse. Welche Koordinaten sind richtig?",["P(3 | 0) und Q(0 | 6)","P(0 | 3) und Q(6 | 0)","P(12 | 0) und Q(0 | 12)"],0,"Für P setzt man y = 0, also x = 3. Für Q setzt man x = 0, also y = 6.",{level:3})
+],
+exit:[
+["Welches Paar löst 5x − 2y = 4?",["(2 | 3)","(1 | 2)","(0 | 2)"],0,"5·2 − 2·3 = 10 − 6 = 4."],
+["4x + 2y = 12 ist nach y aufgelöst …",["y = 6 − 2x","y = 12 − 4x","y = 2x − 6"],0,"2y = 12 − 4x, also y = 6 − 2x."],
+["Welche Aussage über Lösungspaare ist richtig?",["Jedes Paar auf einer Geraden erfüllt automatisch jede zweite Gleichung.","Ein Paar löst ein LGS nur, wenn es alle Gleichungen erfüllt.","Die Reihenfolge von x und y ist beliebig."],1,"Eine gemeinsame Lösung muss jede Bedingung gleichzeitig erfüllen."]
+],
+group:"Formuliere eine neue zweite Aussage zum Getränkeverkauf und bestimme die gemeinsame Lösung. Vergleiche deine Überlegungen anschließend mit deiner Partnerin oder deinem Partner."
+},
+{
+id:"m3",title:"3 · Die Lösung ist ein Schnittpunkt",short:"Grafisch lösen",time:"Doppelstunde 3",goal:"Ich stelle Gleichungen als Geraden dar und bestimme gemeinsame Lösungen grafisch.",
+intro:`<div class="card problem"><h3>Einstieg · Das Treffen im Park</h3><p>Auf einer geraden Strecke befindet sich Lea anfangs bei Kilometer 1. Sie bewegt sich pro Minute einen Kilometer weiter: y = x + 1. Eine Markierung bleibt bei Kilometer 3: y = 3. x ist die Zeit in Minuten, y die Position.</p><p><strong>Überlege:</strong> Wann erreicht Lea die Markierung? Zeichne beide Beziehungen in dasselbe Koordinatensystem. Was bedeutet der Schnittpunkt?</p><details><summary>Auflösung</summary><p>Bei x = 2 ist Lea bei y = 3. Der gemeinsame Punkt ist S(2 | 3). Er liegt auf beiden Geraden und erfüllt beide Aussagen.</p></details></div>
+<div class="card"><h3>So löst du grafisch</h3><ol><li>Stelle, wenn möglich, beide Gleichungen nach y um.</li><li>Bestimme für jede Gerade zwei verschiedene Punkte.</li><li>Zeichne beide Geraden in <strong>dasselbe</strong> Koordinatensystem.</li><li>Lies den Schnittpunkt ab: zuerst x, dann y.</li><li>Prüfe das Paar in <strong>beiden Originalgleichungen</strong> und deute es im Sachkontext.</li></ol><p><strong>Zeichnungen liefern oft Näherungen.</strong> Ein dick gezeichneter Strich zeigt nicht immer den exakten Bruchwert. Mit einer Probe erkennst du, ob dein abgelesenes Paar wirklich beide Gleichungen erfüllt.</p><p><strong>Umformen:</strong> Aus 2x + y = 5 wird y = −2x + 5. Aus 2y = x + 4 wird y = 0,5x + 2. Bei x = 3 zeichnest du direkt eine senkrechte Gerade.</p></div>
+${diagramSystemIntersection()}
+<div class="card notebook">
+<h3>Grafisch lösen</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>1. Beide Geraden zeichnen.</p>
+<p>2. Schnittpunkt ablesen.</p>
+<p>3. Probe in beiden Gleichungen.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("I:    y = x + 1\nII:   y = −x + 5\nS(2 | 3)   →   L = {(2 | 3)}")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Abgelesene Werte sind oft ungenau. Erst die Probe in beiden Gleichungen zeigt, ob das Paar wirklich passt.</p>
+</div></div>
+</div>
+<div class="card"><h3>So bedienst du das Geraden-Applet</h3><p>Jede Gerade lässt sich auf zwei Weisen bewegen:</p><ul><li><strong>Ganze Gerade verschieben:</strong> irgendwo auf die Gerade tippen und ziehen. Die Steigung bleibt dabei erhalten.</li><li><strong>Steigung ändern:</strong> an einem der beiden Endpunkte ziehen – die Gerade dreht sich um den anderen Endpunkt.</li></ul><p>Die Punkte der Geraden I sind blau, die der Geraden II orange. Unter dem Bild siehst du laufend die aktuellen Gleichungen mit m und b. Ein Schalter wechselt zwischen ganzzahligem Raster (Standard) und feinem 0,5-Raster. Wenn du einen Punkt exakt treffen willst, kannst du seine Koordinaten auch im Detailbereich „Punkt genau setzen“ eingeben.</p><p><strong>Dann:</strong> Schnittpunkt ablesen und x und y eintragen. „Prüfen“ kontrolliert zuerst die Geraden, dann dein Lösungspaar – die Zeichnung allein reicht also nicht.</p></div>`,
+tasks:[
+graphTask("g1","Der erste Schnittpunkt",[[-1,1],[1,1]],[2,3],{prompt:"Stelle beide Geraden ein. Nutze zuerst die y-Achsenabschnitte.",hints:["I lautet y = x + 1. Nutze (0 | 1) und (1 | 2).","II lautet y = −x + 5. Nutze (0 | 5) und (1 | 4)."]}),
+graphTask("g2","Noch einmal zwei Geraden",[[-2,1],[1,1]],[1,3],{prompt:"Zeichne beide Geraden. Bestimme danach den gemeinsamen Punkt.",hints:["I: y = 2x + 1. II: y = −x + 4.","Für I passen (0 | 1), (1 | 3). Für II passen (0 | 4), (2 | 2)."]}),
+graphTask("g3","Eine konstante Funktion",[[-1,1],[0,1]],[2,3],{prompt:"Lea erreicht die Markierung: I beschreibt ihre Position, II die unveränderte Markierung. x ist die Zeit in Minuten, y die Position in Kilometern.",hints:["II ist waagerecht: y = 3.","Bei I gilt y = x + 1."]}),
+choice("g4","Vom Text zu den Gleichungen","Tarif A: 2 € Startgebühr und 1 € pro Stunde. Tarif B: 6 € Startgebühr, keine weiteren Kosten. x = Stunden, y = Kosten in €. Welche Gleichungen passen?",["y = 2x + 1 und y = 6x","y = x + 2 und y = 6","x + y = 2 und y = x + 6"],1,"Der variable Anteil steht bei x. Ein fester Preis ist eine konstante Funktion."),
+graphTask("g5","Tarife vergleichen",[[-1,1],[0,1]],[4,6],{prompt:"Tarif A kostet y = x + 2, Tarif B immer y = 6. Zeichne. Ab welcher Nutzungsdauer ist A teurer als B? Besprich die Zusatzfrage nach dem Prüfen mit deiner Partnerin oder deinem Partner.",hints:["A: (0 | 2) und (2 | 4). B: zwei Punkte mit y = 6.","Lies den Treffpunkt ab. Rechts davon liegt A oberhalb von B."],after:"Deutung: Nach 4 Stunden kosten beide 6 €. Für mehr als 4 Stunden ist Tarif A teurer; davor ist A günstiger."}),
+graphTask("g6","Erst umstellen",[[2,1],[-1,1]],[1,3],{prompt:"Forme beide Gleichungen zuerst im Heft in die Form y = mx + b um. Zeichne erst danach.",hints:["I: y = −2x + 5.","II: y = x + 2."],level:2}),
+graphTask("g7","Noch eine Umformung",[[-1,2],[1,1]],[2,3],{prompt:"Achte darauf: Bei I musst du nach dem Umstellen noch durch 2 teilen.",hints:["I: −x + 2y = 4 → 2y = x + 4.","I: y = 0,5x + 2. II: y = −x + 5."],level:2}),
+choice("g8","Sachkontext beachten","Im Getränkeverkauf gilt 2x + y = 8 und x + y = 5. Was bedeutet der Schnittpunkt (3 | 2)?",["3 € für 2 Getränke.","3 Säfte und 2 Wasser.","3 Wasser und 2 Säfte."],1,"x zählt Säfte, y Wasser. Beide Bedingungen sind erfüllt."),
+graphTask("g9","Bonus · Eine senkrechte Gerade",[[1,0],[-1,1]],[3,4],{prompt:"I lässt sich nicht als y = mx + b schreiben. Zeichne sie direkt.",level:3,hints:["I lautet x = 3. Beide Punkte der Geraden I brauchen x = 3.","II lautet y = x + 1."]})
+],
+exit:[
+["Wofür steht der Schnittpunkt?",["Für eine Lösung nur der ersten Gleichung.","Für ein Wertepaar, das beide Gleichungen erfüllt.","Für den y-Achsenabschnitt jeder Geraden."],1,"Ein gemeinsamer Punkt liegt auf beiden Geraden."],
+["2x + y = 7 wird zu …",["y = −2x + 7","y = 2x + 7","y = 7x − 2"],0,"Subtrahiere 2x."],
+["Ein abgelesener Punkt besteht die Probe nicht. Was nun?",["Trotzdem als exakte Lösung verwenden.","Genauer zeichnen oder rechnerisch bestimmen.","Die Probe nur in einer Gleichung wiederholen."],1,"Grafisches Ablesen kann ungenau sein."]
+],
+group:"Stelle eine Gerade ein und erkläre, welche zwei Punkte du dafür verwendet hast. Bitte deine Partnerin oder deinen Partner, den Lösungsweg ebenfalls zu erklären. Wechsle danach die Rollen. Zeichne mindestens eine der Applet-Aufgaben zusätzlich sauber ins Heft."
+},
+{
+id:"m4",title:"4 · Eine, keine oder unendlich viele?",short:"Lösbarkeit untersuchen",time:"Doppelstunde 4",goal:"Ich erkenne die Lösungsanzahl an Geraden, an m und b und an Widersprüchen.",
+intro:`<div class="card problem"><h3>Einstieg · Drei mögliche Tarifvergleiche</h3><p>Zwei Tarife müssen nicht irgendwann gleich teuer sein. Untersuche im Experimentierfeld:</p><ol><li>y = x + 1 und y = −x + 5</li><li>y = x + 1 und y = x + 3</li><li>y = x + 1 und y = x + 1</li></ol><p>Was ist verschieden? Was bleibt gleich? Verwende die drei Voreinstellungen unter dem Experimentierfeld.</p></div>
+<div class="card"><h3>Die drei Fälle</h3><div class="tablewrap"><table><tr><th>Bei zwei Geraden in Funktionsform</th><th>Bild</th><th>Lösungen</th></tr><tr><td>m₁ ≠ m₂</td><td>Sie schneiden sich.</td><td>Genau ein Paar.</td></tr><tr><td>m₁ = m₂, b₁ ≠ b₂</td><td>Sie sind verschieden und parallel.</td><td>Keine Lösung.</td></tr><tr><td>m₁ = m₂, b₁ = b₂</td><td>Sie liegen aufeinander.</td><td>Unendlich viele Paare auf dieser Geraden.</td></tr></table></div><p>Bei deckungsgleichen Geraden ist <strong>nicht jedes beliebige Paar</strong> eine Lösung. Nur die Paare auf der gemeinsamen Geraden passen.</p><p><strong>Vorsicht beim Vergleichen:</strong> Erst in dieselbe Form bringen. x + y = 4 und 2x + 2y = 8 sehen verschieden aus, beschreiben aber dieselbe Gerade.</p><p>Die m-b-Regel gilt für Geraden, die sich als y = mx + b schreiben lassen. Bei senkrechten Geraden ist direktes Überlegen besser: x = 2 und x = 5 sind parallel; x = 2 und y = 5 schneiden sich bei (2 | 5).</p></div>
+${diagramSolutionCases()}
+<div class="card notebook">
+<h3>Lösbarkeit</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Für zwei Geraden in der Form y = mx + b:</p>
+${E("m₁ ≠ m₂              →  genau eine Lösung\nm₁ = m₂, b₁ ≠ b₂     →  keine Lösung\nm₁ = m₂, b₁ = b₂     →  unendlich viele")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+<p>y = x + 1 und y = x + 3: gleiche Steigung, verschiedene Abschnitte → keine Lösung.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Erst in dieselbe Form bringen. Widerspruch wie 0 = 2 → keine Lösung. Wahre Aussage wie 0 = 0 → keine neue Information.</p>
+</div></div>
+</div>`,
+tasks:[
+choice("l1","Verschiedene Steigungen","Wie viele Lösungen hat y = 2x + 1 zusammen mit y = −x + 4?",["Keine.","Genau eine.","Unendlich viele."],1,"Die Steigungen 2 und −1 sind verschieden."),
+choice("l2","Gleiche Steigung","Wie viele Lösungen hat y = 2x + 1 zusammen mit y = 2x + 4?",["Keine.","Genau eine.","Unendlich viele."],0,"Gleiche Steigung, verschiedene y-Achsenabschnitte: verschiedene parallele Geraden."),
+choice("l3","Dasselbe Angebot","Tarif A und Tarif B kosten beide y = 3x + 2. Für welche Nutzungsdauern sind sie gleich teuer?",["Nie.","Nur bei x = 0.","Für alle im Kontext erlaubten Nutzungsdauern."],2,"Die beiden Kostenfunktionen sind identisch."),
+choice("l4","Nur anders aufgeschrieben","Wie viele Lösungen besitzt x + y = 4 zusammen mit 2x + 2y = 8?",["Keine.","Genau eine.","Unendlich viele."],2,"Die zweite Gleichung ist das Doppelte der ersten. Beide beschreiben y = −x + 4."),
+choice("l5","Widersprüchliche Angaben","Eine Gruppe soll zugleich x + y = 8 und x + y = 10 erfüllen. Was folgt?",["Ein bestimmtes Paar ist richtig.","Keine Lösung.","Unendlich viele Lösungen."],1,"Dieselbe Summe kann nicht zugleich 8 und 10 sein."),
+choice("l6","Nicht jedes Paar passt","Welche Paare lösen beide Gleichungen y = x + 1 und 2y = 2x + 2?",["Alle Paare der Ebene.","Genau alle Paare auf y = x + 1.","Nur (0 | 1)."],1,"Beide Gleichungen beschreiben dieselbe Gerade, nicht die gesamte Ebene."),
+choice("l7","Anspruchsvoller · Erst umformen","Wie viele Lösungen hat 2x + 2y = 6 zusammen mit y = −x + 4?",["Keine.","Genau eine.","Unendlich viele."],0,"Die erste Gleichung ergibt y = −x + 3. Gleiche Steigung −1, verschiedene Abschnitte 3 und 4.",{level:2}),
+choice("l8","Anspruchsvoller · Mit senkrechten Geraden","Was gilt für x = 2 und y = 5?",["Keine Lösung, weil die Steigungen gleich sind.","Genau eine Lösung: (2 | 5).","Unendlich viele Lösungen."],1,"Eine senkrechte und eine waagerechte Gerade schneiden sich.",{level:2}),
+choice("l9","Bonus · Was bedeutet 0 = 0?","Nach einer Umformung wird Gleichung II zu 0 = 0. Gleichung I lautet noch x + y = 4. Was bleibt?",["Alle Paare der Ebene sind erlaubt.","Keine Lösung.","Alle Paare auf x + y = 4."],2,"0 = 0 liefert keine zusätzliche Einschränkung. Die erste Gleichung gilt weiterhin.",{level:3})
+],
+exit:[
+["m₁ = m₂ und b₁ ≠ b₂ bedeutet …",["eine Lösung.","keine Lösung.","unendlich viele Lösungen."],1,"Verschiedene parallele Geraden."],
+["Welche Gleichung ist ein Widerspruch?",["0 = 0","0 = 3","x = 3"],1,"0 ist nicht 3."],
+["Zwei identische Geraden haben …",["genau einen gemeinsamen Punkt.","keinen gemeinsamen Punkt.","unendlich viele gemeinsame Punkte."],2,"Jeder Punkt der gemeinsamen Geraden passt."]
+],
+group:"Erfinde zu jedem der drei Fälle ein eigenes LGS. Bitte deine Partnerin oder deinen Partner, die Lösungsanzahl zu erklären, ohne einen Schnittpunkt auszurechnen. Besprich anschließend die unterschiedlichen Begründungen mit deiner Partnerin oder deinem Partner."
+},
+{
+id:"m5",title:"5 · Gleichsetzen statt Ablesen",short:"Gleichsetzungsverfahren",time:"Doppelstunde 5",goal:"Ich setze zwei Ausdrücke für dieselbe Variable gleich und prüfe mein Ergebnis.",
+intro:`<div class="card problem"><h3>Einstieg · Zwei Wege zur selben Höhe</h3><p>Zwei Modellfahrzeuge bewegen sich auf Strecken mit den Höhen y = x + 1 und y = −x + 5. Den Schnittpunkt kannst du zeichnen. Aber wie findest du ihn <strong>exakt ohne Zeichnung</strong>?</p><p>Am Treffpunkt ist die Höhe y gleich. Also müssen auch die beiden Ausdrücke x + 1 und −x + 5 denselben Wert haben. Daraus wird eine Gleichung mit nur noch einer Unbekannten.</p></div>
+<div class="card"><h3>Das Gleichsetzungsverfahren</h3><ol><li>Beide Gleichungen nach <strong>derselben Variablen</strong> auflösen.</li><li>Die beiden Ausdrücke gleichsetzen.</li><li>Die entstandene Gleichung lösen.</li><li>Den gefundenen Wert einsetzen und die zweite Variable berechnen.</li><li>Probe in beiden ursprünglichen Gleichungen; Ergebnis deuten.</li></ol><p><strong>Besonders günstig:</strong> Beide Gleichungen sind schon nach y oder beide nach x aufgelöst. Das Gleichsetzen funktioniert nicht nur mit y!</p><p>Wenn erst aufwendig umgestellt werden muss, ist oft Einsetzen oder Addieren günstiger. Die Basisaufgaben hier sind deshalb bereits passend vorbereitet.</p><p><strong>Typischer Fehler:</strong> Nach dem Berechnen von x ist die Aufgabe noch nicht fertig. Eine LGS-Lösung ist ein Paar. Und: Nur Ausdrücke für <em>dieselbe</em> Variable dürfen direkt gleichgesetzt werden.</p></div>
+<div class="card notebook">
+<h3>Gleichsetzen</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Beide Gleichungen nach <strong>derselben Variablen</strong> auflösen. Dann die beiden Ausdrücke gleichsetzen.</p>
+<p>Es entsteht eine Gleichung mit nur noch einer Variablen.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("I:   y = x + 1\nII:  y = −x + 5\nx + 1 = −x + 5   →   2x = 4   →   x = 2\ny = 2 + 1 = 3    →   L = {(2 | 3)}")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Nach x noch y berechnen – eine Lösung ist immer ein Paar. Erst die Probe in beiden Originalgleichungen bestätigt das Ergebnis.</p>
+</div></div>
+</div>`,
+tasks:[
+sys("q1","Zwei Höhen",[[-1,1],[1,1]],[2,3],{method:"equal",displayY:true}),
+sys("q2","Noch einmal direkt gleichsetzen",[[-2,1],[1,1]],[1,3],{method:"equal",displayY:true}),
+sys("q3","Zwei Wasserstände",[[-1,1],[1,1]],[3,4],{method:"equal",displayY:true,prompt:"Zwei Wasserstände werden durch diese Funktionen beschrieben. x ist die Zeit in Minuten, y die Höhe in cm. Wann sind die Höhen gleich, und wie hoch ist das Wasser dann?"}),
+sys("q4","Geraden ohne Zeichnung",[[-2,1],[-1,1]],[3,7],{method:"equal",displayY:true}),
+choice("q5","Modelle auswählen","Leihroller A: 2 € Startgebühr und 3 € je Stunde. B: 8 € Startgebühr und 1 € je Stunde. x = Stunden, y = Kosten. Welches LGS passt?",["y = 3x + 2 und y = x + 8","y = 2x + 3 und y = 8x + 1","x + y = 3 und x + y = 8"],0,"Die Stundenpreise sind die Steigungen, die Startgebühren die y-Achsenabschnitte."),
+sys("q6","Leihroller vergleichen",[[-3,1],[-1,1]],[3,11],{method:"equal",displayY:true,prompt:"A kostet 3x + 2 Euro, B kostet x + 8 Euro. Bestimme Nutzungsdauer und gemeinsamen Preis.",after:"Beide kosten bei 3 Stunden 11 €. Vorher ist A günstiger, danach B."}),
+sys("q7","Auch negative Werte sind erlaubt",[[-1,1],[1,1]],[-1,2],{method:"equal",displayY:true,prompt:"Bestimme den Schnittpunkt der beiden Geraden. Hier geht es um reelle Zahlen ohne Sachbeschränkung."}),
+sys("q8","Anspruchsvoller · Erst umstellen",[[2,2],[-1,1]],[2,4],{method:"equal",level:2,prompt:"Forme beide Gleichungen zuerst nach y um. Entscheide anschließend, ob Gleichsetzen hier bequem ist."}),
+choice("q9","Anspruchsvoller · Keine Lösung","Nach dem Gleichsetzen von y = 2x + 1 und y = 2x + 4 erhältst du 1 = 4. Was bedeutet das?",["x = 0.","Keine Lösung.","Unendlich viele Lösungen."],1,"Eine falsche Aussage entsteht: Die Geraden sind verschieden und parallel.",{level:2}),
+sys("q10","Bonus · Nach x aufgelöst",[[1,-2],[1,1]],[5,2],{method:"equalX",displayX:true,level:3,prompt:"Beide Gleichungen sind nach x aufgelöst. Setze jetzt die Ausdrücke für x gleich."})
+],
+exit:[
+["Wann ist Gleichsetzen besonders günstig?",["Wenn beide Gleichungen nach derselben Variablen aufgelöst sind.","Nur wenn alle Zahlen positiv sind.","Immer nur bei y = x."],0,"Dann können die Ausdrücke direkt gleichgesetzt werden."],
+["y = 2x + 1 und y = x + 4 führen zu …",["2x + 1 = x + 4","2x + 1 = y + x + 4","2x = x"],0,"Beide Ausdrücke sind am gemeinsamen Punkt gleich y."],
+["Nach x = 3 bist du fertig?",["Ja, immer.","Nein, y berechnen und das Paar prüfen."],1,"Eine Lösung umfasst beide Koordinaten."]
+],
+group:"Erkläre den Schritt „Gleichsetzen“ zunächst ohne Formel. Bitte deine Partnerin oder deinen Partner danach zu erklären, warum nur noch eine Variable vorkommt. Bearbeite anschließend eine Aufgabe abwechselnd und begründe jede Zeile."
+},
+{
+id:"m6",title:"6 · Ein Ausdruck ersetzt eine Variable",short:"Einsetzungsverfahren",time:"Doppelstunde 6",goal:"Ich ersetze eine Variable durch einen gleichwertigen Ausdruck und beachte Klammern.",
+intro:`<div class="card problem"><h3>Einstieg · Fünf Euro mehr</h3><p>Ein Kinoticket kostet 5 € mehr als ein Snack. Zwei Tickets und drei Snacks kosten zusammen 25 €. x = Ticketpreis, y = Snackpreis.</p>${E("I:   x = y + 5\nII:  2x + 3y = 25")}<p>In der zweiten Aussage kannst du jedes x durch y + 5 ersetzen. Wie muss die neue Gleichung dann aussehen?</p><details><summary>Erster Schritt</summary>${E("2(y + 5) + 3y = 25")}<p>Die Klammer ist nötig: Der ganze Ticketpreis wird verdoppelt.</p></details></div>
+<div class="card"><h3>Das Einsetzungsverfahren</h3><ol><li>Eine Gleichung nach einer Variablen auflösen.</li><li>Diesen Ausdruck in die <strong>andere</strong> Gleichung einsetzen.</li><li>Die Gleichung mit nur einer Variablen lösen.</li><li>Zurück einsetzen und die zweite Variable bestimmen.</li><li>Beide Originalgleichungen prüfen.</li></ol><p><strong>Besonders günstig:</strong> Eine Variable steht bereits allein oder hat den Koeffizienten 1 oder −1 und lässt sich leicht freistellen.</p><p><strong>Typische Fehler:</strong> Wer den zweiten Wert aus derselben Gleichung berechnen will, aus der er gerade eingesetzt hat, bekommt keine neue Information – nutze die andere Gleichung. Und: Wenn du x durch y + 5 ersetzt, wird aus 2x der Ausdruck <strong>2(y + 5)</strong>, nicht 2y + 5. Die Klammer gehört dazu.</p></div>
+<div class="card notebook">
+<h3>Einsetzen</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Eine Variable wird durch einen gleichwertigen Ausdruck ersetzt.</p>
+<p>Der Ausdruck wird in die <strong>andere</strong> Gleichung eingesetzt.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("I:   x = y + 5\nII:  2x + 3y = 25\n2(y + 5) + 3y = 25   →   y = 3\nx = 3 + 5 = 8         →   L = {(8 | 3)}")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Beim Einsetzen Klammern setzen: 2(y + 5), nicht 2y + 5. Danach zurück einsetzen und den zweiten Wert berechnen.</p>
+</div></div>
+</div>`,
+tasks:[
+sys("e1","Der Kinokauf",[[1,-1],[2,3]],[8,3],{method:"sub",isolate:true,prompt:"Ticketpreis x, Snackpreis y. Löse den Einstieg durch Einsetzen."}),
+sys("e2","Leicht einsetzbar",[[1,-1],[1,1]],[5,3],{method:"sub",isolate:true}),
+sys("e3","Noch eine direkte Einsetzung",[[1,-2],[1,1]],[7,3],{method:"sub",isolate:true}),
+sys("e4","Mit y allein",[[-2,1],[1,1]],[2,5],{method:"sub",isolate:true}),
+choice("e5","Text in ein LGS übersetzen","Ein Heft kostet 2 € mehr als ein Stift. Drei Hefte und zwei Stifte kosten 16 €. x = Heftpreis, y = Stiftpreis. Was passt?",["x = y + 2 und 3x + 2y = 16","y = x + 2 und 3x + 2y = 16","x = y + 2 und 2x + 3y = 16"],0,"Die erste Aussage vergleicht die Preise, die zweite beschreibt den Einkauf."),
+sys("e6","Heft und Stift",[[1,-1],[3,2]],[4,2],{method:"sub",isolate:true,prompt:"Berechne den Heftpreis x und den Stiftpreis y für den beschriebenen Einkauf."}),
+sys("e7","Zwei Zahlen mit Unterschied",[[1,-1],[2,1]],[6,2],{method:"sub",isolate:true,prompt:"Eine Zahl x ist um 4 größer als y. Das Doppelte von x plus y ist 14. Bestimme beide Zahlen."}),
+sys("e8","Anspruchsvoller · Erst freistellen",[[1,2],[3,1]],[4,2],{method:"sub",level:2,prompt:"Stelle die erste Gleichung nach x um und setze dann ein."}),
+choice("e9","Anspruchsvoller · Klammer prüfen","x = y − 3 wird in 2x + y = 6 eingesetzt. Welche Gleichung ist richtig?",["2y − 3 + y = 6","2(y − 3) + y = 6","2(y + 3) + y = 6"],1,"Der gesamte Ausdruck y − 3 ersetzt x. Beim Auflösen der Klammer wird daraus 2y − 6 + y.",{level:2}),
+sys("e10","Bonus · Bruch als Ergebnis",[[1,-1],[1,1]],[3.5,1.5],{method:"sub",isolate:true,level:3,prompt:"Die Lösungen müssen keine ganzen Zahlen sein. Dezimalzahlen oder Brüche sind erlaubt."})
+],
+exit:[
+["Was wird bei x = 2y + 1 in 3x eingesetzt?",["6y + 1","3(2y + 1)","3y + 1"],1,"Der Faktor 3 wirkt auf den ganzen Ausdruck."],
+["In welche Gleichung setzt du ein, um die andere Variable zu bestimmen?",["In die andere Gleichung.","Nur wieder in dieselbe Ausgangsgleichung."],0,"Eine neue Beziehung entsteht durch die andere Gleichung."],
+["Wann bietet sich Einsetzen an?",["Wenn eine Variable schon allein steht.","Nur bei zwei y-Gleichungen.","Nur wenn x = y ist."],0,"Ein Koeffizient 1 oder −1 hilft ebenfalls."]
+],
+group:"Sammle zwei mögliche Klammerfehler und erkläre, warum sie falsch sind. Erfinde eine kurze Einkaufsgeschichte, in der eine Größe um 2 größer als eine andere ist. Bitte deine Partnerin oder deinen Partner, die Geschichte in ein LGS zu übersetzen."
+},
+{
+id:"m7",title:"7 · Eine Variable verschwindet",short:"Additionsverfahren",time:"Doppelstunde 7",goal:"Ich addiere geeignete Gleichungen und wähle ein günstiges Lösungsverfahren.",
+intro:`<div class="card problem"><h3>Einstieg · Zwei Pakete</h3><p>Ein Paket aus 2 Notizbüchern und einem Stift kostet 11 €. Zwei Notizbücher ohne den Stift hätten einen Preis, der 5 € beträgt, wenn man den Stiftpreis abzieht. x = Notizbuchpreis, y = Stiftpreis.</p>${E("I:   2x + y = 11\nII:  2x − y = 5")}<p>Was passiert, wenn du die linken Seiten addierst und ebenso die rechten? Warum kann der Stiftpreis dabei verschwinden?</p><details><summary>Entdeckung</summary>${E("4x + 0y = 16 → x = 4\nIn I: 8 + y = 11 → y = 3")}<p>+y und −y heben sich auf. Ein Notizbuch kostet 4 €, ein Stift 3 €.</p></details></div>
+<div class="card"><h3>Das Additionsverfahren</h3><ol><li>Gleichungen in eine übersichtliche Form bringen: ax + by = c.</li><li>Eine Variable wählen, deren Koeffizienten Gegenzahlen sind.</li><li>Falls nötig, eine oder beide <strong>ganzen Gleichungen</strong> mit einer Zahl ungleich 0 multiplizieren.</li><li>Gleichungen seitenweise addieren. Eine Variable fällt weg.</li><li>Verbleibende Variable bestimmen; zurück einsetzen; Probe.</li></ol><p><strong>Günstig:</strong> +y und −y stehen schon da, oder kleine Faktoren machen die Koeffizienten zu Gegenzahlen. Bei gleichen Koeffizienten kannst du auch eine Gleichung von der anderen subtrahieren: Das ist Addition der mit −1 multiplizierten Gleichung.</p><p><strong>Beispiel zum Vorbereiten:</strong> Bei 2x + y = 9 und x − 2y = −3 multiplizierst du die erste Gleichung mit 2. Dann stehen +2y und −2y da.</p><p><strong>Wichtig:</strong> Aus 2x + y = 9 wird bei ·2 die Gleichung <strong>4x + 2y = 18</strong>. Jedes Glied und die rechte Seite werden mitmultipliziert.</p></div>
+<div class="card notebook">
+<h3>Addieren</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Gleichungen seitenweise addieren.</p>
+<p>Eine Variable fällt weg, wenn ihre Koeffizienten Gegenzahlen sind (+y und −y).</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("I:   2x + y = 9       | ·2\nII:  x − 2y = −3\nI′:  4x + 2y = 18\nI′ + II:   5x = 15   →   x = 3\ny = 3                →   L = {(3 | 3)}")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Beim Multiplizieren werden <strong>alle</strong> Glieder und die rechte Seite mitmultipliziert. Aus 2x + y = 9 wird bei ·2 zum Beispiel 4x + 2y = 18.</p>
+</div></div>
+</div>
+<div class="card"><h3>Welches Verfahren passt?</h3><p><strong>Beide nach derselben Variablen aufgelöst?</strong> Gleichsetzen.<br><strong>Eine Variable schon allein?</strong> Einsetzen.<br><strong>Gegenzahlen oder kleine passende Faktoren?</strong> Addieren.</p><p>Es gibt oft mehrere gute Wege. Begründe deine Wahl, statt eine einzige „richtige“ Methode zu suchen.</p></div>`,
+tasks:[
+sys("a1","Gegenzahlen direkt",[[1,1],[1,-1]],[5,3],{method:"add"}),
+sys("a2","Die beiden Pakete",[[2,1],[2,-1]],[4,3],{method:"add",prompt:"x ist der Notizbuchpreis, y der Stiftpreis. Addiere direkt."}),
+sys("a3","Noch einmal ohne Vorarbeit",[[1,2],[1,-2]],[6,2],{method:"add"}),
+sys("a4","Gleiche Koeffizienten",[[3,1],[1,1]],[2,4],{method:"add",prompt:"Hier sind die y-Koeffizienten gleich. Multipliziere eine Gleichung mit −1 oder subtrahiere die Gleichungen."}),
+sys("a5","Mit einem kleinen Faktor",[[2,1],[1,-2]],[3,3],{method:"add",hints:["Multipliziere I mit 2.","Dann stehen +2y und −2y untereinander. Addiere beide Gleichungen."]}),
+choice("a6","Einkauf modellieren","Zwei Säfte und ein Sandwich kosten 9 €. Ein Saft und zwei Sandwiches kosten 12 €. x = Saftpreis, y = Sandwichpreis. Welches LGS passt?",["2x + y = 9 und x + 2y = 12","x + 2y = 9 und 2x + y = 12","2x + 2y = 9 und x + y = 12"],0,"Multipliziere die Anzahl jedes Produkts mit seinem Preis."),
+sys("a7","Saft und Sandwich",[[2,1],[1,2]],[2,5],{method:"add",prompt:"Löse die beiden Einkäufe. Ein Saft kostet x €, ein Sandwich y €."}),
+sys("a8","Anspruchsvoller · Zwei Faktoren",[[2,3],[3,-2]],[3,2],{method:"add",level:2,prompt:"Bereite beide Gleichungen so vor, dass die y-Terme wegfallen.",hints:["Multipliziere I mit 2 und II mit 3.","Dann gilt: 4x + 6y = 24 und 9x − 6y = 21."]}),
+choice("a9","Verfahrenswahl begründen","I: y = 3x + 2, II: y = −x + 10. Welche Wahl ist hier besonders bequem?",["Gleichsetzen, weil beide Gleichungen nach y aufgelöst sind.","Addieren, weil y und y Gegenzahlen sind.","Einsetzen geht grundsätzlich nie."],0,"Alle Verfahren können funktionieren. Hier ist Gleichsetzen direkt möglich.",{level:2}),
+choice("a10","Bonus · Ein Widerspruch entsteht","I: 2x + y = 5; II: 4x + 2y = 12. Nach II − 2·I folgt 0 = 2. Was gilt?",["Keine Lösung.","Unendlich viele Lösungen.","x = 0, y = 2."],0,"Die linken Seiten sind Vielfache, die rechten nicht. Verschiedene parallele Geraden.",{level:3})
+],
+exit:[
+["Wann fällt y beim Addieren weg?",["Bei +3y und −3y.","Bei +3y und +3y.","Bei +3y und −2y."],0,"Die Summe der Koeffizienten muss 0 sein."],
+["3x + y = 8 wird mit 2 multipliziert. Richtig ist …",["6x + y = 16","6x + 2y = 16","6x + 2y = 8"],1,"Die ganze Gleichung wird multipliziert."],
+["Nach dem Addieren erhältst du x = 4. Was fehlt?",["Nichts.","Die zweite Variable und die Probe."],1,"Erst das vollständige Paar ist die LGS-Lösung."]
+],
+group:"Löse dieselbe Aufgabe mit zwei verschiedenen Verfahren. Vergleiche nicht nur die Ergebnisse, sondern auch den Rechenaufwand und mögliche Fehlerquellen mit deiner Partnerin oder deinem Partner."
+},
+{
+id:"m8",title:"8 · Drei Unbekannte und ein Rückblick",short:"Größere Systeme & Transfer",time:"Doppelstunde 8",goal:"Ich löse ein einfaches 3×3-System durch Eliminieren und untersuche auch größere Systeme auf Lösbarkeit.",
+intro:`<div class="card problem"><h3>Einstieg · Drei Produkte im Schulkiosk</h3><p>Gesucht sind die Preise von Saft x, Wasser y und Brezel z. Drei Käufe liefern diese Informationen:</p>${E("I:   x + y + z = 6\nII:  2x + y + z = 8\nIII: x + 2y + z = 7")}<p>Vergleiche II mit I: Was wurde zusätzlich gekauft, und wie viel mehr kostet es? Vergleiche dann III mit I. Kannst du alle Preise <strong>inhaltlich</strong> finden?</p><details><summary>Inhaltlicher Weg</summary><p>II enthält einen Saft mehr als I und kostet 2 € mehr: x = 2. III enthält ein Wasser mehr als I und kostet 1 € mehr: y = 1. Aus I folgt z = 3. Ein Saft kostet 2 €, ein Wasser 1 €, eine Brezel 3 €.</p></details></div>
+<div class="card"><h3>Systematisch mit drei Variablen</h3><p>Bei drei Unbekannten ist die Lösung ein <strong>Zahlentripel (x | y | z)</strong>. Die Grundidee bleibt: Alle Aussagen müssen zugleich stimmen.</p><ol><li>Eliminiere dieselbe Variable aus zwei verschiedenen Gleichungspaaren. Zum Beispiel: II − I und III − I eliminieren z.</li><li>Löse das entstehende System mit zwei Variablen.</li><li>Berechne die dritte Variable mit einer ursprünglichen Gleichung.</li><li>Prüfe das Tripel in <strong>allen drei</strong> ursprünglichen Gleichungen.</li></ol><p>Das wird nicht immer sofort zu x = … und y = … führen. Manchmal entsteht erst wieder ein gewöhnliches 2×2-System.</p></div>
+<div class="card notebook">
+<h3>Drei Variablen</h3>
+<div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content">
+<p>Drei Unbekannte → drei Gleichungen.</p>
+<p>Ziel: schrittweise eine Variable nach der anderen entfernen.</p>
+<p>3 Variablen → 2 Variablen → 1 Variable → zurück einsetzen.</p>
+</div></div>
+<div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
+${E("I:   x + y + z = 6\nII:  2x + y + z = 8     II − I:   x = 2\nIII: x + 2y + z = 7     III − I:  y = 1\nI: 2 + 1 + z = 6   →   z = 3\nL = {(2 | 1 | 3)}")}
+</div></div>
+<div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
+<p>Probe in <strong>allen drei</strong> Originalgleichungen. Mehr Gleichungen bedeuten nicht automatisch mehr Information – sie können sich wiederholen oder widersprechen.</p>
+</div></div>
+</div>
+<div class="card"><h3>Mehr Gleichungen bedeutet nicht automatisch mehr Wissen</h3><p>Eine zusätzliche Gleichung kann …</p><ul><li><strong>neue Information</strong> liefern und die Auswahl einschränken,</li><li><strong>bereits bekannte Information</strong> wiederholen,</li><li>den anderen Angaben <strong>widersprechen</strong> und damit alle Lösungen ausschließen.</li></ul><p>Darum garantieren drei Gleichungen mit drei Variablen <strong>keine</strong> eindeutige Lösung.</p>${E("x + y + z = 6\n2x + 2y + 2z = 12\n3x + 3y + 3z = 18")}<p>Hier gibt es nur eine unabhängige Bedingung: unendlich viele Tripel. Ändert sich die letzte rechte Seite auf 19, entsteht ein Widerspruch: keine Lösung.</p><p><strong>Auch bei drei Gleichungen und zwei Variablen:</strong> Ein Schnittpunkt der ersten beiden Geraden muss zusätzlich auf der dritten liegen. Erfüllt er die dritte nicht, hat das gesamte System keine Lösung.</p><p><strong>Zu wenige unabhängige Bedingungen:</strong> Zwei Gleichungen mit drei reellen Unbekannten haben, sofern sie vereinbar sind, nicht nur eine einzige Lösung. Meist bleibt eine Größe frei. Ein Widerspruch kann aber auch hier zu keiner Lösung führen.</p></div>`,
+tasks:[
+{id:"t1",title:"Kioskpreise",type:"triple",level:1,rows:[[1,1,1,6],[2,1,1,8],[1,2,1,7]],answer:[2,1,3],prompt:"Löse zuerst inhaltlich durch Vergleichen der Käufe und schreibe danach II − I und III − I ins Heft.",hints:["II − I liefert x = 2.","III − I liefert y = 1. Nutze danach I."],solution:"II − I: x = 2. III − I: y = 1. I: 2 + 1 + z = 6 → z = 3. Probe: 6 = 6; 8 = 8; 7 = 7."},
+{id:"t2",title:"Noch ein leichter Vergleich",type:"triple",level:1,rows:[[1,1,1,9],[2,1,1,13],[1,2,1,11]],answer:[4,2,3],hints:["Subtrahiere I von II.","Subtrahiere I von III."],solution:"II − I: x = 4. III − I: y = 2. I liefert z = 3. Probe: 4+2+3=9; 8+2+3=13; 4+4+3=11."},
+{id:"t3",title:"Eine andere Variable doppelt",type:"triple",level:1,rows:[[1,1,1,8],[1,2,1,11],[1,1,2,10]],answer:[3,3,2],hints:["II − I ergibt y.","III − I ergibt z. Berechne dann x."],solution:"II − I: y = 3. III − I: z = 2. I: x + 3 + 2 = 8 → x = 3. Probe: 8; 11; 10."},
+choice("t4","Dritte Aussage prüfen","I: x + y = 5 und II: x − y = 1 ergeben (3 | 2). Nun kommt III: 2x + y = 8 hinzu. Was gilt?",["Das gesamte System hat weiterhin genau die Lösung (3 | 2).","Es hat keine Lösung.","Es hat unendlich viele Lösungen."],0,"2·3 + 2 = 8. Die zusätzliche Gleichung passt."),
+choice("t5","Eine widersprechende dritte Aussage","I: x + y = 5 und II: x − y = 1 ergeben (3 | 2). Nun gilt zusätzlich III: 2x + y = 9. Was gilt?",["(3 | 2) bleibt eine Lösung.","Keine Lösung.","Eine andere Lösung erfüllt die ersten beiden."],1,"Die ersten beiden erzwingen (3 | 2), aber dieses Paar erfüllt III nicht."),
+choice("t6","Dreimal dieselbe Information","Wie viele Lösungen hat x + y + z = 6; 2x + 2y + 2z = 12; 3x + 3y + 3z = 18?",["Keine.","Genau eine.","Unendlich viele."],2,"Die zweite und dritte Gleichung sind nur Vielfache der ersten."),
+{id:"t7",title:"Anspruchsvoller · Ein echtes Zwischensystem",type:"triple",level:2,rows:[[1,1,1,6],[2,3,1,14],[3,2,1,13]],answer:[2,3,1],prompt:"Eliminiere z mit II − I und III − I. Es entsteht ein 2×2-System. Löse es mit einem passenden Verfahren.",hints:["II − I: x + 2y = 8. III − I: 2x + y = 7.","2·(x + 2y = 8) minus (2x + y = 7) ergibt 3y = 9."],solution:"II − I: x + 2y = 8 (A). III − I: 2x + y = 7 (B). 2A − B: 3y = 9 → y = 3. A: x + 6 = 8 → x = 2. I: 2 + 3 + z = 6 → z = 1. Probe: 2+3+1=6; 4+9+1=14; 6+6+1=13."},
+choice("t8","Anspruchsvoller · Eine Variable bleibt frei","Es gelten x + y + z = 6 und x − y = 0. Was gilt über den reellen Zahlen?",["Genau ein Tripel.","Keine Lösung.","Unendlich viele: y = x und z = 6 − 2x."],2,"Jeder reelle Wert von x liefert ein passendes Tripel (x | x | 6 − 2x).",{level:2}),
+choice("t9","Bonus · Nicht die Anzahl entscheidet","Warum können drei Gleichungen mit drei Variablen unendlich viele Lösungen haben?",["Weil drei Variablen grundsätzlich nie bestimmbar sind.","Weil Gleichungen voneinander abhängig sein können und dann Information fehlt.","Weil bei drei Variablen keine Probe möglich ist."],1,"Entscheidend sind unabhängige, widerspruchsfreie Bedingungen, nicht nur das Zählen der Gleichungen.",{level:3}),
+choice("t10","Abschluss · Welche Methode zuerst?","Ein Sachproblem führt zu x = 2y + 1 und 3x + y = 17. Was ist ein sinnvoller erster Schritt?",["2y + 1 für x in der zweiten Gleichung einsetzen.","Beide rechten Seiten gleichsetzen: 2y + 1 = 17.","x und y jeweils durch 0 ersetzen."],0,"Einsetzen ist hier bequem, weil x schon isoliert ist.")
+],
+exit:[
+["Eine 3×3-Lösung ist …",["eine einzelne Zahl.","ein Paar.","ein Tripel, das alle drei Gleichungen erfüllt."],2,"Alle drei Koordinaten gehören zusammen."],
+["Eine zusätzliche Gleichung kann …",["nur die Zahl der Lösungen vergrößern.","Lösungen ausschließen oder nichts Neues hinzufügen.","nie einen Widerspruch erzeugen."],1,"Zusätzliche Bedingungen können die Lösungsmenge nur einschränken oder unverändert lassen."],
+["Die Probe bei drei Gleichungen erfolgt …",["nur in I.","in allen ursprünglichen Gleichungen.","nur in der letzten umgeformten Gleichung."],1,"Nur so sind alle ursprünglichen Aussagen geprüft."]
+],
+group:"Erstelle eine kurze Übersicht: Welche Größe ist in einem Sachproblem unbekannt? Welche Aussagen sind unabhängig? Welches Verfahren ist günstig? Erkläre einen Punkt anhand einer eigenen Aufgabe und bitte deine Partnerin oder deinen Partner um Rückmeldung."
+}
+];
+
+modules.forEach(m=>m.exitTasks=m.exit.map((e,i)=>choice(m.id+"exit"+i,"Check "+(i+1),e[0],e[1],e[2],e[3],{exit:true})));
+const allTasks=modules.flatMap(m=>[...m.tasks,...m.exitTasks]);
+const taskMap=Object.fromEntries(allTasks.map(t=>[t.id,t]));
+const TASKCOUNT=allTasks.length;
+const main=document.getElementById("main");
+
+function eqForTask(t){
+if(t.type==="triple")return E(t.rows.map((r,i)=>["I","II","III"][i]+":   "+expression3(r)).join("\n"));
+if(!t.eqs)return"";
+if(t.displayY)return E(t.eqs.map((r,i)=>["I","II"][i]+":   y = "+lin(-r[0]/r[1],r[2]/r[1])).join("\n"));
+if(t.displayX)return E(t.eqs.map((r,i)=>["I","II"][i]+":   x = "+lin(-r[1]/r[0],r[2]/r[0],"y")).join("\n"));
+if(t.isolate){
+let r=t.eqs[0],str;
+if(Math.abs(r[0])===1)str="x = "+lin(-r[1]/r[0],r[2]/r[0],"y");
+else str="y = "+lin(-r[0]/r[1],r[2]/r[1]);
+return E("I:   "+str+"\nII:  "+expression(...t.eqs[1]));
+}
+return eqBlock(t.eqs)
+}
+function expression3(r){const vars=["x","y","z"];let s="";for(let i=0;i<3;i++){const a=r[i];if(!a)continue;s+=(s?(a<0?" − ":" + "):(a<0?"−":""))+(Math.abs(a)===1?"":fmt(Math.abs(a)))+vars[i]}return(s||"0")+" = "+fmt(r[3])}
+function taskHints(t){
+if(t.hints)return t.hints;
+if(t.type==="choice")return["Lies die Bedeutung der Variablen und vergleiche jede Aussage mit der Erklärung im Kapitel.","Prüfe eine Option an einem einfachen Beispiel oder forme die Gleichung zunächst um."];
+if(t.method==="equal"||t.method==="equalX")return["Beide Gleichungen sind Ausdrücke für dieselbe Variable. Setze die Ausdrücke gleich.","Löse die neue Gleichung. Setze das Ergebnis danach in eine ursprüngliche Gleichung ein."];
+if(t.method==="sub")return["Nutze die erste Gleichung, um eine Variable durch einen Ausdruck zu ersetzen.","Setze diesen Ausdruck mit Klammern in Gleichung II ein. Löse und setze zurück."];
+if(t.method==="add")return["Suche gleiche oder entgegengesetzte Koeffizienten bei x oder y.","Bereite durch Multiplikation ganze Gleichungen vor. Addiere oder subtrahiere dann."];
+return["Überlege zuerst, was gesucht ist und welche Bedingung erfüllt sein muss.","Benutze das Heftbeispiel als Orientierung. Prüfe deinen Vorschlag in jeder Gleichung."]
+}
+function solutionHTML(t){
+if(t.type==="choice")return"<p><strong>Richtig:</strong> "+esc(t.options[t.correct])+"</p><p>"+esc(t.explain)+"</p>";
+if(t.type==="number"||t.type==="pair"||t.type==="triple")return"<p>"+esc(t.solution||"")+" </p>";
+let [x,y]=t.answer;
+let steps=[];
+if(t.customSolution)steps=[t.customSolution];
+else if(t.method==="equal"){
+const [[a,b,c],[d,e,f]]=t.eqs;
+const m1=-a/b,n1=c/b,m2=-d/e,n2=f/e;
+steps=["I: y = "+lin(m1,n1)+". II: y = "+lin(m2,n2)+".",
+"Gleichsetzen: "+lin(m1,n1)+" = "+lin(m2,n2)+".",
+"Zusammenfassen: "+lin(m1-m2,0)+" = "+fmt(n2-n1)+" → x = "+fmt(x)+".",
+"In I: y = "+fmt(m1)+"·("+fmt(x)+")"+signed(n1)+" = "+fmt(y)+"."];
+}else if(t.method==="equalX"){
+const [[a,b,c],[d,e,f]]=t.eqs;
+const m1=-b/a,n1=c/a,m2=-e/d,n2=f/d;
+steps=["I: x = "+lin(m1,n1,"y")+". II: x = "+lin(m2,n2,"y")+".",
+"Gleichsetzen: "+lin(m1,n1,"y")+" = "+lin(m2,n2,"y")+".",
+lin(m1-m2,0,"y")+" = "+fmt(n2-n1)+" → y = "+fmt(y)+".",
+"In I: x = "+fmt(m1)+"·("+fmt(y)+")"+signed(n1)+" = "+fmt(x)+"."];
+}else if(t.method==="sub"){
+const [[a,b,c],[d,e,f]]=t.eqs;
+if(a!==0&&(Math.abs(a)===1||b===0)){
+const p=-b/a,q=c/a;
+steps=["I nach x: x = "+lin(p,q,"y")+".",
+"In II: "+fmt(d)+"·("+lin(p,q,"y")+")"+signed(e)+"y = "+fmt(f)+".",
+"Zusammenfassen: "+lin(d*p+e,d*q,"y")+" = "+fmt(f)+".",
+lin(d*p+e,0,"y")+" = "+fmt(f-d*q)+" → y = "+fmt(y)+".",
+"I: x = "+fmt(p)+"·("+fmt(y)+")"+signed(q)+" = "+fmt(x)+"."];
+}else{
+const p=-a/b,q=c/b;
+steps=["I nach y: y = "+lin(p,q)+".",
+"In II: "+lin(d,0)+signed(e)+"·("+lin(p,q)+") = "+fmt(f)+".",
+"Zusammenfassen: "+lin(d+e*p,e*q)+" = "+fmt(f)+".",
+lin(d+e*p,0)+" = "+fmt(f-e*q)+" → x = "+fmt(x)+".",
+"I: y = "+fmt(p)+"·("+fmt(x)+")"+signed(q)+" = "+fmt(y)+"."];
+}
+}else if(t.method==="add"){
+const [r,s]=t.eqs;
+const factorsFor=v=>{
+if(!r[v]||!s[v])return null;
+let g=gcd(r[v],s[v]);let u=s[v]/g,vv=-r[v]/g;
+if(u<0){u=-u;vv=-vv}return[u,vv,Math.abs(u)+Math.abs(vv)]
+};
+const fy=factorsFor(1),fx=factorsFor(0);
+const chosen=fy&&(!fx||fy[2]<=fx[2])?{v:1,f:fy}:{v:0,f:fx};
+if(chosen.f){let[u,v]=chosen.f;let A=r.map(n=>n*u),B=s.map(n=>n*v),sum=A.map((n,i)=>n+B[i]);
+steps=["I mit "+fmt(u)+", II mit "+fmt(v)+" multiplizieren.",
+"I′: "+expression(...A)+".","II′: "+expression(...B)+".",
+"Addieren: "+expression(...sum)+".",
+(chosen.v===1?"x = "+fmt(x):"y = "+fmt(y))+". Zurück einsetzen in I → "+(chosen.v===1?"y = "+fmt(y):"x = "+fmt(x))+"."];
+}else steps=["Eine Variable ist schon bestimmt. Einsetzen liefert das vollständige Paar."];
+}else if(t.type==="graph"){
+steps=t.eqs.map((r,i)=>["I","II"][i]+": "+(r[1]?"y = "+lin(-r[0]/r[1],r[2]/r[1]):"x = "+fmt(r[2]/r[0]))) ;
+steps.push("Die Geraden schneiden sich bei S("+fmt(x)+" | "+fmt(y)+").");
+}else steps=["Die gemeinsame Lösung ist ("+fmt(x)+" | "+fmt(y)+")."];
+const probes=t.eqs.map((r,i)=>["I","II"][i]+": "+fmt(r[0])+"·("+fmt(x)+")"+signed(r[1])+"·("+fmt(y)+") = "+fmt(r[2])+" ✓");
+return"<p><strong>Lösungsweg</strong></p>"+E(steps.map(esc).join("\n"))+"<p><strong>L = {("+fmt(x)+" | "+fmt(y)+")}</strong></p>"+E(probes.map(esc).join("\n"))+(t.after?"<p>"+esc(t.after)+"</p>":"");
+}
+function displayTask(t){
+const a=state.answers[t.id]||{};
+const hints=taskHints(t),hc=state.hints[t.id]||0;
+let html=`<section class="card task ${state.solved[t.id]?"done":""}" id="task-${t.id}"><div class="taskhead"><h3>${esc(t.title)}</h3><span class="status" id="status-${t.id}">${state.solved[t.id]?"✓ geprüft":state.revealed[t.id]?"Lösung angesehen":""}</span></div>`;
+if(!t.exit)html+='<span class="tag">'+(t.level===1?"Basis · Pflicht":t.level===2?"Aufbau":"Plus · freiwillig")+"</span>";
+if(t.prompt)html+="<p>"+t.prompt+"</p>";
+html+=eqForTask(t);
+if(t.type==="choice"){
+html+='<div class="choices" role="group" aria-label="Antwort auswählen">';
+t.options.forEach((o,i)=>html+=`<label><input type="radio" name="${t.id}" value="${i}" ${String(a.choice)===String(i)?"checked":""} onchange="remember('${t.id}','choice',this.value)"><span>${esc(o)}</span></label>`);
+html+="</div>";
+}else{
+if(t.type==="graph")html+=graphHTML(t.id,false);
+html+='<div class="fields">';
+const fields=t.type==="number"?["value"]:t.type==="triple"?["x","y","z"]:["x","y"];
+fields.forEach(k=>html+=`<label>${k==="value"?(t.label||"Ergebnis"):k} = <input class="answer" type="text" inputmode="decimal" id="${t.id}-${k}" aria-label="${esc(t.title)}: ${k}" placeholder="z. B. 3/2" value="${esc(a[k]||"")}" oninput="remember('${t.id}','${k}',this.value)"></label>`);
+html+="</div>";
+if(t.type==="pair")html+='<p class="small">Ein beliebiges passendes Paar genügt. x zuerst, y danach.</p>';
+}
+html+=`<div class="actions"><button class="primary" onclick="checkTask('${t.id}')">Prüfen</button><button onclick="showHint('${t.id}')">Hinweis <span id="hintcount-${t.id}">${Math.min(hc,hints.length)}/${hints.length}</span></button><button onclick="showSolution('${t.id}')">Lösungsweg ansehen</button></div><div id="feedback-${t.id}" role="status"></div><div id="hints-${t.id}">${hints.slice(0,hc).map((h,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+':</strong> '+esc(h)+"</div>").join("")}</div><div id="solution-${t.id}">${state.revealed[t.id]?'<details open><summary>Lösung · erst vergleichen, dann selbst erklären</summary>'+solutionHTML(t)+"</details>":""}</div></section>`;
+return html;
+}
+function remember(id,k,v){if(!state.answers[id])state.answers[id]={};state.answers[id][k]=v;save()}
+function parseNumber(s){
+s=String(s??"").trim().replace(/\s/g,"").replace(/−/g,"-").replace(/,/g,".");
+if(!s)return NaN;
+if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s))return Number(s);
+if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)\/[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s)){let[a,b]=s.split("/").map(Number);return b===0?NaN:a/b}
+return NaN
+}
+function checkTask(id){
+const t=taskMap[id],a=state.answers[id]||{},box=document.getElementById("feedback-"+id);
+let correct=false,msg="";
+if(t.type==="choice"){
+if(a.choice===undefined)msg="Wähle zunächst eine Antwort.";
+else{correct=Number(a.choice)===t.correct;msg=correct?t.explain:"Noch nicht. "+(t.type==="choice"?"Vergleiche deine Wahl mit den Aussagen im Kapitel. Ein Hinweis kann dir helfen.":"")}
+}else{
+const keys=t.type==="number"?["value"]:t.type==="triple"?["x","y","z"]:["x","y"];
+const values=keys.map(k=>parseNumber(a[k]));
+if(values.some(v=>!Number.isFinite(v)))msg="Trage in jedes Ergebnisfeld eine Zahl ein. Dezimalkomma, Dezimalpunkt und Brüche wie −3/2 sind erlaubt; keine Einheiten oder Rechenterme.";
+else if(t.type==="pair"){
+let[x,y]=values,[A,B,C]=t.eqs[0];
+if(t.whole&&(x<0||y<0||!Number.isInteger(x)||!Number.isInteger(y)))msg="Hier zählen wir Stückzahlen: Verwende ganze, nichtnegative Zahlen.";
+else{correct=Math.abs(A*x+B*y-C)<1e-7;msg=correct?"Dein Paar passt: "+fmt(A)+"·("+fmt(x)+")"+signed(B)+"·("+fmt(y)+") = "+fmt(C)+".":"Die Gleichung stimmt mit diesem Paar noch nicht. Deine linke Seite ergibt "+fmt(A*x+B*y)+", gefordert ist "+fmt(C)+"."}
+}else{
+if(t.type==="graph"){
+const gr=state.graphs[id]||defaultGraph();
+let wrong=-1;
+for(let j=0;j<2;j++){
+const [A,B,C]=t.eqs[j],p=gr[j*2],q=gr[j*2+1];
+if(Math.hypot(p[0]-q[0],p[1]-q[1])<0.1){wrong=j;break}
+if(Math.abs(A*p[0]+B*p[1]-C)>1e-7||Math.abs(A*q[0]+B*q[1]-C)>1e-7){wrong=j;break}
+}
+if(wrong>=0){msg="Prüfe zuerst die "+(wrong===0?"blaue Gerade I":"orangefarbene Gerade II")+". Beide Endpunkte müssen die zugehörige Gleichung erfüllen.";box.className="error";box.textContent=msg;return}
+}
+const target=t.type==="number"?[t.answer]:t.answer;
+correct=values.every((v,i)=>Math.abs(v-target[i])<1e-7);
+if(correct)msg=t.type==="number"?"Richtig. Vergleiche auch deinen Rechenweg mit der Lösung.":t.type==="triple"?"Richtig! Dein Tripel erfüllt alle drei Gleichungen. Kannst du die Elimination erklären?":"Richtig! Dein Paar erfüllt beide Gleichungen.";
+else if(t.eqs&&t.type!=="number"){
+const [x,y]=values;
+const failed=t.eqs.map((r,i)=>({i,ok:Math.abs(r[0]*x+r[1]*y-r[2])<1e-7}));
+msg=failed.map(r=>(r.ok?"✓ ":"✗ ")+"Gleichung "+["I","II"][r.i]+(r.ok?" stimmt.":" stimmt noch nicht.")).join(" ")+" Prüfe außerdem die Reihenfolge x | y.";
+}else msg="Noch nicht richtig. Kontrolliere Vorzeichen, Rechenschritte und gegebenenfalls Klammern. Nutze bei Bedarf einen Hinweis.";
+}
+}
+box.className=correct?"success":"error";box.textContent=msg;
+if(correct){
+state.solved[id]=true;save();document.getElementById("task-"+id).classList.add("done");
+document.getElementById("status-"+id).textContent="✓ geprüft";renderNav();
+if(t.after&&!state.revealed[id]){const p=document.createElement("p");p.textContent=t.after;box.appendChild(p)}
+}
+}
+function showHint(id){
+const h=taskHints(taskMap[id]);state.hints[id]=Math.min((state.hints[id]||0)+1,h.length);save();
+document.getElementById("hints-"+id).innerHTML=h.slice(0,state.hints[id]).map((v,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+":</strong> "+esc(v)+"</div>").join("");
+document.getElementById("hintcount-"+id).textContent=state.hints[id]+"/"+h.length;
+}
+function showSolution(id){
+state.revealed[id]=true;save();
+document.getElementById("solution-"+id).innerHTML='<details open><summary>Lösung · erst vergleichen, dann selbst erklären</summary>'+solutionHTML(taskMap[id])+'<p class="small">Lösung gelesen? Schließe sie und rechne die Aufgabe noch einmal selbst. Erst „Prüfen“ markiert die Aufgabe als bearbeitet; das ist kein Beweis für selbstständiges Können.</p></details>';
+if(!state.solved[id])document.getElementById("status-"+id).textContent="Lösung angesehen";
+}
+function renderNav(){
+document.getElementById("nav").innerHTML=modules.map((m,i)=>{let tasks=[...m.tasks,...m.exitTasks],n=tasks.filter(t=>state.solved[t.id]).length;return`<button class="${state.page===m.id?"active":""}" onclick="go('${m.id}')">${i+1}. ${esc(m.short)}<small>${m.time} · ${n}/${tasks.length} geprüft</small></button>`}).join("");
+let n=allTasks.filter(t=>state.solved[t.id]).length;
+document.getElementById("overallbar").style.width=(100*n/TASKCOUNT)+"%";
+document.getElementById("overall").textContent=n+" von "+TASKCOUNT+" Aufgaben geprüft";
+}
+function go(page){
+state.page=page;save();renderNav();
+if(page==="start")renderStart();
+else if(page==="reference")renderReference();
+else if(page==="coach")renderCoach();
+else{const m=modules.find(m=>m.id===page);m?renderModule(m):renderStart()}
+window.scrollTo({top:0,behavior:"instant"});main.focus({preventScroll:true});
+}
+function renderModule(m){
+const index=modules.indexOf(m),filter=state.filters[m.id]||"all";
+main.innerHTML=`<section class="card"><span class="tag">${m.time} · ca. 90 Minuten</span><h2>${m.title}</h2><p><strong>Dein Ziel:</strong> ${m.goal}</p><p class="small">Vorschlag: 10 Min. Einstieg · 20 Min. Erkunden und Erklären · 10 Min. Heftbild · 35 Min. Üben · 10 Min. Check · 5 Min. Rückblick. Arbeite nach deinem Bedarf langsamer oder schneller.</p></section>`+m.intro+
+(m.id==="m4"?'<section class="card"><h3>Experimentierfeld · m und b verändern</h3>'+labHTML()+"</section>":"")+
+`<section class="card"><h3>Partnerarbeit</h3><p>${m.group}</p><p class="small">Bearbeite die Aufgabe zuerst selbst im Heft. Vergleiche danach deinen Lösungsweg mit deiner Partnerin oder deinem Partner. Nutze bei Bedarf den Grafikrechner zur Kontrolle.</p></section><section class="card"><h3>Übungsatelier</h3><p><strong>Basis:</strong> alle bearbeiten. <strong>Aufbau:</strong> mindestens eine Aufgabe gemeinsam beginnen; möglichst alle lösen. <strong>Plus:</strong> für zusätzliche Herausforderung. Die Basis verbindet sichere Grundlagen mit mehrstufigen Rechnungen; Aufbau und Plus erfordern zusätzliche Entscheidungen.</p><p class="small">Zahleneingabe: 1,5 oder 1.5 oder 3/2. Runden ist nur bei ausdrücklich geforderten Näherungen sinnvoll. Die hier gefragten Ergebnisse sind exakt eingebbar.</p><div class="tabs" aria-label="Aufgabenfilter">${[["all","Alle Aufgaben"],["base","Nur Basis"],["stretch","Aufbau & Plus"]].map(([v,l])=>`<button class="${filter===v?"active":""}" onclick="setFilter('${m.id}','${v}')">${l}</button>`).join("")}</div><p class="small">Der Filter blendet Aufgaben nur aus; er verändert keine gespeicherten Ergebnisse.</p></section>`+
+m.tasks.filter(t=>filter==="all"||filter==="base"&&t.level===1||filter==="stretch"&&t.level>1).map(displayTask).join("")+
+`<section class="card" id="exit"><h3>Kann ich das schon? · Kapitelcheck</h3><p>Erst allein und möglichst ohne Hilfe lösen. Erkläre danach mindestens eine Antwort in der Gruppe. Falls du die Lösungen schon kennst: Nenne zusätzlich ein eigenes Beispiel.</p></section>`+
+m.exitTasks.map(displayTask).join("")+reflectionHTML(m)+
+`<div class="actions">${index>0?`<button onclick="go('${modules[index-1].id}')">← Voriges Kapitel</button>`:""}${index<7?`<button class="primary" onclick="go('${modules[index+1].id}')">Weiter: ${esc(modules[index+1].short)} →</button>`:`<button class="primary" onclick="go('reference')">Zur Abschlussübersicht →</button>`}</div>`;
+initGraphs();
+}
+function setFilter(id,v){state.filters[id]=v;save();renderModule(modules.find(m=>m.id===id));document.querySelector(".tabs").scrollIntoView({block:"center"})}
+function reflectionHTML(m){
+const text=state.notes[m.id]||"";
+return`<section class="card"><h3>Dein Rückblick · Lernjournal</h3><div class="checklist">${["Ich habe das kurze Heftbild mit Beispiel übernommen.","Ich kann die Grundidee ohne Ablesen erklären.","Ich habe den Check zunächst selbst versucht."].map((s,i)=>`<label><input type="checkbox" ${state.checks[m.id+i]?"checked":""} onchange="state.checks['${m.id+i}']=this.checked;save()"><span>${s}</span></label>`).join("")}</div><label for="journal-${m.id}"><strong>Ein Satz, ein Beispiel, eine offene Frage</strong></label><textarea id="journal-${m.id}" placeholder="Das kann ich jetzt … / Mein Beispiel … / Hier brauche ich noch Hilfe …" oninput="state.notes['${m.id}']=this.value;save()">${esc(text)}</textarea><p class="small">Bei einer offenen Grundfrage: Bitte zuerst eine andere Person, dir nur den nächsten Schritt zu erklären. Bleibt die Frage offen, frage den Lerncoach.</p></section>`;
+}
+function renderStart(){
+main.innerHTML=`<section class="card"><span class="tag">Willkommen im Lernatelier</span><h2>Dein Lernpfad beginnt hier.</h2><p>Diese Website begleitet dich durch acht Doppelstunden. Du brauchst ein <strong>Heft, einen Stift und ein Lineal</strong>. Alle Aufgaben, Erklärungen, Hilfen und Selbstkontrollen findest du hier. Ein Taschenrechner ist nicht nötig.</p><div class="${storageOK?"hintbox":"neutral"}"><strong>${storageOK?"Lernstand wird lokal gespeichert.":"Lokale Speicherung ist möglicherweise gesperrt."}</strong> ${storageOK?"Er bleibt in diesem Browser auf diesem Gerät.":"Sichere deinen Lernstand regelmäßig als Datei."} Nutze „Lernstand sichern“, bevor du die Datei an einen anderen Speicherort verschiebst oder das Gerät wechselst.</div><div class="actions"><button class="primary" onclick="go('m1')">Mit Kapitel 1 beginnen →</button><button onclick="go('reference')">Begriffe nachschlagen</button></div></section>
+<section class="card"><h3>So arbeitest du mit anderen</h3><p><strong>Empfehlung: drei oder vier Personen.</strong> Du arbeitest mit deiner Gruppe, führst aber dein eigenes Heft. Wechsle die Rollen nach jedem Kapitel:</p><div class="two"><div><h4>Gesprächsleitung</h4><p>Achte darauf, dass alle zu Wort kommen. Denke zuerst selbst nach.</p><h4>Erklärprofi</h4><p>Frage nach dem Warum und achte auf verständliche Begründungen.</p></div><div><h4>Prüfprofi</h4><p>Bestehe auf einer Probe, passenden Einheiten und einer sinnvollen Deutung.</p><h4>Zeit- und Hilfecoach</h4><p>Behalte den Arbeitsplan und offene Fragen im Blick. Bei drei Personen kann eine Person diese Rolle zusätzlich übernehmen.</p></div></div><p><strong>Hilfetreppe:</strong> 1. Lies noch einmal. 2. Vergleiche das Beispiel. 3. Öffne einen Hinweis. 4. Bitte deine Gruppe um Hilfe beim nächsten Schritt. 5. Frage den Lerncoach. Nutze Lösungen, um den Lösungsweg zu verstehen, statt ihn nur zu übertragen.</p></section>
+<section class="card"><h3>Dein Arbeitsplan für etwa acht Doppelstunden</h3><div class="tablewrap"><table><tr><th>DS</th><th>Kapitel</th><th>Am Ende kannst du …</th></tr>${modules.map((m,i)=>`<tr><td>${i+1}</td><td><button onclick="go('${m.id}')">${esc(m.short)}</button></td><td>${esc(m.goal.replace("Ich ",""))}</td></tr>`).join("")}</table></div><p>Die Zeitplanung ist eine Orientierung. Wenn du bei einer Grundidee unsicher bist, kläre sie vor dem Weitergehen mit deiner Partnerin, deinem Partner oder dem Lerncoach. Wenn du schneller vorankommst, bearbeite Aufgaben aus Aufbau und Plus oder erfinde eigene Aufgaben.</p></section>
+<section class="card notebook"><h3>Was kommt ins Heft?</h3><p>Nur die grün markierten <strong>kurzen Tafelbilder</strong>, die verlangten Zeichnungen und deine eigenen Rechenwege. Lange Website-Texte werden <strong>nicht</strong> abgeschrieben.</p><p>Zu Sachproblemen notierst du knapp: <strong>Variablen → Gleichungen → Lösung → Antwort mit Einheit</strong>. Ergänze eine Probe, wenn sie verlangt ist oder du unsicher bist. Die digitale Selbstkontrolle prüft Ergebnisse und ausgewählte Zeichnungen, nicht deinen gesamten Rechenweg.</p></section>
+<section class="card"><h3>Was zeigen die Häkchen?</h3><p>Ein grünes Häkchen bedeutet: Die Eingabe wurde richtig geprüft. Es zeigt <strong>nicht</strong>, ob du ohne Hilfe gearbeitet hast. Ein Kapitel ist für dich wirklich geschafft, wenn du die Idee erklären und ein eigenes Beispiel lösen kannst.</p><p><strong>Datenschutz:</strong> Keine Anmeldung und keine Werbung. Gib keine Namen ein. Dein Lernjournal bleibt in diesem Browser. Der eingebettete Grafikrechner lädt Inhalte von einem externen Dienst; gib dort keine persönlichen Daten ein. Eine exportierte Lernstandsdatei enthält Eingaben, Hilfenutzung und Notizen – teile sie nur bewusst.</p></section>`;
+}
+function renderReference(){
+main.innerHTML=`<section class="card"><h2>Nachschlagen & Abschluss</h2><p>Hier findest du kurze Merksätze. Für die ausführlichen Lernwege gehst du zurück zum passenden Kapitel.</p></section>
+<section class="card"><h3>Vom Sachproblem zum LGS</h3><ol><li><strong>Variablen:</strong> Was ist unbekannt? Bedeutung und Einheit notieren.</li><li><strong>Aussagen:</strong> Jede unabhängige Information als Gleichung schreiben.</li><li><strong>Plausibilität:</strong> Stehen Preise bei Stückzahlen? Sind Größen und Einheiten sinnvoll?</li><li><strong>Lösen:</strong> Ein günstiges Verfahren wählen.</li><li><strong>Prüfen:</strong> In die ursprünglichen Gleichungen einsetzen.</li><li><strong>Deuten:</strong> Antwortsatz. Passen negative Zahlen oder Brüche zum Kontext?</li></ol><details><summary>Mini-Beispiel</summary><p>2 Hefte und 1 Stift kosten 9 €, 1 Heft und 2 Stifte kosten 6 €. x = Heftpreis, y = Stiftpreis.</p>${E("2x + y = 9\nx + 2y = 6\n→ (x | y) = (4 | 1)")}<p>Ein Heft kostet 4 €, ein Stift 1 €. Probe: 8 + 1 = 9; 4 + 2 = 6.</p></details></section>
+<section class="card"><h3>Verfahrenskompass</h3><div class="tablewrap"><table><tr><th>Verfahren</th><th>Günstig, wenn …</th><th>Kernidee</th></tr><tr><td>Grafisch</td><td>ein anschaulicher Überblick wichtig ist.</td><td>Gemeinsame Punkte der Geraden finden; oft Näherung.</td></tr><tr><td>Systematisches Probieren</td><td>wenige sinnvolle Werte möglich sind.</td><td>Geordnet Paare erzeugen und alle Bedingungen prüfen.</td></tr><tr><td>Inhaltlich</td><td>ein Vergleich in der Situation hilft.</td><td>Z. B. Zusatzkosten oder zusätzliche Räder vergleichen.</td></tr><tr><td>Gleichsetzen</td><td>beide Gleichungen nach derselben Variablen aufgelöst sind.</td><td>Zwei gleichwertige Ausdrücke gleichsetzen.</td></tr><tr><td>Einsetzen</td><td>eine Variable leicht freizustellen ist.</td><td>Einen Ausdruck in der anderen Gleichung einsetzen.</td></tr><tr><td>Addieren</td><td>passende Gegenzahlen vorliegen oder leicht entstehen.</td><td>Eine Variable durch Addition eliminieren.</td></tr></table></div></section>
+<section class="card"><h3>Begriffe in einem Satz</h3><ul><li><strong>Lösungspaar:</strong> (x | y); die Reihenfolge ist fest.</li><li><strong>Lösungsmenge L:</strong> alle passenden Paare oder Tripel.</li><li><strong>LGS:</strong> mehrere lineare Gleichungen über dieselben Variablen, die gleichzeitig erfüllt sein müssen.</li><li><strong>Linear:</strong> Variablen kommen nur in der ersten Potenz vor und werden nicht miteinander multipliziert. x·y oder x² wäre nicht linear.</li><li><strong>Äquivalente Umformung:</strong> verändert die Lösungsmenge nicht.</li><li><strong>Probe:</strong> Einsetzen in alle ursprünglichen Gleichungen.</li><li><strong>Eliminieren:</strong> eine Variable durch geeignetes Rechnen entfernen.</li><li><strong>Abhängige Gleichungen:</strong> eine Gleichung liefert keine neue Information, weil sie aus anderen folgt.</li></ul></section>
+<section class="card notebook"><h3>Lösbarkeit kompakt</h3><p>Zwei nicht entartete Geradengleichungen: <strong>ein</strong> Schnittpunkt, <strong>keiner</strong> oder <strong>unendlich viele</strong>.</p>${E("m₁ ≠ m₂ → genau eine Lösung\nm₁ = m₂, b₁ ≠ b₂ → keine Lösung\nm₁ = m₂, b₁ = b₂ → unendlich viele")}<p>Die m-b-Regel setzt Funktionsform voraus. Ein Widerspruch wie 0 = 5 schließt Lösungen aus. 0 = 0 liefert keine neue Bedingung; andere Gleichungen gelten weiter.</p><p>Bei größeren Systemen entscheidet nicht nur die Anzahl der Gleichungen. Zusätzliche Aussagen können helfen, nichts Neues sagen oder widersprechen.</p></section>
+<section class="card"><h3>Abschlussauftrag · Lernerfolg zeigen</h3><p>Wähle <strong>zwei noch einmal verdeckte Basisaufgaben</strong> aus verschiedenen Rechenverfahren und löse sie im Heft ohne Hinweise. Bitte deine Gruppe, die Ergebnisse mit einer Probe zu kontrollieren. Erkläre danach eine Lösbarkeitssituation und den Weg von drei zu zwei Variablen.</p><p>Du kannst außerdem eine eigene Kioskaufgabe mit drei Preisen erstellen: Wähle die Preise und erfinde drei passende Käufe. Achte darauf, dass nicht alle Käufe nur Vielfache voneinander sind.</p><label for="finalnote"><strong>Mein Abschluss: Das kann ich sicher – das übe ich weiter</strong></label><textarea id="finalnote" oninput="state.notes.final=this.value;save()">${esc(state.notes.final||"")}</textarea><div class="actions"><button onclick="exportProgress()">Lernstand sichern</button><button onclick="window.print()">Aktuelle Übersicht drucken</button></div></section>`;
+}
+function renderCoach(){
+const totalBase=modules.flatMap(m=>m.tasks.filter(t=>t.level===1)).length;
+main.innerHTML=`<section class="card"><h2>Hinweise für den Lerncoach</h2><p>Die Website ist als vollständiger Lernpfad für <strong>acht Doppelstunden à etwa 90 Minuten</strong> angelegt. Sie benötigt keine weiteren Arbeitsblätter. Ein Heft und Zeichenwerkzeug bleiben für eigene Rechnungen und Zeichnungen bewusst Teil des Lernens.</p><p>Enthalten: ${modules.reduce((s,m)=>s+m.tasks.length,0)} Übungen, davon ${totalBase} Basisaufgaben, sowie 24 kurze Kapitelcheck-Fragen. Die Aufgaben kombinieren mehrstufige Rechnungen, Fehlerdiagnosen, Modellierung, grafische Deutung und begründete Verfahrenswahl; die höheren Stufen verlangen zusätzliche Transferleistungen.</p></section>
+<section class="card"><h3>Vor dem Einsatz im Unterricht</h3><ol><li>Speichere die Datei über „HTML herunterladen“.</li><li>Verteile sie über die Lernplattform oder stelle sie als statische Webseite in einem schulisch freigegebenen System bereit. Für die Mathematik sind weder eine Anmeldung noch eine Serverfunktion nötig.</li><li><strong>Teste die Datei im vorgesehenen Browser:</strong> Manche Dateivorschauen führen JavaScript nicht aus. Öffne die Datei dann in einem geeigneten Browser oder stelle sie als Webseite bereit. Das betrifft die Art, wie die Datei geöffnet wird, nicht die lokal enthaltenen Lerninhalte.</li><li>Teste die Speicherung: Prüfe eine Aufgabe, lade die Seite neu und kontrolliere, ob der Lernstand erhalten bleibt. Privater Modus, Richtlinien und wechselnde Dateiadressen können die lokale Speicherung einschränken.</li><li>Nutze regelmäßig „Lernstand sichern“. Die JSON-Datei lässt sich über „Lernstand laden“ wieder einlesen.</li></ol><p>Die Erklärungen, SVG-Grafiken und Skripte sind in dieser HTML-Datei enthalten. Der eingebettete externe Grafikrechner benötigt allerdings eine Internetverbindung.</p></section>
+<section class="card"><h3>Begleiten statt vormachen</h3><ul><li>Kapitel 1 diagnostisch nutzen: Wer Gleichungen noch nicht sicher umformt, erhält hier mehr Zeit.</li><li>Bei Kapitel 2 auf die Bedeutung des Wertepaares bestehen. Eine Gerade beschreibt alle reellen Lösungen, ein Stückzahlkontext nur eine Auswahl.</li><li>Bei Kapitel 3 nicht nur ein richtiges Paar akzeptieren: Die Lernenden sollen zwei Punkte je Gerade begründen. Mindestens eine eigene Heftzeichnung ist vorgesehen. Beim Applet darauf achten, dass die Geraden nicht nur durch Zufallstreffer stimmen, sondern aus den Gleichungen abgeleitet werden.</li><li>Bei Kapitel 4 fragen: „Welche Informationen sind gleich, welche verschieden?“</li><li>Bei Rechenverfahren zuerst die Verfahrenswahl erklären lassen; Umformungen stehen im Aufbaubereich.</li><li>Bei Kapitel 8 reichen im Basisteil einfache Eliminations- und Lösbarkeitsbetrachtungen. Das echte Zwischensystem ist eine Aufbauaufgabe.</li></ul><p><strong>Leitfragen:</strong> „Was bedeutet deine Variable?“, „Welche Aussage bildet diese Gleichung ab?“, „Welche Variable möchtest du entfernen?“, „Wie kannst du dein Ergebnis selbst widerlegen oder bestätigen?“</p></section>
+<section class="card"><h3>Curriculum-Abdeckung</h3><div class="tablewrap"><table><tr><th>Inhalt</th><th>Kapitel</th></tr><tr><td>Lineare/konstante Funktionen, Gleichungsumformung</td><td>1–3</td></tr><tr><td>Zwei Variablen, Wertepaare, Systeme</td><td>2</td></tr><tr><td>Systematisches Probieren, inhaltliches Lösen</td><td>2; erneut 8</td></tr><tr><td>Grafisches Lösen, auch nach Umformen</td><td>3</td></tr><tr><td>Lösbarkeit und Zusammenhang von m und b</td><td>4; erneut 5–8</td></tr><tr><td>Gleichsetzen, Einsetzen, Addieren</td><td>5, 6, 7</td></tr><tr><td>Probe und Kontextdeutung</td><td>durchgehend</td></tr><tr><td>Drei Gleichungen/drei Variablen; mehr Gleichungen als Variablen; freie Variable</td><td>8</td></tr></table></div></section>
+<section class="card"><h3>Rückmeldung richtig einordnen</h3><p>Es werden Endergebnisse, Antwortauswahlen und bei grafischen Aufgaben die beiden eingestellten Geraden geprüft. Die Website kann <strong>keine handschriftlichen Rechenwege</strong> bewerten. Erklärgespräche, Heftblick und eigenständige Wiederholungen bleiben wesentlich.</p><p>Die Checks sind Selbstkontrollen, keine manipulationssicheren Tests. Lösungen sind absichtlich zugänglich. Es gibt weder zentrale Lehrkraftüberwachung noch automatische Übermittlung von Lernständen.</p><details><summary>Nur dieses Gerät: Lernstand zurücksetzen</summary><p>Dies entfernt die Eingaben, Notizen und Markierungen in diesem Browser. Vorher bei Bedarf sichern.</p><label><input id="resetConfirm" type="checkbox"> Ich möchte diesen lokalen Lernstand löschen.</label><button onclick="resetState()">Lokalen Lernstand löschen</button></details></section>`;
+}
+function resetState(){if(!document.getElementById("resetConfirm").checked){toast("Bitte die Löschung zuerst mit dem Kästchen bestätigen.");return}state={page:"start",solved:{},hints:{},revealed:{},answers:{},notes:{},checks:{},graphs:{},fineGrid:{},filters:{}};save();go("start");toast("Lokaler Lernstand zurückgesetzt.")}
+function downloadBlob(content,type,name){let blob=new Blob([content],{type});let url=URL.createObjectURL(blob);let a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}
+function downloadHTML(){
+const clone=document.documentElement.cloneNode(true);
+clone.querySelector("#main").innerHTML="";
+clone.querySelector("#nav").innerHTML="";
+clone.querySelector("#toast").style.display="none";
+clone.querySelector("#importfile").value="";
+downloadBlob("<!DOCTYPE html>\n"+clone.outerHTML,"text/html;charset=utf-8","LGS-Lernatelier-Klasse9.html");
+toast("Die HTML-Datei wurde erstellt. Du kannst sie im Downloadmenü speichern oder teilen.");
+}
+function exportProgress(){downloadBlob(JSON.stringify({app:"lgs-lernatelier",version:1,date:new Date().toISOString(),data:state},null,2),"application/json","LGS-Lernstand-"+new Date().toISOString().slice(0,10)+".json");toast("Lernstandsdatei erstellt. Sie enthält auch deine Notizen.");}
+document.getElementById("importfile").addEventListener("change",async e=>{
+const f=e.target.files[0];if(!f)return;
+try{
+const obj=JSON.parse(await f.text());
+if(obj.app!=="lgs-lernatelier"||obj.version!==1||!obj.data||typeof obj.data!=="object")throw Error();
+const d=obj.data;
+const base={page:"start",solved:{},hints:{},revealed:{},answers:{},notes:{},checks:{},graphs:{},fineGrid:{},filters:{}};
+for(const k of Object.keys(base)){if(k==="page")continue;if(d[k]&&typeof d[k]==="object"&&!Array.isArray(d[k]))base[k]=d[k]}
+for(const [id,g] of Object.entries(base.graphs)){if(!Array.isArray(g)||g.length!==4||g.some(p=>!Array.isArray(p)||p.length!==2||p.some(v=>typeof v!=="number"||!Number.isFinite(v))))delete base.graphs[id]}
+state=base;save();go("start");toast("Lernstand geladen. Er ersetzt den bisherigen lokalen Stand.");
+}catch(err){toast("Diese Datei ist kein lesbarer Lernstand dieser Website. Der bisherige Stand bleibt erhalten.")}
+e.target.value="";
+});
+
+// === Geraden-Applet (überarbeitet) ===
+const NS="http://www.w3.org/2000/svg";
+const GMIN=-8,GMAX=8,SIZE=600,PAD=42,STEP=(SIZE-2*PAD)/16;
+const RED="#bd6100",BLUE="#1456a0";
+
+function defaultGraph(){return[[-4,0],[4,0],[-4,1],[4,1]]}
+function pointX(x){return PAD+(x-GMIN)*STEP}
+function pointY(y){return SIZE-PAD-(y-GMIN)*STEP}
+function clampSnap(v,fine){
+  const s=fine?0.5:1;
+  const r=Math.round(v/s)*s;
+  return Math.max(GMIN,Math.min(GMAX,r));
+}
+function node(tag,attrs={},text){let n=document.createElementNS(NS,tag);for(let[k,v]of Object.entries(attrs))n.setAttribute(k,v);if(text!==undefined)n.textContent=text;return n}
+
+function graphHTML(id,free){
+  if(!state.graphs[id])state.graphs[id]=defaultGraph();
+  if(state.fineGrid[id]===undefined)state.fineGrid[id]=false;
+  const fg=state.fineGrid[id];
+  return `<div class="graphwrap">
+    <svg id="svg-${id}" class="graph" viewBox="0 0 600 600" role="group" aria-label="Interaktives Koordinatensystem von minus acht bis acht"></svg>
+    <div id="eq-${id}" class="graph-eq" aria-live="polite"></div>
+    <p class="small"><strong style="color:${BLUE}">■ I</strong> · <strong style="color:${RED}">■ II</strong> — Ziehe irgendwo auf die Gerade, um sie zu verschieben, oder an einem Endpunkt, um die Steigung zu ändern.</p>
+    <label class="small"><input type="checkbox" id="fine-${id}" ${fg?"checked":""} onchange="toggleFineGrid('${id}',this.checked)"> Feines Raster (0,5 Schritte)</label>
+    <details>
+      <summary>Punkt genau setzen (optional)</summary>
+      <div class="fields">
+        <label>Punkt <select id="point-${id}" onchange="syncPointFields('${id}')"><option value="0">A · I</option><option value="1">B · I</option><option value="2">C · II</option><option value="3">D · II</option></select></label>
+        <label>x <input class="answer" type="text" inputmode="decimal" id="px-${id}" aria-label="x-Koordinate"></label>
+        <label>y <input class="answer" type="text" inputmode="decimal" id="py-${id}" aria-label="y-Koordinate"></label>
+      </div>
+      <div class="graphbuttons"><button onclick="setPoint('${id}')">Punkt setzen</button><button onclick="resetGraph('${id}')">Zeichnung zurücksetzen</button></div>
+      <p id="coords-${id}" class="small" aria-live="polite"></p>
+    </details>
+    ${free?'<div id="relation-'+id+'" class="hintbox" aria-live="polite"></div>':""}
+  </div>`;
+}
+
+function toggleFineGrid(id,val){state.fineGrid[id]=!!val;save();}
+
+function initGraphs(){
+  document.querySelectorAll("svg.graph").forEach(svg=>{
+    const id=svg.id.slice(4);
+    drawGraph(id);
+    syncPointFields(id);
+    let drag=null;
+    svg.addEventListener("pointerdown",e=>{
+      const pt=e.target.closest("[data-point]");
+      const ln=e.target.closest("[data-line]");
+      if(pt){drag={type:"point",idx:Number(pt.dataset.point)};}
+      else if(ln){drag={type:"line",line:Number(ln.dataset.line),startX:e.clientX,startY:e.clientY,startPts:JSON.parse(JSON.stringify(state.graphs[id]))};}
+      else return;
+      e.preventDefault();
+      try{svg.setPointerCapture(e.pointerId)}catch(err){}
+    });
+    svg.addEventListener("pointermove",e=>{
+      if(!drag)return;
+      e.preventDefault();
+      const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+      const c=pt.matrixTransform(svg.getScreenCTM().inverse());
+      const dataX=(c.x-PAD)/STEP+GMIN;
+      const dataY=(SIZE-PAD-c.y)/STEP+GMIN;
+      const fg=!!state.fineGrid[id];
+      if(drag.type==="point"){
+        const nx=clampSnap(dataX,fg),ny=clampSnap(dataY,fg);
+        const other=state.graphs[id][drag.idx%2===0?drag.idx+1:drag.idx-1];
+        if(Math.abs(nx-other[0])<1e-9&&Math.abs(ny-other[1])<1e-9)return;
+        state.graphs[id][drag.idx]=[nx,ny];
+      }else{
+        const pt0=svg.createSVGPoint();pt0.x=drag.startX;pt0.y=drag.startY;
+        const c0=pt0.matrixTransform(svg.getScreenCTM().inverse());
+        const d0x=(c0.x-PAD)/STEP+GMIN,d0y=(SIZE-PAD-c0.y)/STEP+GMIN;
+        let dxRaw=dataX-d0x,dyRaw=dataY-d0y;
+        const s=fg?0.5:1;
+        let dx=Math.round(dxRaw/s)*s,dy=Math.round(dyRaw/s)*s;
+        const sp=drag.startPts;
+        const xs=[sp[0][0],sp[1][0],sp[2][0],sp[3][0]],ys=[sp[0][1],sp[1][1],sp[2][1],sp[3][1]];
+        dx=Math.max(GMIN-Math.min(...xs),Math.min(GMAX-Math.max(...xs),dx));
+        dy=Math.max(GMIN-Math.min(...ys),Math.min(GMAX-Math.max(...ys),dy));
+        for(let i=0;i<4;i++)state.graphs[id][i]=[sp[i][0]+dx,sp[i][1]+dy];
+      }
+      drawGraph(id);
+      syncPointFields(id);
+    });
+    const end=()=>{if(drag){drag=null;save();}};
+    svg.addEventListener("pointerup",end);
+    svg.addEventListener("pointercancel",end);
+    svg.addEventListener("keydown",e=>{
+      const target=e.target.closest("[data-point]");if(!target)return;
+      let dx=0,dy=0;
+      if(e.key==="ArrowLeft")dx=-1;if(e.key==="ArrowRight")dx=1;
+      if(e.key==="ArrowUp")dy=1;if(e.key==="ArrowDown")dy=-1;
+      if(!dx&&!dy)return;
+      e.preventDefault();
+      const i=Number(target.dataset.point),p=state.graphs[id][i];
+      const nx=Math.max(GMIN,Math.min(GMAX,p[0]+dx));
+      const ny=Math.max(GMIN,Math.min(GMAX,p[1]+dy));
+      const other=state.graphs[id][i%2===0?i+1:i-1];
+      if(Math.abs(nx-other[0])<1e-9&&Math.abs(ny-other[1])<1e-9)return;
+      state.graphs[id][i]=[nx,ny];
+      drawGraph(id);save();syncPointFields(id);
+      const h=svg.querySelector('[data-point="'+i+'"]');if(h)h.focus();
+    });
+  });
+}
+
+function lineSegment(p,q){
+  const dx=q[0]-p[0],dy=q[1]-p[1],hits=[];
+  if(Math.abs(dx)+Math.abs(dy)<1e-9)return null;
+  if(dx!==0)for(const x of[GMIN,GMAX]){const t=(x-p[0])/dx,y=p[1]+t*dy;if(y>=GMIN-1e-7&&y<=GMAX+1e-7)hits.push([x,y])}
+  if(dy!==0)for(const y of[GMIN,GMAX]){const t=(y-p[1])/dy,x=p[0]+t*dx;if(x>=GMIN-1e-7&&x<=GMAX+1e-7)hits.push([x,y])}
+  const unique=hits.filter((p,i)=>!hits.slice(0,i).some(q=>Math.hypot(p[0]-q[0],p[1]-q[1])<1e-7));
+  return unique.length>=2?[unique[0],unique[1]]:null;
+}
+
+function lineEquation(p,q){
+  if(Math.abs(p[0]-q[0])<1e-9)return{text:"x = "+fmt(p[0]),m:null,b:null};
+  const m=(q[1]-p[1])/(q[0]-p[0]);
+  const b=p[1]-m*p[0];
+  return{text:"y = "+lin(m,b),m,b};
+}
+
+function pointsOnLine(p,q,eq){
+  const[A,B,C]=eq;
+  if(Math.hypot(p[0]-q[0],p[1]-q[1])<0.1)return false;
+  return Math.abs(A*p[0]+B*p[1]-C)<1e-7&&Math.abs(A*q[0]+B*q[1]-C)<1e-7;
+}
+
+function drawGraph(id){
+  const svg=document.getElementById("svg-"+id);if(!svg)return;
+  svg.replaceChildren();
+  const pts=state.graphs[id]||defaultGraph();
+  for(let i=GMIN;i<=GMAX;i++){
+    svg.appendChild(node("line",{x1:pointX(i),y1:pointY(GMIN),x2:pointX(i),y2:pointY(GMAX),stroke:i===0?"#778ca2":"#e2e9f1","stroke-width":i===0?2:1}));
+    svg.appendChild(node("line",{x1:pointX(GMIN),y1:pointY(i),x2:pointX(GMAX),y2:pointY(i),stroke:i===0?"#778ca2":"#e2e9f1","stroke-width":i===0?2:1}));
+    if(i!==0){
+      svg.appendChild(node("text",{x:pointX(i),y:pointY(0)+18,"text-anchor":"middle",class:"graphtext"},i));
+      svg.appendChild(node("text",{x:pointX(0)-8,y:pointY(i)+4,"text-anchor":"end",class:"graphtext"},i));
+    }
+  }
+  svg.appendChild(node("text",{x:572,y:pointY(0)-8,class:"graphtext"},"x"));
+  svg.appendChild(node("text",{x:pointX(0)+9,y:24,class:"graphtext"},"y"));
+  for(let j=0;j<2;j++){
+    const p=pts[2*j],q=pts[2*j+1];
+    const seg=lineSegment(p,q);
+    if(!seg)continue;
+    const color=j===0?BLUE:RED;
+    svg.appendChild(node("line",{x1:pointX(seg[0][0]),y1:pointY(seg[0][1]),x2:pointX(seg[1][0]),y2:pointY(seg[1][1]),stroke:color,"stroke-width":4,"stroke-linecap":"round","pointer-events":"none"}));
+    svg.appendChild(node("line",{x1:pointX(seg[0][0]),y1:pointY(seg[0][1]),x2:pointX(seg[1][0]),y2:pointY(seg[1][1]),stroke:"transparent","stroke-width":46,"data-line":j,"pointer-events":"stroke","style":"cursor:move;touch-action:none"}));
+  }
+  pts.forEach((p,i)=>{
+    const color=i<2?BLUE:RED;
+    const g=node("g",{"data-point":i,tabindex:"0",role:"button","aria-label":["A","B","C","D"][i]+" bei "+fmt(p[0])+", "+fmt(p[1])+". Mit Pfeiltasten bewegen.",class:"handle"});
+    g.appendChild(node("circle",{cx:pointX(p[0]),cy:pointY(p[1]),r:34,fill:"#fff","fill-opacity":0,"pointer-events":"all"}));
+    g.appendChild(node("circle",{cx:pointX(p[0]),cy:pointY(p[1]),r:11,fill:"#fff",stroke:color,"stroke-width":3,"pointer-events":"none"}));
+    g.appendChild(node("circle",{cx:pointX(p[0]),cy:pointY(p[1]),r:5.5,fill:color,"pointer-events":"none"}));
+    g.appendChild(node("text",{x:pointX(p[0])+15,y:pointY(p[1])-14,fill:color,"font-size":15,"font-weight":700,"pointer-events":"none"},["A","B","C","D"][i]));
+    svg.appendChild(g);
+  });
+  updateEqDisplay(id,pts);
+  const co=document.getElementById("coords-"+id);
+  if(co)co.textContent=pts.map((p,i)=>["A","B","C","D"][i]+"("+fmt(p[0])+" | "+fmt(p[1])+")").join(" · ");
+  if(id==="lab")updateRelation();
+}
+
+function updateEqDisplay(id,pts){
+  const el=document.getElementById("eq-"+id);if(!el)return;
+  const eqI=lineEquation(pts[0],pts[1]);
+  const eqII=lineEquation(pts[2],pts[3]);
+  const meta=f=>f.m===null?"senkrecht":("m = "+fmt(f.m)+", b = "+fmt(f.b));
+  let html='<span class="lineI">I: '+eqI.text+' <span class="meta">('+meta(eqI)+')</span></span>'
+          +'<span class="lineII">II: '+eqII.text+' <span class="meta">('+meta(eqII)+')</span></span>';
+  const task=taskMap[id];
+  if(task&&task.type==="graph"&&task.eqs){
+    const okI=pointsOnLine(pts[0],pts[1],task.eqs[0]);
+    const okII=pointsOnLine(pts[2],pts[3],task.eqs[1]);
+    html+='<span class="graph-status">'+(okI?'<span class="ok">✓</span>':'○')+' Gerade I &nbsp; '+(okII?'<span class="ok">✓</span>':'○')+' Gerade II</span>';
+  }
+  el.innerHTML=html;
+}
+
+function syncPointFields(id){
+  const sel=document.getElementById("point-"+id);if(!sel)return;
+  const p=(state.graphs[id]||defaultGraph())[Number(sel.value)];
+  document.getElementById("px-"+id).value=fmt(p[0]).replace("−","-");
+  document.getElementById("py-"+id).value=fmt(p[1]).replace("−","-");
+}
+
+function setPoint(id){
+  const x=parseNumber(document.getElementById("px-"+id).value);
+  const y=parseNumber(document.getElementById("py-"+id).value);
+  if(!Number.isFinite(x)||!Number.isFinite(y)||Math.abs(x)>GMAX||Math.abs(y)>GMAX){
+    toast("Koordinaten zwischen −8 und 8 eingeben. Auch Brüche sind möglich.");return;
+  }
+  const fg=!!state.fineGrid[id];
+  const nx=clampSnap(x,fg),ny=clampSnap(y,fg);
+  const i=Number(document.getElementById("point-"+id).value);
+  const other=state.graphs[id][i%2===0?i+1:i-1];
+  if(Math.abs(nx-other[0])<1e-9&&Math.abs(ny-other[1])<1e-9){
+    toast("Die beiden Punkte einer Geraden müssen verschieden sein.");return;
+  }
+  state.graphs[id][i]=[nx,ny];
+  save();drawGraph(id);syncPointFields(id);
+}
+
+function resetGraph(id){
+  if(id==="lab")state.graphs[id]=[[0,1],[2,3],[0,5],[2,3]];
+  else state.graphs[id]=defaultGraph();
+  save();drawGraph(id);syncPointFields(id);
+}
+
+function labHTML(){
+  if(!state.graphs.lab)state.graphs.lab=[[0,1],[2,3],[0,5],[2,3]];
+  return graphHTML("lab",true)+`<div class="actions"><button onclick="presetLab(0)">1 · Schnittpunkt</button><button onclick="presetLab(1)">2 · Parallel</button><button onclick="presetLab(2)">3 · Deckungsgleich</button></div><p class="small">Bei deckungsgleichen Geraden verdecken sich die Linien. Die Punkte sind in der Voreinstellung absichtlich an verschiedenen Stellen. Lies in der Rückmeldung m und b ab.</p>`;
+}
+
+function presetLab(n){
+  state.graphs.lab=n===0?[[0,1],[2,3],[0,5],[2,3]]:n===1?[[0,1],[2,3],[0,3],[2,5]]:[[0,1],[2,3],[-2,-1],[4,5]];
+  save();drawGraph("lab");syncPointFields("lab");
+}
+
+function updateRelation(){
+  const el=document.getElementById("relation-lab");if(!el)return;
+  const p=state.graphs.lab;
+  function coeff(a,b){const A=b[1]-a[1],B=a[0]-b[0],C=A*a[0]+B*a[1];return[A,B,C]}
+  const r=coeff(p[0],p[1]),s=coeff(p[2],p[3]);
+  if(Math.hypot(r[0],r[1])<1e-8||Math.hypot(s[0],s[1])<1e-8){
+    el.textContent="Zwei Punkte derselben Geraden müssen verschieden sein.";return;
+  }
+  const describe=r=>Math.abs(r[1])<1e-8?"x = "+fmt(r[2]/r[0]):"y = "+lin(-r[0]/r[1],r[2]/r[1])+"   (m = "+fmt(-r[0]/r[1])+", b = "+fmt(r[2]/r[1])+")";
+  const det=r[0]*s[1]-s[0]*r[1];
+  let msg="";
+  if(Math.abs(det)>1e-7){
+    let x=(r[2]*s[1]-s[2]*r[1])/det,y=(r[0]*s[2]-s[0]*r[2])/det;
+    msg="Genau eine Lösung: S("+fmt(x)+" | "+fmt(y)+")."+(Math.abs(x)>8||Math.abs(y)>8?" Der Punkt liegt außerhalb des dargestellten Ausschnitts.":"");
+  }else if(Math.abs(r[0]*s[2]-s[0]*r[2])<1e-7&&Math.abs(r[1]*s[2]-s[1]*r[2])<1e-7)msg="Deckungsgleich: unendlich viele gemeinsame Paare auf dieser Geraden.";
+  else msg="Verschieden und parallel: keine gemeinsame Lösung.";
+  el.replaceChildren();
+  let a=document.createElement("p");a.textContent="I: "+describe(r);
+  let b=document.createElement("p");b.textContent="II: "+describe(s);
+  let c=document.createElement("strong");c.textContent=msg;
+  el.append(a,b,c);
+}
+
+// Interne Konsistenzprüfung der fest eingebauten Aufgaben.
+function validateContent(){
+  for(const t of allTasks){
+    if(t.answer&&t.eqs&&Array.isArray(t.answer)&&t.type!=="pair"){
+      if(!t.eqs.every(r=>Math.abs(r[0]*t.answer[0]+r[1]*t.answer[1]-r[2])<1e-8))console.error("Inkonsistente Aufgabe",t.id);
+    }
+    if(t.type==="triple"&&!t.rows.every(r=>Math.abs(r[0]*t.answer[0]+r[1]*t.answer[1]+r[2]*t.answer[2]-r[3])<1e-8))console.error("Inkonsistente 3×3-Aufgabe",t.id);
+  }
+}
+validateContent();
+go(state.page||"start");
+</script>
+</body>
+</html>
