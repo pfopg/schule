@@ -670,8 +670,9 @@ if(t.method==="add")return["Suche gleiche oder entgegengesetzte Koeffizienten be
 return["Überlege zuerst, was gesucht ist und welche Bedingung erfüllt sein muss.","Benutze das Heftbeispiel als Orientierung. Prüfe deinen Vorschlag in jeder Gleichung."]
 }
 function solutionHTML(t){
-if(t.type==="choice")return"<p><strong>Richtig:</strong> "+esc(t.options[t.correct])+"</p><p>"+esc(t.explain)+"</p>";
-if(t.type==="number"||t.type==="pair"||t.type==="triple")return"<p>"+esc(t.solution||"")+" </p>";
+if(t.type==="choice")return"<p><strong>Richtig:</strong> "+typesetFractions(esc(t.options[t.correct]))+"</p><p>"+typesetFractions(esc(t.explain))+"</p>";
+
+if(t.type==="number"||t.type==="pair"||t.type==="triple")return"<p>"+typesetFractions(esc(t.solution||""))+" </p>";
 let [x,y]=t.answer;
 let steps=[];
 if(t.customSolution)steps=[t.customSolution];
@@ -733,11 +734,11 @@ const a=state.answers[t.id]||{};
 const hints=taskHints(t),hc=state.hints[t.id]||0;
 let html=`<section class="card task ${state.solved[t.id]?"done":""}" id="task-${t.id}"><div class="taskhead"><h3>${esc(t.title)}</h3><span class="status" id="status-${t.id}">${state.solved[t.id]?"✓ geprüft":state.revealed[t.id]?"Lösung angesehen":""}</span></div>`;
 if(!t.exit)html+='<span class="tag">'+(t.level===1?"Basis · Pflicht":t.level===2?"Aufbau":"Plus · freiwillig")+"</span>";
-if(t.prompt)html+="<p>"+t.prompt+"</p>";
+if(t.prompt)html+="<p>"+typesetFractions(t.prompt)+"</p>";
 html+=eqForTask(t);
 if(t.type==="choice"){
 html+='<div class="choices" role="group" aria-label="Antwort auswählen">';
-t.options.forEach((o,i)=>html+=`<label><input type="radio" name="${t.id}" value="${i}" ${String(a.choice)===String(i)?"checked":""} onchange="remember('${t.id}','choice',this.value)"><span>${esc(o)}</span></label>`);
+t.options.forEach((o,i)=>html+=`<label><input type="radio" name="${t.id}" value="${i}" ${String(a.choice)===String(i)?"checked":""} onchange="remember('${t.id}','choice',this.value)"><span>${typesetFractions(esc(o))}</span></label>`);
 html+="</div>";
 }else{
 if(t.type==="graph")html+=graphHTML(t.id,false);
@@ -747,7 +748,7 @@ fields.forEach(k=>html+=`<label>${k==="value"?(t.label||"Ergebnis"):k} = <input 
 html+="</div>";
 if(t.type==="pair")html+='<p class="small">Ein beliebiges passendes Paar genügt. x zuerst, y danach.</p>';
 }
-html+=`<div class="actions"><button class="primary" onclick="checkTask('${t.id}')">Prüfen</button><button onclick="showHint('${t.id}')">Hinweis <span id="hintcount-${t.id}">${Math.min(hc,hints.length)}/${hints.length}</span></button><button onclick="showSolution('${t.id}')">Lösungsweg ansehen</button></div><div id="feedback-${t.id}" role="status"></div><div id="hints-${t.id}">${hints.slice(0,hc).map((h,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+':</strong> '+esc(h)+"</div>").join("")}</div><div id="solution-${t.id}">${state.revealed[t.id]?'<details open><summary>Lösung · erst vergleichen, dann selbst erklären</summary>'+solutionHTML(t)+"</details>":""}</div></section>`;
+html+=`<div class="actions"><button class="primary" onclick="checkTask('${t.id}')">Prüfen</button><button onclick="showHint('${t.id}')">Hinweis <span id="hintcount-${t.id}">${Math.min(hc,hints.length)}/${hints.length}</span></button><button onclick="showSolution('${t.id}')">Lösungsweg ansehen</button></div><div id="feedback-${t.id}" role="status"></div><div id="hints-${t.id}">${hints.slice(0,hc).map((h,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+':</strong> '+typesetFractions(esc(h))+"</div>").join("")}</div><div id="solution-${t.id}">${state.revealed[t.id]?'<details open><summary>Lösung · erst vergleichen, dann selbst erklären</summary>'+solutionHTML(t)+"</details>":""}</div></section>`;
 return html;
 }
 function remember(id,k,v){if(!state.answers[id])state.answers[id]={};state.answers[id][k]=v;save()}
@@ -793,7 +794,8 @@ msg=failed.map(r=>(r.ok?"✓ ":"✗ ")+"Gleichung "+["I","II"][r.i]+(r.ok?" stim
 }else msg="Noch nicht richtig. Kontrolliere Vorzeichen, Rechenschritte und gegebenenfalls Klammern. Nutze bei Bedarf einen Hinweis.";
 }
 }
-box.className=correct?"success":"error";box.textContent=msg;
+box.className=correct?"success":"error";
+box.innerHTML=typesetFractions(esc(msg));
 if(correct){
 state.solved[id]=true;save();document.getElementById("task-"+id).classList.add("done");
 document.getElementById("status-"+id).textContent="✓ geprüft";renderNav();
@@ -802,7 +804,7 @@ if(t.after&&!state.revealed[id]){const p=document.createElement("p");p.textConte
 }
 function showHint(id){
 const h=taskHints(taskMap[id]);state.hints[id]=Math.min((state.hints[id]||0)+1,h.length);save();
-document.getElementById("hints-"+id).innerHTML=h.slice(0,state.hints[id]).map((v,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+":</strong> "+esc(v)+"</div>").join("");
+document.getElementById("hints-"+id).innerHTML=h.slice(0,state.hints[id]).map((v,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+":</strong> "+typesetFractions(esc(v))+"</div>").join("");
 document.getElementById("hintcount-"+id).textContent=state.hints[id]+"/"+h.length;
 }
 function showSolution(id){
