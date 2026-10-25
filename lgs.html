@@ -261,17 +261,115 @@ ${E("y = 2x + 1\nPunktprobe für P(2 | 5):   5 = 2·2 + 1   ✓")}
 </div></div>
 </div>`,
 tasks:[
-num("m1r1","Klammern und Variable auf beiden Seiten",`Löse die Gleichung <strong>4(2x − 3) − 5 = 3x + 8</strong>.`,5,{hints:["Multipliziere zuerst beide Terme in der Klammer mit 4.","Fasse links zusammen und bringe alle x-Terme auf eine Seite."],solution:"8x − 12 − 5 = 3x + 8 → 8x − 17 = 3x + 8 → 5x = 25 → x = 5. Probe: links 23, rechts 23."}),
-num("m1r2","Minus vor der Klammer",`Bestimme x: <strong>5 − 2(3 − x) = 3x − 4</strong>.`,3,{hints:["Achte darauf, dass beim Ausmultiplizieren −2 · (−x) = +2x gilt.","Nach dem Auflösen lautet die Gleichung 2x − 1 = 3x − 4."],solution:"5 − 6 + 2x = 3x − 4 → 2x − 1 = 3x − 4 → x = 3. Probe: links 5, rechts 5."}),
-num("m1r3","Mit einem Bruchkoeffizienten",`Löse <strong>(3/4)x − 2 = 7</strong>. Gib x als exakte Zahl an.`,12,{hints:["Addiere zunächst 2 auf beiden Seiten.","Multipliziere anschließend beide Seiten mit 4/3."],solution:"(3/4)x = 9 → x = 9 · 4/3 = 12."}),
-choice("m1r4","Fehler finden","Mara schreibt aus 2(3x − 4) = 5x + 7 die Zeile 6x − 4 = 5x + 7. Welche Diagnose ist richtig?",["Die Umformung ist korrekt.","Die 2 muss auch mit −4 multipliziert werden: 6x − 8 = 5x + 7.","Die 2 darf nicht mit x multipliziert werden."],1,"Ein Faktor vor einer Klammer multipliziert jeden Term in der Klammer."),
-choice("m1r5","Steigung aus zwei Punkten",`Eine Gerade geht durch A(−2 | 5) und B(2 | −3). Welche Steigung hat sie?`,["m = −2","m = 2","m = −1/2"],0,"Die x-Koordinate steigt um 4, die y-Koordinate sinkt um 8. Daher ist m = −8/4 = −2."),
-choice("m1r6","Steigung und Achsenabschnitt zusammen",`Für <strong>f(x) = −(3/2)x + 4</strong> trifft welche Aussage zu?`,["Der Graph schneidet die y-Achse bei −3/2 und steigt.","Bei x = 0 ist y = 4; bei 2 Schritten nach rechts sinkt y um 3.","Die Gerade ist waagerecht und liegt bei y = 4."],1,"In y = mx + b gilt m = −3/2 und b = 4. Zwei Einheiten nach rechts ändern y um −3."),
-num("m1r7","Eine Punktkoordinate berechnen",`Der Punkt P(x | −7) liegt auf der Geraden <strong>y = −2,5x + 3</strong>. Bestimme x.`,4,{hints:["Setze y = −7 in die Funktionsgleichung ein.","Es gilt −10 = −2,5x."],solution:"−7 = −2,5x + 3 → −10 = −2,5x → x = 4."}),
-choice("m1r8","Funktionsgleichung aus Eigenschaften","Eine Gerade schneidet die y-Achse bei −2. Wenn x um 2 zunimmt, steigt y um 3. Welche Funktionsgleichung passt?",["y = 1,5x − 2","y = 3x − 2","y = −1,5x + 2"],0,"Die Steigung ist 3/2 = 1,5, der y-Achsenabschnitt ist −2." ,{level:2}),
-num("m1r9","Zwei Klammern vergleichen",`Löse <strong>2(3x − 5) = 4(x + 1) + 6</strong>.`,10,{level:2,hints:["Löse beide Klammern auf.","Nach dem Zusammenfassen erhältst du 6x − 10 = 4x + 10."],solution:"6x − 10 = 4x + 10 → 2x = 20 → x = 10."}),
-choice("m1r10","Eine Umformung begründen","Aus 3(2x − 1) = 6x − 3 teilt jemand beide Seiten durch 3 und erhält 2x − 1 = 6x − 3. Warum ist das falsch?",["Weil man eine Gleichung niemals durch eine Zahl teilen darf.","Weil auch die rechte Seite vollständig durch 3 geteilt werden muss; es entsteht 2x − 1 = 2x − 1.","Weil beim Teilen das Minuszeichen verschwindet."],1,"Bei einer Äquivalenzumformung muss dieselbe Rechenoperation auf die gesamte linke und rechte Seite angewendet werden.",{level:3})
+num("m1r1","Einfache lineare Gleichung",
+`Löse die Gleichung <strong>x + 7 = 12</strong>.`,
+5,{
+  hints:[
+    "Bringe die 7 auf die andere Seite.",
+    "Subtrahiere 7 auf beiden Seiten."
+  ],
+  solution:"x + 7 = 12 → x = 5."
+}),
+
+num("m1r2","Klammer auf einer Seite",
+`Bestimme x: <strong>2(x + 1) = 8</strong>.`,
+3,{
+  hints:[
+    "Multipliziere die Klammer aus.",
+    "Danach steht 2x + 2 = 8."
+  ],
+  solution:"2x + 2 = 8 → 2x = 6 → x = 3."
+}),
+
+num("m1r3","Minus vor der Klammer",
+`Löse <strong>6 - (x - 2) = 5</strong>.`,
+3,{
+  hints:[
+    "Vor der Klammer steht ein Minuszeichen.",
+    "Es entsteht 6 - x + 2 = 5."
+  ],
+  solution:"6 - (x - 2) = 5 → 6 - x + 2 = 5 → 8 - x = 5 → x = 3."
+}),
+
+choice("m1r4","Fehler finden",
+"Mara schreibt aus 2(3x − 4) = 5x + 7 die Zeile 6x − 4 = 5x + 7. Welche Diagnose ist richtig?",
+[
+  "Die Umformung ist korrekt.",
+  "Die 2 muss auch mit −4 multipliziert werden: 6x − 8 = 5x + 7.",
+  "Die 2 darf nicht mit x multipliziert werden."
 ],
+1,
+"Ein Faktor vor einer Klammer multipliziert jeden Term in der Klammer."
+),
+
+choice("m1r5","Steigung aus zwei Punkten",
+`Eine Gerade geht durch A(−2 | 5) und B(2 | −3). Welche Steigung hat sie?`,
+[
+  "m = −2",
+  "m = 2",
+  "m = −1/2"
+],
+0,
+"Die x-Koordinate steigt um 4, die y-Koordinate sinkt um 8. Daher ist m = −8/4 = −2."
+),
+
+choice("m1r6","Steigung und Achsenabschnitt zusammen",
+`Für <strong>f(x) = −(3/2)x + 4</strong> trifft welche Aussage zu?`,
+[
+  "Der Graph schneidet die y-Achse bei −3/2 und steigt.",
+  "Bei x = 0 ist y = 4; bei 2 Schritten nach rechts sinkt y um 3.",
+  "Die Gerade ist waagerecht und liegt bei y = 4."
+],
+1,
+"In y = mx + b gilt m = −3/2 und b = 4. Zwei Einheiten nach rechts ändern y um −3."
+),
+
+num("m1r7","Eine Punktkoordinate berechnen",
+`Der Punkt P(x | −7) liegt auf der Geraden <strong>y = −2,5x + 3</strong>. Bestimme x.`,
+4,{
+  hints:[
+    "Setze y = −7 in die Funktionsgleichung ein.",
+    "Es gilt −10 = −2,5x."
+  ],
+  solution:"−7 = −2,5x + 3 → −10 = −2,5x → x = 4."
+}),
+
+choice("m1r8","Funktionsgleichung aus Eigenschaften",
+"Eine Gerade schneidet die y-Achse bei −2. Wenn x um 2 zunimmt, steigt y um 3. Welche Funktionsgleichung passt?",
+[
+  "y = 1,5x − 2",
+  "y = 3x − 2",
+  "y = −1,5x + 2"
+],
+0,
+"Die Steigung ist 3/2 = 1,5, der y-Achsenabschnitt ist −2.",
+{level:2}
+),
+
+num("m1r9","Klammern auf beiden Seiten",
+`Löse <strong>2(x + 3) = x + 8</strong>.`,
+2,{
+  level:2,
+  hints:[
+    "Multipliziere die linke Klammer aus.",
+    "Bringe alle x-Terme auf eine Seite."
+  ],
+  solution:"2x + 6 = x + 8 → x = 2."
+}),
+
+choice("m1r10","Eine Umformung begründen",
+"Aus x + 5 = 9 macht jemand die Zeile x = 9. Warum ist das falsch?",
+[
+  "Weil die 5 ebenfalls entfernt werden muss.",
+  "Weil man Gleichungen nicht umformen darf.",
+  "Weil x immer links stehen muss."
+],
+0,
+"Man muss auf beiden Seiten dieselbe Rechenoperation durchführen: x + 5 = 9 → x = 4.",
+{level:3}
+)
+]
+  
 exit:[
 ["Bei f(x) = −1,5x + 6 ist der y-Achsenabschnitt …",["−1,5","6","−6"],1,"Der y-Achsenabschnitt ist b, also 6."],
 ["Welcher Punkt liegt auf y = 3x − 6?",["(2 | 0)","(0 | 3)","(−2 | 0)"],0,"Für x = 2 ergibt sich y = 6 − 6 = 0."],
