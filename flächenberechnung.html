@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Integralrechnung – Übersicht und Trainingsarena</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf2f7;color:#192c40;font:17px/1.55 Arial,sans-serif}main{max-width:1250px;margin:auto;padding:24px}h3{font-size:29px;margin:0 0 12px}h4{font-size:24px;margin:26px 0 14px}h5{font-size:21px;margin:0 0 12px}p{margin:10px 0}button,select{font:inherit;border-radius:7px;padding:9px 13px}button{border:0;background:#215b91;color:white;cursor:pointer}button.secondary{background:#e5edf5;color:#254866}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #db9d24;outline-offset:3px}a{color:#17598e}nav,.toolbar,.controls{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.panel,.card{background:white;border:1px solid #d4dde7;border-radius:12px;padding:22px;margin-bottom:20px}.algorithm{border-left:5px solid #2563a6}.note{background:#fffbed;border-left:5px solid #d99c24}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.card{margin:0;min-width:0;scroll-margin-top:20px}.badge{display:inline-block;background:#e8eef8;color:#244d80;font-size:14px;font-weight:bold;padding:4px 10px;border-radius:20px;margin-bottom:12px}.plot{display:block;width:100%;background:#fbfcfe;border:1px solid #e4e9ef;border-radius:8px;margin:16px 0}.formula{font-size:20px;overflow-x:auto;padding:7px 0;line-height:1.9}.katex{font-size:1.1em}.legend,.status,.small{font-size:14px;color:#4b5d70}.step{border-left:3px solid #b8cde1;padding:10px 0 10px 14px;margin:13px 0}.step-label{font-size:16px;font-weight:bold;color:#365977}.answer{margin-top:8px}.total{color:#16533c;border-top:2px solid #dae8df;padding-top:9px}.cas code{display:block;font-family:Consolas,"Liberation Mono","Courier New",monospace;font-size:19px;line-height:1.6;background:#edf2f7;color:#142d48;padding:10px 13px;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere;margin:9px 0}ol,ul{margin-top:14px;padding-left:26px}li{margin:12px 0}.toc{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toc a{padding:8px;background:#f0f5fa;border-radius:6px;text-decoration:none;font-size:15px}.permalink{font-size:14px}.arena-card{max-width:900px;margin:auto}.arena-card .plot{max-height:390px}.arena-controls{display:flex;gap:18px;flex-wrap:wrap;align-items:end}.arena-controls label{display:flex;flex-direction:column;gap:6px}.active{box-shadow:inset 0 -4px 0 #e5b349}.check{font-size:14px;color:#23593c}footer{font-size:14px;color:#526476;margin-top:25px}[hidden]{display:none!important}
+@media(max-width:950px){.grid,.toc{grid-template-columns:1fr}main{padding:14px}}
+@media print{
+@page{size:A4;margin:14mm}body{background:white;font-size:12pt}main{padding:0;max-width:none}nav,.toolbar,.controls,.status,.permalink,.screen-only,.arena-controls{display:none!important}h3{font-size:21pt}h4{font-size:18pt;break-after:avoid}h5{font-size:15pt}.grid{display:block}.card{margin-bottom:18px;padding:14px;break-inside:avoid}.plot{width:80%;max-height:230px;margin:10px auto}.formula{font-size:14pt;padding:3px 0}.panel{padding:13px}.step[hidden],.answer[hidden]{display:block!important}.step{margin:6px 0;padding:5px 0 5px 10px}.badge,.legend,.step-label{font-size:10pt}.cas code{font-size:12pt}.cas li{break-inside:avoid}.toc{display:none}.katex{font-size:1.08em}
+}
+</style>
+</head>
+<body>
+<main>
+<nav aria-label="Seiten">
+<button id="navOverview">Übersicht & Beispiele</button>
+<button id="navArena">Trainingsarena</button>
+<button class="secondary" id="print">Drucken / PDF</button>
+</nav>
+<section id="overview">
+<section class="panel">
+<h3>Flächen berechnen mit Integralen</h3>
+<p><strong>Übersichts- und Übungsblatt · ausschließlich Polynomfunktionen · CAS</strong></p>
+<p>Ein Integral liefert einen <strong>vorzeichenbehafteten Wert</strong>. Ein Flächeninhalt ist immer nichtnegativ. Deshalb jedes Teilintegral einzeln positiv machen und erst dann addieren.</p>
+<div data-math="A_i=\left|\int_u^v f(x)\,dx\right|,\qquad A_{\mathrm{Gesamt}}=A_1+A_2+\dots" class="formula"></div>
+<p class="screen-only"><strong>Üben:</strong> „Nächster Hinweis“ zeigt nur den Arbeitsauftrag. „Nächste Lösung“ zeigt die Rechnung zum ältesten noch ungelösten, bereits eingeblendeten Hinweis. Du kannst auch mehrere Hinweise ohne Lösungen aufdecken.</p>
+<p class="small">Die eingezeichneten Grenzen sind eine Unterstützung. In der Trainingsarena bleiben die inneren Null- bzw. Schnittstellen zunächst unbeschriftet.</p>
+</section>
+<section class="panel">
+<h4>Direkt zu einem Beispiel</h4>
+<div id="toc" class="toc"></div>
+<p class="small">Die Links verwenden Sprungmarken wie <code>#beispiel-1</code>. Bei Veröffentlichung kann diese Endung an die Seitenadresse angehängt werden.</p>
+</section>
+<h4>1 · Zwischen Graph und x-Achse</h4>
+<section class="panel algorithm">
+<h5>Mathematischer Algorithmus</h5>
+
+<ol>
+<li>Ansatz <span data-math="f(x)=0"></span>: Nullstellen bestimmen. Bei Intervallvorgabe nur die relevanten Nullstellen verwenden und die Intervallgrenzen ergänzen.</li>
+<li>In jedem Teilintervall das Integral berechnen. Ergebnis notieren; dahinter <span data-math="A_i"></span> schreiben und negative Ergebnisse positiv machen.</li>
+<li>Alle Teilflächen addieren.</li>
+</ol>
+<p><strong>Ohne Intervall:</strong> Nur vollständig von Graph und x-Achse eingeschlossene, endliche Flächen berechnen. Ohne solche Einschließung sind zusätzliche Grenzen erforderlich.</p>
+</section>
+<section class="panel algorithm cas">
+<h5>CAS-Algorithmus: Fläche zwischen Graph und x-Achse</h5>
+
+<ol>
+<li><strong>Funktion definieren:</strong><code>define f(x) = ...</code></li>
+<li><strong>Potenzielle Nullstellen bestimmen:</strong><code>solve(f(x) = 0, x)</code><p>Liefert die Nullstellen. Nur reelle Lösungen berücksichtigen, bei Intervallvorgabe [a; b] nur die relevanten Lösungen.</p></li>
+<li><strong>Teilintervalle einzeln integrieren:</strong><code>∫(f(x),x,<i>x1</i>,<i>x2</i>)</code><p>Liefert den orientierten Flächeninhalt im Bereich [<i>x1</i>; <i>x2</i>]. Für die Teilfläche gegebenenfalls den Betrag bilden. Grenzen sind aufeinanderfolgende Nullstellen bzw. Intervallgrenzen.</p></li>
+<li><strong>Beträge aller Teilintegrale zur Gesamtfläche addieren.</strong></li>
+</ol>
+</section>
+<div class="grid" id="single"></div>
+<h4>2 · Zwischen zwei Graphen</h4>
+<section class="panel algorithm">
+<h5>Mathematischer Algorithmus</h5>
+
+<ol>
+<li>Differenz bilden: <span data-math="h(x)=f(x)-g(x)"></span>.</li>
+<li>Schnittstellen mit dem Ansatz <span data-math="f(x)=g(x)"></span> bestimmen. Bei Intervallvorgabe relevante Schnittstellen auswählen und Intervallgrenzen ergänzen.</li>
+<li>In jedem Teilintervall <span data-math="h(x)"></span> integrieren. Ergebnis notieren; dahinter <span data-math="A_i"></span> schreiben und negative Ergebnisse positiv machen.</li>
+<li>Alle Teilflächen addieren.</li>
+</ol>
+<p><strong>Ohne Intervall:</strong> Nur vollständig zwischen den Graphen eingeschlossene, endliche Flächen berechnen.</p>
+</section>
+<section class="panel algorithm cas">
+<h5>CAS-Algorithmus: Fläche zwischen zwei Graphen</h5>
+
+<ol>
+<li><strong>Funktionen definieren:</strong><code>define f(x) = ...
+define g(x) = ...
+define h(x) = f(x) - g(x)</code></li>
+<li><strong>Potenzielle Schnittstellen bestimmen:</strong><code>solve(f(x) = g(x), x)</code><p>oder</p><code>solve(h(x) = 0, x)</code><p>Liefert die x-Werte der Schnittpunkte von f und g (= Nullstellen von h). Nur reelle und gegebenenfalls im Intervall [a; b] relevante Lösungen verwenden.</p></li>
+<li><strong>Teilintervalle einzeln integrieren:</strong><code>∫(h(x),x,<i>x1</i>,<i>x2</i>)</code><p>Liefert den orientierten Flächeninhalt im Bereich [<i>x1</i>; <i>x2</i>]. Gegebenenfalls den Betrag für die Teilfläche bilden. Grenzen sind aufeinanderfolgende Schnittstellen bzw. Intervallgrenzen.</p></li>
+<li><strong>Beträge aller Teilintegrale zur Gesamtfläche addieren.</strong></li>
+</ol>
+</section>
+<section class="panel note">
+<p><strong>Die Lage zur x-Achse entscheidet nicht über das Vorzeichen!</strong> Entscheidend ist, welcher Graph oben liegt. Für <span data-math="h=f-g"></span> ist die Differenz positiv, wenn f über g liegt, und negativ, wenn f unter g liegt.</p>
+<p>Trennstellen sind die Nullstellen von h, nicht die Nullstellen von f oder g allein.</p>
+</section>
+<div class="grid" id="double"></div>
+</section>
+
+<section id="arena" hidden>
+<section class="panel">
+<h3>Trainingsarena</h3>
+<p>Wähle einen der <strong>sechs Aufgabentypen</strong>: zwei Kategorien mit jeweils drei Levels. Es wird immer nur eine Aufgabe angezeigt.</p>
+<div class="arena-controls">
+<label>Kategorie
+<select id="category"><option value="single">Graph und x-Achse</option><option value="double">Zwei Graphen</option></select>
+</label>
+<label>Schwierigkeit
+<select id="level"><option value="1">Level 1 – eine Teilfläche</option><option value="2">Level 2 – mehrere eingeschlossene Teilflächen</option><option value="3">Level 3 – Intervall mit vier Teilflächen</option></select>
+</label>
+<button id="newTask">Neue Aufgabe</button>
+</div>
+<p class="small">Jeder Typ enthält mehrere Aufgabenvarianten. Die nächste Variante startet ohne sichtbare Hinweise und Lösungen. Keine Punktebewertung – arbeite mit deinem CAS und vergleiche bei Bedarf.</p>
+</section>
+<div id="trainingTask" class="arena-card"></div>
+</section>
+<footer>
+Alle Flächeninhalte in Flächeneinheiten. Farben markieren Teilflächen; gestrichelte senkrechte Linien markieren Intervallgrenzen. Grenzen stets von links nach rechts verwenden. Berührstellen können Teilintervalle begrenzen, auch ohne Vorzeichenwechsel. Beim Drucken werden alle Lösungen der aktuell geöffneten Ansicht ausgegeben.
+<p id="verification" class="check"></p>
+</footer>
+</main>
+<script>
+/* Polynomial coefficients are stored in ascending powers.
+   All examples use integer coefficients and integer boundaries.
+   Integration and displayed results use exact rational arithmetic. */
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+function rat(n,d=1){if(d<0){n=-n;d=-d}const g=gcd(n,d);return [n/g,d/g]}
+const addR=(a,b)=>rat(a[0]*b[1]+b[0]*a[1],a[1]*b[1]);
+const absR=a=>[Math.abs(a[0]),a[1]];
+const valR=a=>a[0]/a[1];
+function texR(a){return a[1]===1?String(a[0]):(a[0]<0?'-':'')+'\\frac{'+Math.abs(a[0])+'}{'+a[1]+'}'}
+const evaluate=(p,x)=>p.reduceRight((s,c)=>s*x+c,0);
+function addP(a,b){return Array.from({length:Math.max(a.length,b.length)},(_,i)=>(a[i]||0)+(b[i]||0))}
+function mulP(a,b){const r=Array(a.length+b.length-1).fill(0);a.forEach((u,i)=>b.forEach((v,j)=>r[i+j]+=u*v));return r}
+function fromRoots(roots,k=1){return roots.reduce((p,r)=>mulP(p,[-r,1]),[k])}
+function integral(p,a,b){return p.reduce((s,c,i)=>addR(s,rat(c*(b**(i+1)-a**(i+1)),i+1)),[0,1])}
+function poly(p){
+let s='';
+for(let i=p.length-1;i>=0;i--){
+const c=p[i];if(!c)continue;
+s+=(s?(c<0?'-':'+'):(c<0?'-':''));
+const n=Math.abs(c);
+s+=(i===0||n!==1?String(n):'')+(i?(i===1?'x':'x^{'+i+'}'):'');
+}
+return s||'0';
+}
+const M=s=>'<div class="formula" data-math="'+s+'"></div>';
+function make(group,title,h,roots,interval=null,g=null,tag=''){
+return {group,title,h,roots,interval,g,f:g?addP(g,h):h,tag};
+}
+const examples=[
+make('single','Oberhalb der x-Achse',[8,0,-2],[-2,2],null,null,'Ohne Intervall · vollständig eingeschlossen'),
+make('single','Unterhalb der x-Achse',[-3,-2,1],[-1,3],null,null,'Ohne Intervall · vollständig eingeschlossen'),
+make('single','Gemischt: zwei Teilflächen',[0,-1,0,1],[-1,0,1],null,null,'Ohne Intervall · vollständig eingeschlossen'),
+make('single','Oberhalb im vorgegebenen Intervall',[2,1,1],[],[0,2],null,'Mit Intervallvorgabe'),
+make('single','Unterhalb im vorgegebenen Intervall',[-2,1,-2],[],[-1,1],null,'Mit Intervallvorgabe'),
+make('single','Gemischt: vier Teilflächen',[0,-4,-3,1],[-1,0,4],[-2,5],null,'Grenzen: a, x₁, x₂, x₃, b'),
+make('double','Fläche oberhalb der x-Achse',[6,1,-1],[-2,3],null,[2],'Einmal konstante Funktion · ohne Intervall'),
+make('double','Fläche unterhalb der x-Achse',[6,4,-2],[-1,3],null,[-20,1],'Einmal lineare Funktion · ohne Intervall'),
+make('double','Zwei Teilflächen mit Vorzeichenwechsel',[0,-4,-3,1],[-1,0,4],null,[1,0,1],'Beide Funktionen mindestens quadratisch'),
+make('double','Oberhalb: positive Differenz im Intervall',[3,-2,2],[],[0,2],[2,0,1],'Beide Funktionen quadratisch · mit Intervall'),
+make('double','Unterhalb: negative Differenz im Intervall',[-2,-2,-1],[],[-1,2],[-3,0,-1],'Beide Funktionen quadratisch · mit Intervall'),
+make('double','Vier Teilflächen im Intervall',[6,-5,-2,1],[-2,1,3],[-3,4],[0,-2,1],'Zwei positive und zwei negative Teilintegrale')
+];
+const pools={};
+for(const group of ['single','double']){
+for(let level=1;level<=3;level++){
+pools[group+level]=[];
+for(let variant=0;variant<3;variant++){
+let h,roots,interval=null;
+if(level===1){
+if(variant===0){roots=[-1,2];h=fromRoots(roots,-2)}
+if(variant===1){roots=[];h=[3,-1,1];interval=[-1,2]}
+if(variant===2){roots=[0,3];h=fromRoots(roots,1)}
+}else if(level===2){
+roots=variant===0?[-2,0,3]:variant===1?[-3,-1,2]:[-1,1,4];
+h=fromRoots(roots,variant===1?-1:1);
+}else{
+roots=variant===0?[-2,0,2]:variant===1?[-1,1,3]:[-3,0,1];
+h=fromRoots(roots,variant===1?-1:1);
+interval=[roots[0]-1,roots[2]+1];
+}
+const g=group==='double'?[variant+1,variant-1,variant+1]:null;
+pools[group+level].push(make(group,'Trainingsaufgabe',h,roots,interval,g,'Level '+level+' · Variante '+(variant+1)));
+}
+}
+}
+function boundaries(c){
+if(!c.interval)return c.roots.slice();
+return [c.interval[0],...c.roots.filter(x=>x>c.interval[0]&&x<c.interval[1]),c.interval[1]];
+}
+let svgCount=0;
+function plot(c,training){
+const id=++svgCount,W=580,H=330,L=48,R=32,T=32,B=60;
+const bounds=boundaries(c),a=bounds[0],b=bounds.at(-1),pad=Math.max(.5,(b-a)*.14);
+const xmin=a-pad,xmax=b+pad,values=[0];
+for(let j=0;j<=220;j++){
+const x=xmin+(xmax-xmin)*j/220;
+values.push(evaluate(c.f,x));if(c.g)values.push(evaluate(c.g,x));
+}
+let ymin=Math.min(...values),ymax=Math.max(...values);
+const ypad=Math.max(1,(ymax-ymin)*.12);ymin-=ypad;ymax+=ypad;
+const X=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R);
+const Y=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B);
+const xAxis=Math.max(L,Math.min(W-R,X(0)));
+const yAxis=Y(0);
+const tickRaw=(ymax-ymin)/7;
+const mag=10**Math.floor(Math.log10(tickRaw));
+const tick=[1,2,5,10].map(n=>n*mag).find(n=>n>=tickRaw);
+const colors=['#f3b44c','#56bdb0','#ae91dc','#72aee6'];
+let s=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphen mit markierten Flächen, kräftigen Achsen und Pfeilen nur in positiver Richtung"><defs><clipPath id="clip${id}"><rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}"/></clipPath><marker id="arrow${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#172b42"/></marker></defs>`;
+for(let x=Math.ceil(xmin);x<=xmax;x++)s+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${H-B}" stroke="#e5eaf0"/>`;
+for(let y=Math.ceil(ymin/tick)*tick;y<=ymax;y+=tick){
+s+=`<line x1="${L}" y1="${Y(y)}" x2="${W-R}" y2="${Y(y)}" stroke="#e5eaf0"/>`;
+if(Math.abs(y)>1e-8)s+=`<text x="${L-7}" y="${Y(y)+4}" text-anchor="end" font-size="11" fill="#566b80">${Math.round(y*100)/100}</text>`;
+}
+s+=`<g clip-path="url(#clip${id})">`;
+for(let j=0;j<bounds.length-1;j++){
+let d='';const u=bounds[j],v=bounds[j+1];
+for(let k=0;k<=100;k++){const x=u+(v-u)*k/100;d+=(k?'L':'M')+X(x)+','+Y(evaluate(c.f,x))}
+for(let k=100;k>=0;k--){const x=u+(v-u)*k/100;d+='L'+X(x)+','+Y(c.g?evaluate(c.g,x):0)}
+s+=`<path d="${d}Z" fill="${colors[j%4]}" fill-opacity=".5"/>`;
+}
+if(c.interval)for(const x of c.interval)s+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${H-B}" stroke="#64768a" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+s+='</g>';
+s+=`<line x1="${L}" y1="${yAxis}" x2="${W-R+10}" y2="${yAxis}" stroke="#172b42" stroke-width="2.8" marker-end="url(#arrow${id})"/><line x1="${xAxis}" y1="${H-B}" x2="${xAxis}" y2="${T-14}" stroke="#172b42" stroke-width="2.8" marker-end="url(#arrow${id})"/>`;
+for(let x=Math.ceil(xmin);x<=xmax;x++){
+s+=`<line x1="${X(x)}" y1="${yAxis-4}" x2="${X(x)}" y2="${yAxis+4}" stroke="#172b42" stroke-width="1.5"/>`;
+if(training)s+=`<text x="${X(x)}" y="${H-B+20}" text-anchor="middle" font-size="12" fill="#4b6075">${x}</text>`;
+}
+for(let y=Math.ceil(ymin/tick)*tick;y<=ymax;y+=tick)s+=`<line x1="${xAxis-4}" y1="${Y(y)}" x2="${xAxis+4}" y2="${Y(y)}" stroke="#172b42" stroke-width="1.5"/>`;
+s+=`<g clip-path="url(#clip${id})">`;
+for(const [p,color] of [[c.f,'#1f5ca9'],...(c.g?[[c.g,'#b13f64']]:[])]){
+let d='';for(let k=0;k<=450;k++){let x=xmin+(xmax-xmin)*k/450;d+=(k?'L':'M')+X(x)+','+Y(evaluate(p,x))}
+s+=`<path d="${d}" fill="none" stroke="${color}" stroke-width="3"/>`;
+}
+for(let j=0;j<bounds.length-1;j++){
+const x=(bounds[j]+bounds[j+1])/2,y=(evaluate(c.f,x)+(c.g?evaluate(c.g,x):0))/2;
+s+=`<text x="${X(x)}" y="${Y(y)+5}" text-anchor="middle" font-size="18" font-weight="bold" fill="#243449" stroke="white" stroke-width="3" paint-order="stroke">A${['₁','₂','₃','₄'][j]}</text>`;
+}
+s+='</g>';
+if(!training)bounds.forEach((x,j)=>{
+let label;
+if(c.interval&&(j===0||j===bounds.length-1))label=(j===0?'a':'b')+' = '+x;
+else label='x'+['₁','₂','₃','₄'][c.roots.indexOf(x)]+' = '+x;
+s+=`<circle cx="${X(x)}" cy="${Y(evaluate(c.f,x))}" r="3.5" fill="#243449"/><text x="${X(x)}" y="${H-B+21+(bounds.length===5&&j%2?16:0)}" text-anchor="middle" font-size="13" fill="#33485e">${label}</text>`;
+});
+s+=`<text x="${W-R+9}" y="${yAxis-11}" text-anchor="end" font-size="17" font-weight="bold">x</text><text x="${xAxis+13}" y="${T-11}" font-size="17" font-weight="bold">y</text></svg>`;
+return s;
+}
+function solutionSteps(c){
+const steps=[];
+if(c.g)steps.push({label:'Differenzfunktion bilden.',html:M('h(x)=f(x)-g(x)='+poly(c.h))});
+const rootText=c.roots.length?c.roots.map((x,i)=>'x_{'+(i+1)+'}='+x).join(',\\quad '):'\\text{keine reellen '+(c.g?'Schnittstellen':'Nullstellen')+'}';
+steps.push({label:c.g?'Schnittstellen bestimmen und relevante Grenzen auswählen.':'Nullstellen bestimmen und relevante Grenzen auswählen.',
+html:M((c.g?'f(x)=g(x)':'f(x)=0')+'\\quad\\Rightarrow\\quad '+rootText)+(c.interval?M('[a,b]=['+c.interval.join(',')+']'):'')});
+const bounds=boundaries(c),areas=[];
+for(let j=0;j<bounds.length-1;j++){
+const u=bounds[j],v=bounds[j+1],res=integral(c.h,u,v),area=absR(res);areas.push(area);
+steps.push({label:'Teilfläche '+(j+1)+': im nächsten Teilintervall integrieren; negatives Ergebnis positiv machen.',
+html:M('\\int_{'+u+'}^{'+v+'}'+(c.g?'h':'f')+'(x)\\,dx='+texR(res)+'\\quad\\Rightarrow\\quad A_{'+(j+1)+'}='+texR(area))});
+}
+const sum=areas.reduce(addR,[0,1]);
+steps.push({label:'Alle Teilflächen zur Gesamtfläche addieren.',
+html:'<div class="total">'+M('A_{\\mathrm{Gesamt}}='+areas.map(texR).join('+')+(areas.length>1?'='+texR(sum):''))+'</div>'});
+return steps;
+}
+function renderMath(root){
+if(!window.katex)return;
+root.querySelectorAll('[data-math]').forEach(el=>{if(!el.dataset.rendered){katex.render(el.dataset.math,el,{throwOnError:false});el.dataset.rendered='1'}});
+}
+function createCard(c,index,training=false){
+const card=document.createElement('section');card.className='card';
+if(!training)card.id='beispiel-'+index;
+const defs=[M('f(x)='+poly(c.f)),...(c.g?[M('g(x)='+poly(c.g))]:[]),...(c.interval?[M('[a,b]=['+c.interval.join(',')+']')]:[])].join('');
+const task=c.interval?'Berechne den gesamten Flächeninhalt im vorgegebenen Intervall.':'Berechne den gesamten vollständig eingeschlossenen Flächeninhalt.';
+const steps=solutionSteps(c);
+card.innerHTML='<span class="badge">'+c.tag+'</span><h5>'+(training?'Trainingsaufgabe':index+' · '+c.title)+'</h5>'+
+(!training?'<a class="permalink" href="#beispiel-'+index+'">Direktlink zu diesem Beispiel</a>':'')+
+defs+'<p><strong>'+task+'</strong></p>'+plot(c,training)+
+'<p class="legend"><span style="color:#1f5ca9">━ Graph von f</span> &nbsp; '+(c.g?'<span style="color:#b13f64">━ Graph von g</span>':'Dunkel: x-Achse')+'</p>'+
+'<div class="controls"><button class="hint">Nächster Hinweis</button><button class="solve">Nächste Lösung</button><button class="secondary reset">Zurücksetzen</button></div>'+
+'<p class="status" role="status" aria-live="polite"></p><div class="steps">'+steps.map((s,j)=>'<section class="step" hidden><div class="step-label">Schritt '+(j+1)+' · '+s.label+'</div><div class="answer" hidden>'+s.html+'</div></section>').join('')+'</div>';
+let hints=0;const solved=new Set(),els=[...card.querySelectorAll('.step')];
+const hint=card.querySelector('.hint'),solve=card.querySelector('.solve'),reset=card.querySelector('.reset'),status=card.querySelector('.status');
+function update(){
+els.forEach((el,j)=>{el.hidden=j>=hints;el.querySelector('.answer').hidden=!solved.has(j)});
+hint.disabled=hints===steps.length;
+solve.disabled=![...Array(hints).keys()].some(j=>!solved.has(j));
+reset.disabled=hints===0;
+status.textContent=hints+' / '+steps.length+' Hinweise · '+solved.size+' / '+steps.length+' Lösungen sichtbar';
+}
+hint.onclick=()=>{hints++;update()};
+solve.onclick=()=>{const j=[...Array(hints).keys()].find(j=>!solved.has(j));if(j!==undefined)solved.add(j);update()};
+reset.onclick=()=>{hints=0;solved.clear();update()};
+update();renderMath(card);return card;
+}
+examples.forEach((c,i)=>{
+document.getElementById(c.group).appendChild(createCard(c,i+1));
+const a=document.createElement('a');a.href='#beispiel-'+(i+1);a.textContent=(i+1)+' · '+c.title;document.getElementById('toc').appendChild(a);
+});
+const counters={};
+function trainingTask(advance=false){
+const key=document.getElementById('category').value+document.getElementById('level').value;
+if(counters[key]===undefined)counters[key]=0;else if(advance)counters[key]=(counters[key]+1)%pools[key].length;
+const host=document.getElementById('trainingTask');host.replaceChildren(createCard(pools[key][counters[key]],0,true));renderMath(host);
+}
+document.getElementById('category').onchange=()=>trainingTask();
+document.getElementById('level').onchange=()=>trainingTask();
+document.getElementById('newTask').onclick=()=>trainingTask(true);
+document.getElementById('navOverview').onclick=()=>location.hash='uebersicht';
+document.getElementById('navArena').onclick=()=>location.hash='training';
+document.getElementById('print').onclick=()=>window.print();
+function route(){
+const hash=location.hash.slice(1),arena=hash==='training';
+document.getElementById('arena').hidden=!arena;document.getElementById('overview').hidden=arena;
+document.getElementById('navArena').classList.toggle('active',arena);
+document.getElementById('navOverview').classList.toggle('active',!arena);
+if(arena){if(!document.getElementById('trainingTask').children.length)trainingTask();window.scrollTo(0,0)}
+else if(/^beispiel-\d+$/.test(hash)){requestAnimationFrame(()=>document.getElementById(hash)?.scrollIntoView({block:'start'}))}
+else window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+/* Independent numerical check: composite Simpson integration, in addition to
+   exact rational polynomial integration. Check all given roots and ensure
+   each declared segment has a constant sign. */
+function simpson(p,a,b){
+const n=400,dx=(b-a)/n;let s=evaluate(p,a)+evaluate(p,b);
+for(let i=1;i<n;i++)s+=(i%2?4:2)*evaluate(p,a+i*dx);
+return s*dx/3;
+}
+function verify(c){
+if(c.roots.some(x=>Math.abs(evaluate(c.h,x))>1e-9))return false;
+const bs=boundaries(c);
+if(bs.length<2||bs.some((x,i)=>i&&x<=bs[i-1]))return false;
+for(let j=0;j<bs.length-1;j++){
+const a=bs[j],b=bs[j+1],exact=valR(integral(c.h,a,b)),num=simpson(c.h,a,b);
+if(Math.abs(exact-num)>1e-7*Math.max(1,Math.abs(exact)))return false;
+const sign=Math.sign(evaluate(c.h,(a+b)/2));
+for(let k=1;k<100;k++)if(Math.sign(evaluate(c.h,a+(b-a)*k/100))!==sign)return false;
+}
+return true;
+}
+const allTasks=[...examples,...Object.values(pools).flat()];
+const passed=allTasks.every(verify);
+document.getElementById('verification').textContent=passed?
+'Interne Kontrolle bestanden: alle 12 Beispiele und 18 Trainingsvarianten – Grenzen, Vorzeichen in den Teilintervallen und exakte Integrale mit numerischer Gegenprüfung.':
+'Achtung: Bei der internen Kontrolle wurde eine Unstimmigkeit festgestellt.';
+window.addEventListener('load',()=>{renderMath(document.body);route()});
+</script>
+</body>
+</html>
