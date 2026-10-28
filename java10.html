@@ -109,28 +109,27 @@ footer{max-width:1220px;margin:auto;padding:0 20px 28px;color:var(--muted);font-
 <div class="card">
 <span class="pill teal">Dein Lernweg</span>
 <h2>Vom Problem zum eigenen Programm</h2>
-<p>Hier lernst du mit denselben Grundlagen wie im Skript: Variablen, Eingaben, Sequenzen, Verzweigungen und Schleifen. Du brauchst noch keine objektorientierte Programmierung.</p>
+<p>Hier lernst du die Grundlagen von Java: Variablen, Eingaben, Sequenzen, Verzweigungen und Schleifen.</p>
 <div class="path-step"><span class="step-number">1</span><div><strong>Verstehen</strong><br><small>Lies einen Wissensbaustein und prüfe deine Vorstellung.</small></div></div>
 <div class="path-step"><span class="step-number">2</span><div><strong>Sichtbar machen</strong><br><small>Führe Programme schrittweise aus. Beobachte Variablen und Bedingungen.</small></div></div>
 <div class="path-step"><span class="step-number">3</span><div><strong>Selbst entwickeln</strong><br><small>Bearbeite die Originalaufgaben, konstruiere Struktogramme und teste Java in eurer Software.</small></div></div>
 <button class="btn primary" data-go="wissen">Mit den Grundlagen beginnen →</button>
 </div>
 <div>
-<div class="card feature"><h3>Was ist hier interaktiv?</h3><ul><li>Schrittweise Programmausführung mit Werteprotokoll</li><li>Temperatur- und Zahlenraten-Modelle</li><li>Rückmeldungen zu Verständnisfragen</li><li>Struktogramme mit verschachtelten Verzweigungen und Schleifen</li><li>Eigene Notizen, Quelltexte und Lernfortschritte</li></ul></div>
-<div class="note warn"><strong>Kein Java-Compiler.</strong> Die Modelle führen nur ihre fest hinterlegten Abläufe aus. Selbst geschriebener Java-Code wird hier nicht ausgeführt. Kopiere ihn in eure Programmierumgebung und teste ihn dort.</div>
+<div class="card feature"><h3>Interaktive Elemente</h3><ul><li>Schrittweise Programmausführung mit Werteprotokoll</li><li>Temperatur- und Zahlenraten-Modelle</li><li>Rückmeldungen zu Verständnisfragen</li><li>Struktogramme mit verschachtelten Verzweigungen und Schleifen</li><li>Eigene Notizen, Quelltexte und Lernfortschritte</li></ul></div>
+<div class="note warn"><strong>Kein Java-Compiler.</strong> Die Modelle führen nur ihre fest hinterlegten Abläufe aus. Selbst geschriebener Java-Code wird hier nicht ausgeführt. Kopiere ihn in den Java-Editor und teste ihn dort.</div>
 </div>
 </div>
 <div class="grid" style="margin-top:20px">
-<div class="card"><h3>Eure Sprache bleibt erhalten</h3><pre><code>int alter;
+<div class="card"><h3>Beispiel</h3><pre><code>int alter;
 alter = IO.getInt("Bitte Alter eingeben!");
-System.out.println("Alter: " + alter);</code></pre><p>Keine Umstellung auf <code>Scanner</code>, keine unbekannten Frameworks. Klassenrahmen und <code>main</code> werden nur als bekanntes Programmgerüst benutzt.</p></div>
+System.out.println("Alter: " + alter);</code></pre></div>
 <div class="card"><h3>Arbeite wie beim Programmieren</h3><p><strong>Vorhersagen → ausführen → vergleichen → erklären.</strong> Klicke eine Lösung nicht sofort auf. Prüfe Grenzfälle und begründe, warum dein Algorithmus funktioniert.</p><p class="muted">Deine Einträge werden, soweit der Browser es zulässt, lokal gespeichert. Sie werden nicht an eine Lehrkraft übertragen. Beim Neuladen dieser eingebetteten Vorschau können sie verloren gehen. Sichere wichtige Texte über „Lernstand exportieren“.</p></div>
 </div>
 </section>
 
 <section id="wissen" class="page">
 <h2>Wissensbausteine</h2>
-<p class="intro">Aus dem Skript „Problemlösen durch Programmieren“, passend zu den Arbeitsblättern. Die kleinen Selbsttests sind zusätzliche Lernhilfen.</p>
 <div class="toc" id="knowledgeTabs"></div>
 <div id="knowledgeContent"></div>
 </section>
@@ -247,7 +246,7 @@ while (eingabe != geheimzahl) {
 <div class="card"><h3>Mein nächster Lernschritt</h3><label for="reflection">Was kann ich schon? Wo brauche ich noch einen Testfall oder eine Erklärung?</label><textarea id="reflection" placeholder="Zum Beispiel: Ich kann den letzten Schleifendurchlauf noch nicht sicher bestimmen. Deshalb …"></textarea><div class="saved" id="reflectionSaved" aria-live="polite"></div></div>
 </section>
 </main>
-<footer>Grundlage: „Skript.pdf“, „03_Verzweigungen_Übungen.pdf“ mit Lösungshinweisen sowie „04_Schleifen_Übungen.pdf“ mit Erwartungshorizont. Ergänzt um interaktive Lernhilfen. Offensichtliche Syntaxfehler der Lösungsvorlage sind berichtigt, etwa 18.5 statt 18,5 in Java. Beim Schleifen-Struktogramm aus Übung 3 wird die abschließende Ausgabe von d entsprechend dem Lösungscode außerhalb der Schleife behandelt. Keine Übertragung von Schülerdaten; lokale Speicherung nur in diesem Browserkontext.</footer>
+<footer>Dieser Kurs basiert auf den Unterrichtsmaterialien des Informatikunterrichts in Klasse 10. Er kann ergänzend für die individuelle Vorbereitung genutzt werden.</footer>
 
 <script>
 "use strict";
@@ -274,12 +273,12 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-quiz]");if
 const knowledge=[
 {title:"Algorithmus & Programm",id:"algo",html:`
 <div class="grid"><div class="card"><h3>Eine Lösung schrittweise präzisieren</h3><p>Ein <strong>Algorithmus</strong> ist eine Folge von Anweisungen zur Lösung eines Problems. Ein <strong>Programm</strong> ist ein Algorithmus, notiert in einer Programmiersprache.</p><div class="note">Problem → Algorithmus → Programm → Maschinenprogramm</div><p>Die ersten Schritte werden vom Menschen formalisiert. Der Compiler übersetzt anschließend das Programm in die maschinennahe Form. Umgangssprache kann mehrdeutig sein; ein Programm muss exakt formuliert sein.</p><h4>Alltagsbeispiele aus dem Skript</h4><p>Tee kochen oder sich am Schul-PC anmelden: Die Schritte müssen verständlich sein und in einer passenden Reihenfolge stehen.</p></div>
-<div class="card"><h3>Eigenschaften im Skript</h3><table><tr><th>Begriff</th><th>Bedeutung</th></tr><tr><td>Endlichkeit</td><td>Die Beschreibung ist endlich lang.</td></tr><tr><td>Terminiertheit</td><td>Der Ablauf endet nach endlich vielen Schritten.</td></tr><tr><td>Eindeutigkeit</td><td>Die Anweisungen legen den weiteren Ablauf fest.</td></tr><tr><td>Ausführbarkeit</td><td>Die Anweisungen sind verständlich und ausführbar.</td></tr><tr><td>Determiniertheit</td><td>Gleiche Startbedingungen und Eingaben führen zum gleichen Ergebnis.</td></tr><tr><td>Allgemeingültigkeit</td><td>Die Lösung gilt für eine Klasse gleichartiger Probleme.</td></tr></table><small>Beim Zahlenraten gehört die erzeugte Zufallszahl zu den Bedingungen des konkreten Ablaufs.</small></div></div>`},
+<div class="card"><h3>Eigenschaften eines Algorithmus</h3><table><tr><th>Begriff</th><th>Bedeutung</th></tr><tr><td>Endlichkeit</td><td>Die Beschreibung ist endlich lang.</td></tr><tr><td>Terminiertheit</td><td>Der Ablauf endet nach endlich vielen Schritten.</td></tr><tr><td>Eindeutigkeit</td><td>Die Anweisungen legen den weiteren Ablauf fest.</td></tr><tr><td>Ausführbarkeit</td><td>Die Anweisungen sind verständlich und ausführbar.</td></tr><tr><td>Determiniertheit</td><td>Gleiche Startbedingungen und Eingaben führen zum gleichen Ergebnis.</td></tr><tr><td>Allgemeingültigkeit</td><td>Die Lösung gilt für eine Klasse gleichartiger Probleme.</td></tr></table></div></div>`},
 {title:"Variablen & Datentypen",id:"variables",html:`
-<div class="grid"><div class="card"><h3>Ein beschrifteter Speicherplatz</h3><p>Eine Variable speichert veränderliche Daten. Sie besitzt einen eindeutigen <strong>Namen</strong> und einen <strong>Datentyp</strong>.</p><pre><code>int alter;             // Deklaration
+<div class="grid"><div class="card"><h3>Variablenkonzept</h3><p>Eine Variable speichert veränderliche Daten. Sie besitzt einen eindeutigen <strong>Namen</strong> und einen <strong>Datentyp</strong>.</p><pre><code>int alter;             // Deklaration
 alter = 15;            // Wertzuweisung
-double temperatur = 2.3; // beides zusammen</code></pre><p><strong>Deklaration:</strong> Datentyp und Variablenname festlegen.<br><strong>Wertzuweisung:</strong> Einen Wert mit <code>=</code> speichern.</p><div class="note"><code>a = a + 1;</code> bedeutet: alten Wert von a lesen, 1 addieren, Ergebnis in a speichern. <code>a++;</code> erhöht a ebenfalls um 1.</div><button class="btn" data-go="labor">Speicher im Ablauf-Labor beobachten</button></div>
-<div class="card"><h3>Die Datentypen eures Skripts</h3><table><tr><th>Art</th><th>Java</th><th>Beispiel</th></tr><tr><td>Ganze Zahl</td><td><code>int</code></td><td><code>18</code></td></tr><tr><td>Fließkommazahl</td><td><code>double</code></td><td><code>18.5</code></td></tr><tr><td>Wahrheitswert</td><td><code>boolean</code></td><td><code>true</code> / <code>false</code></td></tr><tr><td>Einzelnes Zeichen</td><td><code>char</code></td><td><code>'x'</code></td></tr><tr><td>Zeichenkette</td><td><code>String</code></td><td><code>"Hallo"</code></td></tr></table><p><code>String</code> ist kein primitiver Datentyp. Texte stehen in doppelten, einzelne Zeichen in einfachen Anführungszeichen.</p><div class="note warn">In Java schreibt man Dezimalzahlen mit Punkt: <code>18.5</code>, nicht <code>18,5</code>.</div></div></div>`},
+double temperatur = 2.3; // Deklaration und sofortige Wertzuweisung</code></pre><p><strong>Deklaration:</strong> Datentyp und Variablenname festlegen.<br><strong>Wertzuweisung:</strong> Einen Wert mit <code>=</code> speichern.</p><div class="note">Java-Befehle werden immer von rechts nach links ausgewertet. Beispiel: <br><code>a = a + 1;</code> bedeutet: alten Wert von a lesen, 1 addieren, Ergebnis in a speichern. <br>Alternative: <code>a++;</code> erhöht a ebenfalls um 1.</div><button class="btn" data-go="labor">Speicher im Ablauf-Labor beobachten</button></div>
+<div class="card"><h3>Datentypen in Java</h3><table><tr><th>Art</th><th>Java</th><th>Beispiel</th></tr><tr><td>Ganze Zahl</td><td><code>int</code></td><td><code>18</code></td></tr><tr><td>Fließkommazahl</td><td><code>double</code></td><td><code>18.5</code></td></tr><tr><td>Wahrheitswert</td><td><code>boolean</code></td><td><code>true</code> / <code>false</code></td></tr><tr><td>Einzelnes Zeichen</td><td><code>char</code></td><td><code>'x'</code></td></tr><tr><td>Zeichenkette</td><td><code>String</code></td><td><code>"Hallo"</code></td></tr></table><p><code>String</code> ist kein primitiver Datentyp. Texte stehen in doppelten, einzelne Zeichen in einfachen Anführungszeichen.</p><div class="note warn">In Java schreibt man Dezimalzahlen mit Punkt: <code>18.5</code>, nicht <code>18,5</code>.</div></div></div>`},
 {title:"IO & Java-Grundregeln",id:"io",html:`
 <div class="grid"><div class="card"><h3>Eingaben mit euren IO-Befehlen</h3><pre><code>String vorname;
 int alter;
