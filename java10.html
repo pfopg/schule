@@ -136,7 +136,7 @@ System.out.println("Alter: " + alter);</code></pre></div>
 
 <section id="labor" class="page">
 <h2>Ablauf-Labor</h2>
-<p class="intro">Die Modelle sind keine Java-Laufzeit. Sie machen ausgewählte Algorithmen aus euren Materialien sichtbar. Vermute immer zuerst, was als Nächstes passiert.</p>
+<p class="intro">Die Modelle machen ausgewählte Algorithmen aus den Materialien sichtbar. Vermute immer zuerst, was als Nächstes passiert.</p>
 <div class="toc">
 <button class="btn active" data-lab="trace">Schleifen verfolgen</button>
 <button class="btn" data-lab="temp">Temperatur verstehen</button>
@@ -208,8 +208,8 @@ while (eingabe != geheimzahl) {
 
 <section id="editor" class="page">
 <h2>Struktogramm-Werkstatt</h2>
-<p class="intro">Baue einen Ablauf aus Blöcken. Ein Struktogramm ist kein Flussdiagramm: Es hat keine Pfeile und keine frei schwebenden Entscheidungsrauten. Verschachtelung und Aufteilung der Rechteckfläche zeigen die Struktur.</p>
-<div class="note no-print"><strong>So arbeitest du:</strong> Füge Bausteine hinzu. Bei „Falls“ bearbeitest du Wahr- und Falsch-Zweig getrennt; bei einer Schleife ihren Rumpf. Die Reihenfolge lässt sich mit ↑ und ↓ ändern. Variablen deklarierst du im eigenen Feld – sie erscheinen wie im Skript <strong>nicht im Struktogramm</strong>, sondern im Java-Code.</div>
+<p class="intro">Baue einen Ablauf aus Blöcken.</p>
+<div class="note no-print"><strong>So arbeitest du:</strong> Füge Bausteine hinzu. Bei „Falls“ bearbeitest du Wahr- und Falsch-Zweig getrennt; bei einer Schleife ihren Rumpf. Die Reihenfolge lässt sich mit ↑ und ↓ ändern. Variablen deklarierst du im eigenen Feld – sie erscheinen <strong>nicht im Struktogramm</strong>, sondern im Java-Code.</div>
 <div class="builder-layout">
 <aside class="card no-print">
 <h3>1 · Programm vorbereiten</h3>
@@ -231,7 +231,7 @@ while (eingabe != geheimzahl) {
 <div id="editorValidation" class="feedback" aria-live="polite"></div>
 <p class="muted no-print">Links stehen „wahr“ und rechts „falsch“. Eine einseitige Verzweigung hat rechts einen leeren Zweig. Die vorprüfende Schleife besitzt ihren Bedingungskopf oben, die nachprüfende unten.</p>
 </div>
-<div class="card" id="editorCodePanel"><h3>Passender Java-Quelltext</h3><pre id="generatedJava"></pre><div class="note warn"><strong>Übersetzung, keine Prüfung:</strong> Der Editor setzt deine Bausteine in Java-Syntax um. Er prüft weder Datentypen noch Variablennamen, Initialisierung, sinnvolle Bedingungen oder Endlosschleifen. <code>IO</code> muss eure Unterrichtssoftware bereitstellen. Teste den Code dort!</div></div>
+<div class="card" id="editorCodePanel"><h3>Passender Java-Quelltext</h3><pre id="generatedJava"></pre><div class="note warn"><strong>Übersetzung, keine Prüfung:</strong> Der Editor setzt deine Bausteine in Java-Syntax um. Er prüft weder Datentypen noch Variablennamen, Initialisierung, sinnvolle Bedingungen oder Endlosschleifen. Die IO-Klasse für die Eingaben muss im Unterricht bereitgestellt werden. Teste den Code im Java-Editor.</div></div>
 </div>
 </div>
 </section>
@@ -295,34 +295,34 @@ IO.show("Willkommen!");      // Dialogfenster
 
 // Einzeiliger Kommentar
 /* Mehrzeiliger
-   Kommentar */</code></pre><p>Mit <code>+</code> verknüpfst du Texte und Werte: <code>"Alter: " + alter <br> <strong>Weitere Grundregeln</strong> <br> </code>.</p><ul><li>Anweisungen mit Semikolon abschließen.</li><li>Zu jeder öffnenden Klammer gehört eine schließende.</li><li>Code innerhalb von Blöcken einrücken.</li><li>Sinnvolle Namen und hilfreiche Kommentare verwenden.</li></ul><small>Blockköpfe wie <code>if (...) {</code> bekommen kein zusätzliches Semikolon. Bei <code>do ... while (...);</code> steht dagegen am Ende eines.</small></div></div>`},
+   Kommentar */</code></pre><p>Mit <code>+</code> verknüpfst du Texte und Werte: <code>"Alter: " + alter  <br> </code><br> <strong>Weitere Grundregeln</strong></p><ul><li>Anweisungen mit Semikolon abschließen.</li><li>Zu jeder öffnenden Klammer gehört eine schließende.</li><li>Code innerhalb von Blöcken einrücken.</li><li>Sinnvolle Namen und hilfreiche Kommentare verwenden.</li></ul><small>Blockköpfe wie <code>if (...) {</code> bekommen kein zusätzliches Semikolon. Bei <code>do ... while (...);</code> steht dagegen am Ende eines.</small></div></div>`},
 {title:"Sequenz & Struktogramm",id:"struct",html:`
-<div class="grid"><div class="card"><h3>Ein Befehl nach dem anderen</h3><p>Eine <strong>Anweisung</strong> ist ein einzelner Befehl. Eine <strong>Sequenz</strong> ist eine Folge von Anweisungen in festgelegter Reihenfolge.</p><pre><code>double w, h, bmi;
+<div class="grid"><div class="card"><h3>Anweisung und Sequenz</h3><p>Eine <strong>Anweisung</strong> ist ein einzelner Befehl. Eine <strong>Sequenz</strong> ist eine Folge von Anweisungen in festgelegter Reihenfolge.</p><p>Beispiel: Berechnung des BMI</p><pre><code>double w, h, bmi;
 w = IO.getDouble("Gewicht in kg?");
 h = IO.getDouble("Größe in m?");
 bmi = w / (h * h);
-System.out.println("BMI: " + bmi);</code></pre><p>Die Reihenfolge ist wichtig: Die Eingaben müssen vor der Berechnung vorliegen.</p><div class="note warn">Der BMI ist hier nur ein Rechenbeispiel des Arbeitsblatts. Die dortigen festen Kategorien sind keine persönliche Gesundheitsbewertung und insbesondere für Jugendliche kein geeignetes Beurteilungsverfahren. Verwende die vorgegebenen Beispieldaten.</div></div>
-<div class="card"><h3>Struktogramme lesen</h3><p>Der Programmablauf wird in einer zusammenhängenden Rechteckfläche dargestellt.</p><ul><li><strong>Sequenz:</strong> Rechtecke untereinander.</li><li><strong>Verzweigung:</strong> Bedingung im Kopf; Wahr- und Falsch-Zweig nebeneinander.</li><li><strong>Vorprüfende Schleife:</strong> Bedingung oben; der Rumpf ist umschlossen.</li><li><strong>Nachprüfende Schleife:</strong> Bedingung unten.</li><li><strong>Schachtelung:</strong> Eine Struktur liegt vollständig in einer anderen.</li></ul><p>Deklarationen sind nach der Konvention des Skripts im Struktogramm nicht sichtbar. Ein Vergleich darf dort etwa <code>a = 0</code> heißen; in Java muss er <code>a == 0</code> lauten.</p><button class="btn primary" data-go="editor">Ein Struktogramm konstruieren →</button></div></div>`},
+System.out.println("BMI: " + bmi);</code></pre><p>Die Reihenfolge ist wichtig: Die Eingaben müssen vor der Berechnung vorliegen.</p></div>
+<div class="card"><h3>Struktogramme lesen</h3><p>Der Programmablauf wird in einer zusammenhängenden Rechteckfläche dargestellt.</p><ul><li><strong>Sequenz:</strong> Rechtecke untereinander.</li><li><strong>Verzweigung:</strong> Bedingung im Kopf; Wahr- und Falsch-Zweig nebeneinander.</li><li><strong>Vorprüfende Schleife:</strong> Bedingung oben; der Rumpf ist umschlossen.</li><li><strong>Nachprüfende Schleife:</strong> Bedingung unten.</li><li><strong>Schachtelung:</strong> Eine Struktur liegt vollständig in einer anderen.</li></ul>Beachte:<ul><li>Deklarationen sind im Struktogramm meist nicht abgebildet. <li>Struktogramme sind nicht so formal wie Java: Ein Vergleich darf dort z. B. <code>a = 0</code> heißen; in Java muss er <code>a == 0</code> lauten.</ul></p><button class="btn primary" data-go="editor">Ein Struktogramm konstruieren →</button></div></div>`},
 {title:"Verzweigungen",id:"branch",html:`
-<div class="grid"><div class="card"><h3>Einseitige Auswahl</h3><p>Ist die Bedingung wahr, wird der Block ausgeführt. Ist sie falsch, geht es nach dem Block weiter.</p><pre><code>if (alter &lt; 18) {
+<div class="grid"><div class="card"><h3>Einseitige Verzweigung (Auswahl)</h3><p>Ist die Bedingung wahr, wird der Block ausgeführt. Ist sie falsch, geht es nach dem Block weiter.</p><pre><code>if (alter &lt; 18) {
     System.out.println("Kind");
-}</code></pre><h3 style="margin-top:20px">Zweiseitige Auswahl</h3><p>Genau einer von zwei Zweigen wird ausgeführt.</p><pre><code>if (alter &lt; 18) {
+}</code></pre><h3 style="margin-top:20px">Zweiseitige Verzweigung (Auswahl)</h3><p>Genau einer von zwei Zweigen wird ausgeführt.</p><pre><code>if (alter &lt; 18) {
     System.out.println("Kind");
 } else {
     System.out.println("Erwachsen");
-}</code></pre><small>Diese Bezeichnungen folgen dem vereinfachten Altersbeispiel des Arbeitsblatts.</small></div>
-<div class="card"><h3>Boolesche Ausdrücke</h3><p>Ein boolescher Ausdruck besitzt den Wert <code>true</code> oder <code>false</code>.</p><table><tr><th>Java</th><th>Bedeutung</th></tr><tr><td><code>a &lt; b</code> / <code>a &gt; b</code></td><td>kleiner / größer</td></tr><tr><td><code>a &lt;= b</code> / <code>a &gt;= b</code></td><td>kleiner gleich / größer gleich</td></tr><tr><td><code>a == b</code></td><td>Zahlen gleich?</td></tr><tr><td><code>a != b</code></td><td>Zahlen ungleich?</td></tr><tr><td><code>in_celsius</code></td><td>Wert einer boolean-Variablen</td></tr></table><div class="note warn"><code>=</code> weist einen Wert zu. <code>==</code> vergleicht Zahlen. Verwechsle beides nicht!</div><p>Eine verschachtelte Verzweigung steht im Zweig einer anderen Verzweigung – wie bei „Kind / Jugendlich / Erwachsen“ oder beim Zahlenraten.</p></div></div>`},
+}</code></pre></div>
+<div class="card"><h3>Boolesche Ausdrücke</h3><p>Ein boolescher Ausdruck besitzt den Wert <code>true</code> oder <code>false</code>. Boolesche Ausdrücke bilden die Bedingung einer Verzweigung.</p><h3>Vergleichsoperatoren</h3><table><tr><th>Java</th><th>Bedeutung</th></tr><tr><td><code>a &lt; b</code> / <code>a &gt; b</code></td><td>kleiner / größer</td></tr><tr><td><code>a &lt;= b</code> / <code>a &gt;= b</code></td><td>kleiner gleich / größer gleich</td></tr><tr><td><code>a == b</code></td><td>Zahlen gleich?</td></tr><tr><td><code>a != b</code></td><td>Zahlen ungleich?</td></tr><tr><td><code>in_celsius</code></td><td>Wert einer boolean-Variablen</td></tr></table><div class="note warn"><code>=</code> weist einen Wert zu. <code>==</code> vergleicht Zahlen. Verwechsle beides nicht!</div><p>Eine verschachtelte Verzweigung steht im Zweig einer anderen Verzweigung – wie bei „Kind / Jugendlich / Erwachsen“ oder beim Zahlenraten.</p></div></div>`},
 {title:"Schleifen",id:"loop",html:`
 <div class="grid"><div class="card"><h3>Vorprüfend: while</h3><p>Solange die Bedingung wahr ist, wird der Rumpf wiederholt. Die Prüfung erfolgt vor jedem Durchlauf. Deshalb sind auch null Durchläufe möglich.</p><pre><code>int a = 1;
 while (a &lt; 6) {
     System.out.println(a);
     a++;
-}</code></pre><p>Ausgabe: 1, 2, 3, 4, 5. Nach dem letzten Durchlauf ist a gleich 6; die nächste Prüfung ist falsch.</p><div class="note">Startwert → Bedingung → Rumpf → Veränderung → erneute Bedingung</div></div>
-<div class="card"><h3>Nachprüfend: do-while</h3><p>Der Rumpf wird zuerst ausgeführt. Erst anschließend wird geprüft. Daher läuft er mindestens einmal.</p><pre><code>int a = 4;
+}</code></pre><p>Ausgabe: 1, 2, 3, 4, 5. Nach dem letzten Durchlauf ist a gleich 6; die nächste Prüfung ist falsch.</p><div class="note">Startwert → Bedingung → Rumpf → Veränderung → erneute Bedingung</div><h4>Wertebelegungstabelle</h4><p>Halte Startwerte und die Werte nach den Befehlen oder Durchläufen fest. Notiere deutlich, zu welchem Zeitpunkt eine Tabellenzeile gehört.</p></div>
+<div class="card"><h3>Nachprüfend: do-while (fakultativ)</h3><p>Der Rumpf wird zuerst ausgeführt. Erst anschließend wird geprüft. Daher läuft er mindestens einmal.</p><pre><code>int a = 4;
 do {
     System.out.println(a);
     a++;
-} while (a &lt; 9);</code></pre><p>Ausgabe: 4, 5, 6, 7, 8. Nach dem letzten Durchlauf ist a gleich 9.</p><h4>Wertebelegungstabelle</h4><p>Halte Startwerte und die Werte nach den Befehlen oder Durchläufen fest. Notiere deutlich, zu welchem Zeitpunkt eine Tabellenzeile gehört.</p><div class="note warn">Achte darauf, dass sich die Bedingung ändern kann. Sonst kann eine Endlosschleife entstehen.</div><button class="btn primary" data-go="labor">Beide Schleifenarten vergleichen →</button></div></div>`}
+} while (a &lt; 9);</code></pre><p>Ausgabe: 4, 5, 6, 7, 8. Nach dem letzten Durchlauf ist a gleich 9.</p><button class="btn primary" data-go="labor">Beide Schleifenarten vergleichen →</button></div></div>`}
 ];
 function renderKnowledge(){ $("knowledgeTabs").innerHTML=knowledge.map((k,i)=>`<button class="btn ${i===0?"active":""}" data-knowledge="${i}">${k.title}</button>`).join("");$("knowledgeContent").innerHTML=knowledge.map((k,i)=>`<div class="knowledge ${i===0?"active":""}" id="knowledge-${i}">${k.html}${quizHTML(k.id)}<p class="source-label">Grundlage: Skript · ${esc(k.title)}</p></div>`).join("");document.querySelectorAll("[data-knowledge]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-knowledge]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".knowledge").forEach((x,i)=>x.classList.toggle("active",i===Number(b.dataset.knowledge)))});document.querySelectorAll("#knowledgeContent [data-go]").forEach(b=>b.onclick=()=>showPage(b.dataset.go))}
 renderKnowledge();
@@ -499,7 +499,7 @@ if (alter < 14) {
     } else {
         System.out.println("Erwachsen");
     }
-}`)}<p>Die Kategorien folgen dem Arbeitsblatt; sie sind hier eine Übung zu Grenzwerten.</p>`,
+}`)}`,
 test:"Teste besonders 13, 14, 17 und 18. Negative Alterswerte sind für das Sachproblem ungültig; die Eingabeprüfung wäre eine zusätzliche Erweiterung."},
 {id:"v3",group:"v",title:"Übung 3 · Verschachtelte Auswahl verfolgen",tags:"Werteverfolgung · Struktogramm",body:`<p>Bestimme die Ausgabe für <code>a = 2</code> und <code>b = 20</code>. Zeichne anschließend das Struktogramm.</p>${pre(branch3)}<p><strong>Erst vorhersagen:</strong> Welcher Zweig der äußeren Auswahl läuft? Wird <code>c = 2 * b</code> überhaupt ausgeführt?</p>`,
 hint:"Prüfe zuerst a == 0. Nur im else-Zweig wird c = 5 gesetzt und danach b > 10 geprüft. Eine Zuweisung in einem nicht betretenen Zweig verändert nichts.",
