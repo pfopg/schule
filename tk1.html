@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formelwerkstatt</title>
+<style>
+:root{--ink:#20304a;--muted:#55657b;--blue:#3156c7;--bg:#f2f5fb;--line:#d7dfed}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,sans-serif}
+button,input,select{font:inherit}button,select{padding:8px 12px;border:1px solid #bccae0;border-radius:8px;background:white;color:var(--ink)}button{cursor:pointer}button:hover{background:#edf2ff}button.primary{background:var(--blue);color:white}button:disabled{opacity:.5;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #d69b20;outline-offset:3px}
+header{background:#192e57;color:white;padding:23px max(20px,calc((100vw - 1200px)/2))}header h1{margin:0;font-size:1.8rem}header p{margin:5px 0 14px;color:#dce5ff}.stats{display:flex;gap:10px;flex-wrap:wrap}.pill{background:#ffffff1c;border-radius:25px;padding:4px 12px;font-size:.85rem}
+.layout{max-width:1240px;margin:auto;padding:22px 20px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:23px}
+nav{position:sticky;top:15px;align-self:start}nav button{display:block;text-align:left;width:100%;margin-bottom:7px;border-color:transparent;background:transparent}nav button.active{background:#e0e9ff;border-color:#b4c6f0;font-weight:700}nav small{display:block;font-weight:400;color:var(--muted)}
+h2{font-size:1.6rem;line-height:1.3;margin:0 0 15px}h3{font-size:1.15rem;margin:18px 0 8px}h4{font-size:1rem;margin:16px 0 6px}p{margin:10px 0}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:18px}
+.tiles,.two,.toc{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tile{background:white;border:1px solid var(--line);padding:17px;border-radius:10px}.tile h3{margin-top:10px}.tile button{margin-top:10px}.toc button{text-align:left;font-size:.88rem}.toc .current{background:#e3eaff;border-color:#7391e3}
+.small{font-size:.86rem;color:var(--muted)}.tag{font-size:.77rem;background:#edf1fa;border-radius:20px;padding:3px 9px;display:inline-block}.note{background:#edf2ff;border-left:4px solid #5876d7;padding:13px 15px;border-radius:6px;margin:15px 0}.warn{background:#fff5dc;border-color:#d2a031}.good{background:#e5f5eb;color:#15573e}.bad{background:#fff0f1;color:#952e3d}.feedback{padding:14px;border-radius:8px;margin:12px 0}
+.actions,.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:13px 0}.toolbar{font-size:.85rem}.toolbar label{display:flex;gap:6px;align-items:center}
+code,.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf1f8;border-radius:5px;overflow-wrap:anywhere}code{padding:2px 5px;font-size:.91em}.formula{display:block;padding:12px;margin:12px 0;white-space:pre-wrap;font-size:.91rem}
+.doc-table{width:100%;border-collapse:collapse;font-size:.9rem;margin:14px 0}.doc-table td,.doc-table th{padding:9px;text-align:left;border:1px solid var(--line)}.doc-table th{background:#edf2fa}.scroll{overflow:auto}
+.bar{background:#e6ecf7;height:9px;border-radius:9px;overflow:hidden;margin:10px 0}.bar span{height:100%;display:block;background:var(--blue)}.badge{display:inline-block;margin:4px;background:#ffe8ae;border-radius:20px;padding:4px 11px;font-size:.84rem}
+.formulabar{display:grid;grid-template-columns:55px 1fr;gap:8px;align-items:center;background:#edf2fa;border:1px solid var(--line);border-radius:8px;padding:9px}.namebox{text-align:center;font-family:monospace;font-weight:bold}.formulabar input{min-width:0;width:100%;padding:10px;border:1px solid #b8c6dc;border-radius:5px;background:white;font:15px ui-monospace,monospace}
+.sheetwrap{overflow:auto;border:1px solid #bdcbe0;border-radius:6px;margin:12px 0;touch-action:none}.sheet{border-collapse:collapse;table-layout:fixed;width:100%;min-width:430px;font-size:.9rem;user-select:none}.sheet th{background:#e8eef8;border:1px solid #cbd6e8;font-weight:500;height:30px}.sheet .rn{width:36px}.sheet td{height:50px;border:1px solid #cfd9e9;padding:8px;position:relative;background:white;overflow-wrap:anywhere;cursor:cell;touch-action:none}.sheet td.head{background:#f3f6fc;font-weight:650}.sheet td.output{background:#edf7f0}.sheet td.origin{background:#fff7d6;box-shadow:inset 0 0 0 2px #ddaf22}.sheet td.sel{background:#dfeaff!important;box-shadow:inset 0 0 0 2px #5479da}.sheet td.fillpreview{background:#cfebdc!important}.sheet td:focus{outline:2px solid #3156c7;outline-offset:-3px}.fillhandle{position:absolute;bottom:0;right:0;width:13px;height:13px;border:2px solid white;background:#207448;cursor:crosshair;z-index:2;touch-action:none}
+.sheetstatus{min-height:28px;font-size:.85rem;color:#425775}details{padding:12px 0;border-top:1px solid var(--line);margin-top:12px}summary{cursor:pointer;font-weight:600}.hidden{display:none!important}.chapterlabel{font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:8px}footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px}
+@media(max-width:800px){.layout{grid-template-columns:1fr;padding:15px;gap:10px}nav{position:static;display:flex;overflow:auto;gap:5px}nav button{min-width:150px;margin:0}.tiles,.two,.toc{grid-template-columns:1fr}.card{padding:18px}header{padding:20px}}
+</style>
+</head>
+<body>
+<header>
+<h1>◈ Formelwerkstatt</h1>
+<p>Verstehen. Zellen auswählen. Formeln bauen. Selbstständig trainieren.</p>
+<div class="stats"><span class="pill" id="score"></span><span class="pill" id="progress"></span><span class="pill" id="reading"></span></div>
+</header>
+<div class="layout"><nav id="nav" aria-label="Hauptnavigation"></nav><main id="main"></main></div>
+<footer>Alle Berechnungen erfolgen lokal. Dein Lernfortschritt wird auf diesem Gerät gespeichert, sofern dein Browser dies erlaubt.<br>Das Tabellenlabor ist eine Lernsimulation mit ausgewählten Funktionen, kein vollständiges Tabellenkalkulationsprogramm.</footer>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=v=>typeof v==="number"?new Intl.NumberFormat("de-DE",{maximumFractionDigits:2}).format(v):typeof v==="boolean"?(v?"WAHR":"FALSCH"):String(v??"");
+const cats=["Formeln & Funktionen","Prozent & Preise","Zellbezüge","WENN mit Text","WENN mit Rechnungen","WENN verschachtelt","★ UND & ODER"];
+const chapters=[
+{
+title:"Tabellen, Daten und Information",
+body:`
+<h3>Wozu dient eine Tabellenkalkulation?</h3>
+<p>Mit Programmen wie Excel oder Calc kannst du Daten in Tabellen verwalten, Berechnungen durchführen und Ergebnisse übersichtlich darstellen. Eine Datei kann mehrere Tabellenblätter enthalten.</p>
+<h3>Spalten, Zeilen und Zelladressen</h3>
+<p>Spalten werden mit Buchstaben bezeichnet, Zeilen mit Zahlen. Nach Z folgt AA, dann AB und so weiter. Die Adresse <code>C4</code> bezeichnet die Zelle in Spalte C und Zeile 4.</p>
+<h3>Was kann in einer Zelle stehen?</h3>
+<ul><li><strong>Zahl:</strong> zum Beispiel 12 oder 3,14.</li><li><strong>Text:</strong> zum Beispiel „Grundgebühr“.</li><li><strong>Datumswert:</strong> zum Beispiel ein Kalendertag.</li><li><strong>Formel:</strong> eine Rechenanweisung, die mit einem Gleichheitszeichen beginnt.</li></ul>
+<p>Daten erhalten durch ihren Zusammenhang Bedeutung. Die Zahl 12 allein sagt wenig aus. Die Überschrift „Preis in Euro“ macht deutlich, was sie beschreibt.</p>
+<div class="note"><strong>Zellinhalt und Anzeige unterscheiden:</strong> Eine Zelle kann <code>=2*B3+2*B4</code> enthalten und 40 anzeigen. Die sichtbare Zahl ist dann das Ergebnis der Formel. Änderst du eine Eingabezelle, wird das Ergebnis neu berechnet.</div>`,
+quiz:["Eine Zelle zeigt 40 an. Muss ihr Inhalt die Zahl 40 sein?",["Ja, immer.","Nein, sie kann eine Formel enthalten."],1,"Die sichtbare Zahl kann das berechnete Ergebnis einer Formel sein."]
+},
+{
+title:"Formeln verstehen und eingeben",
+body:`
+<h3>Die Bausteine einer Formel</h3>
+<p>Eine Formel beginnt mit <code>=</code>. Danach können Zahlen, Zellbezüge, Rechenzeichen, Klammern und Funktionen stehen.</p>
+<code class="formula">=B3*(C1+C2)</code>
+<p>Zuerst wird die Summe in der Klammer berechnet, danach mit dem Wert aus B3 multipliziert. Zellbezüge machen eine Formel wiederverwendbar.</p>
+<table class="doc-table"><tr><th>Zeichen</th><th>Bedeutung</th><th>Beispiel</th></tr><tr><td>+ und -</td><td>Addition und Subtraktion</td><td><code>=A2-B2</code></td></tr><tr><td>* und /</td><td>Multiplikation und Division</td><td><code>=A2*B2</code></td></tr><tr><td>^</td><td>Potenz</td><td><code>=A2^2</code></td></tr><tr><td>( )</td><td>Reihenfolge festlegen</td><td><code>=(A2+B2)*2</code></td></tr></table>
+<p>Klammern bestimmen die Reihenfolge. Ansonsten gilt: Potenzen vor Multiplikation und Division, diese vor Addition und Subtraktion. Bei gleicher Rangfolge wird normalerweise von links nach rechts gerechnet.</p>
+<h3>Zelladressen durch Anklicken einfügen</h3>
+<p>Tippe in der Formelleiste <code>=</code> und klicke anschließend auf eine Zelle. Ihre Adresse wird eingefügt. Einen zusammenhängenden Bereich kannst du mit gedrückter Maustaste aufziehen.</p>
+<div class="note"><strong>Zwei Ansichten:</strong> Die Ergebnisansicht zeigt berechnete Werte. Die Formelansicht zeigt die dahinterliegenden Rechnungen und hilft beim Prüfen der Zellbezüge.</div>`,
+quiz:["Welche Formel verdoppelt die Summe aus A2 und B2?",["=A2+B2*2","=(A2+B2)*2","A2+B2"],1,"Die Klammer sorgt dafür, dass die gesamte Summe verdoppelt wird."]
+},
+{
+title:"Funktionen, Argumente und Bereiche",
+body:`
+<h3>Funktionen sind fertige Rechenbausteine</h3>
+<p>Eine Funktion besteht aus einem Namen und Argumenten in runden Klammern. Argumente können Zahlen, Zelladressen, Bereiche oder weitere Ausdrücke sein.</p>
+<code class="formula">=SUMME(A2;A3;A4)
+=SUMME(A2:A4)</code>
+<p>Beide Formeln addieren dieselben drei Zellen. Das <strong>Semikolon</strong> trennt Argumente. Der <strong>Doppelpunkt</strong> beschreibt einen lückenlosen Bereich. <code>A2:C4</code> umfasst ein Rechteck aus drei Spalten und drei Zeilen.</p>
+<table class="doc-table"><tr><th>Funktion</th><th>Aufgabe</th><th>Beispiel</th></tr><tr><td>SUMME</td><td>Zahlen addieren</td><td><code>=SUMME(B2:B4)</code></td></tr><tr><td>PRODUKT</td><td>Zahlen multiplizieren</td><td><code>=PRODUKT(A2;B2)</code></td></tr><tr><td>MITTELWERT</td><td>Durchschnitt berechnen</td><td><code>=MITTELWERT(B2:B4)</code></td></tr><tr><td>MIN / MAX</td><td>Kleinsten / größten Zahlenwert finden</td><td><code>=MAX(B2:B4)</code></td></tr><tr><td>ANZAHL</td><td>Zahlenwerte zählen</td><td><code>=ANZAHL(B2:B4)</code></td></tr><tr><td>WURZEL</td><td>Quadratwurzel berechnen</td><td><code>=WURZEL(A2)</code></td></tr></table>
+<p>In Zellbereichen werden Text und leere Zellen bei SUMME und MITTELWERT nicht als Zahlen mitgerechnet. ANZAHL zählt nur Zahlenwerte. Eine eingetragene Null ist eine Zahl und wird beim Durchschnitt mitgezählt.</p>
+<h3>Funktionen ineinander verwenden</h3>
+<code class="formula">=PRODUKT(SUMME(B3;B5);B2)</code>
+<p>Zuerst wird die innere Summe berechnet. Anschließend wird das Ergebnis mit B2 multipliziert.</p>
+<div class="note">Der Durchschnitt ist die Summe der Zahlen geteilt durch ihre Anzahl. Bei fünf Zahlen wird durch fünf geteilt. MITTELWERT erledigt beides automatisch.</div>
+<p>In Tabellenprogrammen hilft häufig ein Funktionsassistent mit der Beschriftung „fx“ bei der Auswahl und Eingabe.</p>`,
+quiz:["Was bedeutet A2:A4?",["Nur A2 und A4.","A2, A3 und A4.","Die Summe aus A2 und A4."],1,"Ein Bereich schließt alle Zellen zwischen den angegebenen Grenzen ein."]
+},
+{
+title:"Tabellen planen und Ergebnisse auswerten",
+body:`
+<h3>Erst die Struktur, dann die Rechnung</h3>
+<ol><li>Überlege, welche Frage deine Tabelle beantworten soll.</li><li>Verwende pro Spalte eine Eigenschaft, etwa Name, Punkte oder Preis.</li><li>Lege pro Zeile einen Datensatz an.</li><li>Schreibe Einheiten in die Überschriften.</li><li>Trenne Eingaben, feste Parameter und berechnete Ergebnisse.</li></ol>
+<h3>Beispiel: Ein Test mit 20 möglichen Punkten</h3>
+<p>In B2 und C2 stehen Teilpunktzahlen. D2 berechnet die Gesamtpunktzahl mit <code>=SUMME(B2:C2)</code>. E2 kann mit <code>=D2/20</code> den erreichten Anteil berechnen.</p>
+<p>Der Wert 0,55 wird im Prozentformat als 55 % angezeigt. Alternativ liefert <code>=D2/20*100</code> die Zahl 55. Diese Zahl darf nicht zusätzlich als Prozent formatiert werden: Das würde 5500 % anzeigen.</p>
+<p>Den Durchschnitt einer Aufgabe über mehrere Personen erhältst du beispielsweise mit <code>=MITTELWERT(B2:B4)</code>. Beim Kopieren eine Spalte nach rechts entsteht <code>=MITTELWERT(C2:C4)</code>.</p>
+<div class="note"><strong>Ergebnisse interpretieren:</strong> Eine Summe beantwortet eine andere Frage als ein Durchschnitt. Prüfe immer, ob die Formel, die Einheit und die Größenordnung zu deiner Fragestellung passen.</div>`,
+quiz:["Wie wird der Anteil 0,55 als 55 % angezeigt?",["Als Prozent formatieren.","Noch einmal durch 100 teilen.","Mit 100 multiplizieren und danach als Prozent formatieren."],0,"Das Prozentformat ändert die Anzeige, nicht den gespeicherten Anteil."]
+},
+{
+title:"Relative, absolute und gemischte Bezüge",
+body:`
+<h3>Relative Bezüge wandern beim Kopieren mit</h3>
+<p>Kopierst du <code>=A2+B2</code> eine Zeile nach unten, entsteht <code>=A3+B3</code>. Die Bezüge verändern sich entsprechend der Verschiebung der Formelzelle.</p>
+<table class="doc-table"><tr><th>Bezug</th><th>Eine Zeile nach unten</th><th>Eine Spalte nach rechts</th></tr><tr><td><code>A3</code></td><td><code>A4</code></td><td><code>B3</code></td></tr><tr><td><code>$A$3</code></td><td><code>$A$3</code></td><td><code>$A$3</code></td></tr><tr><td><code>A$3</code></td><td><code>A$3</code></td><td><code>B$3</code></td></tr><tr><td><code>$A3</code></td><td><code>$A4</code></td><td><code>$A3</code></td></tr></table>
+<p>Das Dollarzeichen fixiert den unmittelbar folgenden Bestandteil. <code>$A$3</code> ist ein absoluter Bezug. <code>A$3</code> und <code>$A3</code> sind gemischte Bezüge.</p>
+<h3>Beispiel: Ein Rabatt für alle Artikel</h3>
+<p>D1 enthält den Rabattsatz als Anteil. D4 enthält den Preis vor Rabatt.</p>
+<code class="formula">=D4*(1-$D$1)</code>
+<p>Beim Kopieren nach unten wird aus D4 die Zelle D5. Der Rabatt wird weiterhin aus D1 gelesen. Änderst du D1, rechnen alle Formeln mit dem neuen Satz.</p>
+<div class="note">Im Tabellenlabor schaltest du einen eingefügten Bezug mit <strong>F4</strong> oder „Bezug fixieren“ um: A2 → $A$2 → A$2 → $A2 → A2.</div>`,
+quiz:["Du kopierst =B3+$B$1 eine Zeile nach unten. Was entsteht?",["=B4+$B$1","=B4+$B$2","=B3+$B$1"],0,"B3 wandert mit. Der absolute Bezug auf B1 bleibt unverändert."]
+},
+{
+title:"Prozent, Rabatt, Netto und Brutto",
+body:`
+<h3>Prozent bedeutet Hundertstel</h3>
+<p>10 % entspricht 0,10. Ein Prozentsatz wird als Anteil mit dem Grundwert multipliziert. 10 % von 50 € sind 5 €.</p>
+<table class="doc-table"><tr><th>Gesucht</th><th>Formel für einen Preis in A2</th></tr><tr><td>10 % des Preises</td><td><code>=A2*10%</code></td></tr><tr><td>Preis nach 10 % Erhöhung</td><td><code>=A2*(1+10%)</code></td></tr><tr><td>Preis nach 5 % Rabatt</td><td><code>=A2*(1-5%)</code></td></tr><tr><td>Steuerbetrag bei 19 %</td><td><code>=A2*19%</code></td></tr><tr><td>Brutto aus Netto bei 19 %</td><td><code>=A2*(1+19%)</code></td></tr><tr><td>Netto aus Brutto bei 19 %</td><td><code>=A2/(1+19%)</code></td></tr></table>
+<p><strong>Netto</strong> bezeichnet den Preis ohne Mehrwertsteuer, <strong>Brutto</strong> den Preis einschließlich Mehrwertsteuer. Der Steuerbetrag bezieht sich auf den Nettopreis.</p>
+<div class="note warn">Vom Bruttopreis 19 % abzuziehen ergibt nicht den Nettopreis. Die Umkehrung der Multiplikation mit 1,19 ist die Division durch 1,19. Die Steuersätze in dieser Lernseite sind vorgegebene Rechenwerte, keine steuerrechtliche Beratung.</div>
+<p>Eine Anzeige mit zwei Nachkommastellen rundet nicht automatisch den gespeicherten Wert. Für eine tatsächliche Rundung auf Cent kannst du <code>=RUNDEN(A2*19%;2)</code> verwenden.</p>`,
+quiz:["Wie erhältst du bei einem vorgegebenen Satz von 19 % aus 119 € Brutto den Nettopreis?",["119 mal 0,81.","119 geteilt durch 1,19.","119 minus 19 % von 119."],1,"Die Division macht die vorherige Multiplikation mit 1,19 rückgängig."]
+},
+{
+title:"WENN und Bedingungen",
+body:`
+<h3>Eine Entscheidung mit zwei Ausgängen</h3>
+<code class="formula">=WENN(Bedingung;DannWert;SonstWert)</code>
+<p>Die Bedingung ist entweder WAHR oder FALSCH. Bei WAHR wird der DANN-Zweig gewählt, bei FALSCH der SONST-Zweig.</p>
+<code class="formula">=WENN(A2&lt;18;"Kind";"Erwachsen")</code>
+<p>Bei 17 erscheint „Kind“, bei 18 „Erwachsen“. Texte brauchen gerade Anführungszeichen. Zahlen, Zellbezüge und Berechnungen stehen ohne Anführungszeichen.</p>
+<table class="doc-table"><tr><th>Operator</th><th>Bedeutung</th></tr><tr><td>&lt; / &gt;</td><td>kleiner / größer</td></tr><tr><td>&lt;= / &gt;=</td><td>kleiner oder gleich / größer oder gleich</td></tr><tr><td>=</td><td>gleich</td></tr><tr><td>&lt;&gt;</td><td>ungleich</td></tr></table>
+<p>Mit <code>""</code> erhältst du einen leeren Text. Die Ausgabe sieht dann leer aus.</p>
+<code class="formula">=WENN(A2&gt;=1000000;"Millionenstadt";"")</code>
+<h3>Formeln in Alltagssprache lesen</h3>
+<p><code>=WENN(A2&lt;=2,5;"noch gut";"nicht mehr gut")</code> bedeutet: Ist der Wert höchstens 2,5, erscheint „noch gut“, andernfalls „nicht mehr gut“.</p>
+<div class="note"><strong>Grenzen testen:</strong> Prüfe einen Wert unterhalb der Grenze, den Grenzwert selbst und einen Wert oberhalb. Achte außerdem auf die Reihenfolge von DANN und SONST.</div>`,
+quiz:["Die Bedingung lautet A2>5. Welcher Zweig wird bei genau 5 gewählt?",["DANN.","SONST."],1,"Größer als schließt den Grenzwert selbst nicht ein."]
+},
+{
+title:"WENN mit Formeln und Funktionen",
+body:`
+<h3>In den Zweigen darf gerechnet werden</h3>
+<p>Eine WENN-Funktion kann verschiedene Berechnungen auswählen. Innerhalb eines Zweigs steht kein zusätzliches Gleichheitszeichen.</p>
+<code class="formula">=WENN(A2="Premium";B2*95%;B2)</code>
+<p>Premiumkunden zahlen 95 % des Preises, alle anderen den vollen Preis.</p>
+<h3>Division durch null verhindern</h3>
+<code class="formula">=WENN(B2&lt;&gt;0;A2/B2;"nicht möglich")</code>
+<p>Nur bei einem Divisor ungleich null wird dividiert.</p>
+<h3>Zwischen Steuersätzen auswählen</h3>
+<p>In diesem Rechenmodell enthält A2 die Kategorie und B2 den Nettopreis. Gesucht ist der Steuerbetrag.</p>
+<code class="formula">=WENN(A2="reduziert";B2*7%;B2*19%)</code>
+<p>Stehen die beiden Sätze in B6 und B7, kannst du sie mit absoluten Bezügen verwenden:</p>
+<code class="formula">=WENN(A2="reduziert";B2*$B$6;B2*$B$7)</code>
+<p>Auch Funktionen sind in einem Zweig möglich:</p>
+<code class="formula">=WENN(A2&gt;0;SUMME(B2:C2);0)</code>`,
+quiz:["Warum wird bei WENN(B2<>0;A2/B2;\"nicht möglich\") zuerst B2 geprüft?",["Damit nicht durch null dividiert wird.","Damit immer durch null dividiert wird."],0,"Die Bedingung schützt vor einer ungültigen Rechnung."]
+},
+{
+title:"Verschachtelte WENN-Funktionen",
+body:`
+<h3>Mehr als zwei mögliche Ergebnisse</h3>
+<p>Wenn es mehrere Fälle gibt, kannst du im SONST-Zweig eine weitere vollständige WENN-Funktion einsetzen.</p>
+<div class="note">
+<strong>Dein Bauplan für saubere Verschachtelungen</strong>
+<ol>
+<li><strong>Ordne die Fälle nach ihren Grenzen.</strong></li>
+<li><strong>Wähle das Vergleichszeichen vor dem Schreiben so, dass im ersten DANN-Block bereits eine eindeutige Entscheidung möglich ist.</strong> Für diesen Fall darf keine weitere Prüfung nötig sein.</li>
+<li><strong>Behalte dieses Vergleichszeichen in allen folgenden Grenzprüfungen bei.</strong></li>
+<li>Prüfe im SONST-Zweig die nächste Grenze. Der letzte SONST-Zweig nimmt den verbleibenden Fall auf.</li>
+</ol>
+<p><strong>Merksatz:</strong> Erst eindeutig entscheiden, dann im SONST-Zweig mit demselben Vergleichszeichen weiterarbeiten.</p>
+</div>
+<h3>Von kleinen zu großen Werten: immer &lt;</h3>
+<p>Die Gruppen lauten: unter 14 „Kind“, ab 14 bis unter 18 „Jugendlich“, ab 18 „Erwachsen“.</p>
+<code class="formula">=WENN(A2&lt;14;"Kind";WENN(A2&lt;18;"Jugendlich";"Erwachsen"))</code>
+<ol><li><code>A2&lt;14</code>: Bei WAHR steht „Kind“ bereits eindeutig fest.</li><li>Im SONST-Zweig ist das Alter mindestens 14. Jetzt prüfst du mit demselben Zeichen <code>A2&lt;18</code>.</li><li>Wenn auch diese Prüfung FALSCH ist, bleibt „Erwachsen“.</li></ol>
+<h3>Von großen zu kleinen Werten: immer &gt;=</h3>
+<p>Ab 150 € gibt es ein Geschenk, ab 50 € einen Gutschein, darunter keine Prämie.</p>
+<code class="formula">=WENN(A2&gt;=150;"Geschenk";WENN(A2&gt;=50;"Gutschein";"keine Prämie"))</code>
+<p>Mit <code>&gt;=</code> beginnst du hier bei der höchsten Grenze. Der erste DANN-Block ist eindeutig: Ab 150 € gibt es ein Geschenk. Danach arbeitest du im SONST-Zweig mit demselben Zeichen weiter.</p>
+<div class="note warn"><strong>So nicht starten:</strong> <code>=WENN(A2&gt;=50;"Gutschein";…)</code> entscheidet zu früh. Auch 160 € erfüllt diese Bedingung, obwohl dafür ein Geschenk vorgesehen ist. Wähle daher vorab entweder <code>&gt;=</code> mit absteigenden Grenzen oder <code>&lt;</code> mit aufsteigenden Grenzen.</div>
+<h3>Klammern und Grenzwerte prüfen</h3>
+<p>Jede geöffnete WENN-Klammer braucht eine schließende Klammer. Zwei WENN-Funktionen werden am Ende häufig mit zwei Klammern abgeschlossen.</p>
+<p>Teste beim Prämienbeispiel insbesondere 49,99 €, 50 €, 149,99 € und 150 €. So prüfst du die Übergänge zwischen den Fällen.</p>
+<p class="small">Das Beibehalten des Vergleichszeichens ist der Bauplan dieser Lernseite für geordnete Grenzwertaufgaben. Er hilft dir, die Fallunterscheidung konsequent von einer Seite aus aufzubauen.</p>`,
+quiz:["Du möchtest die Prämien mit >= zuordnen. Welche Prüfung gehört an den Anfang?",["Betrag >= 50: Gutschein.","Betrag >= 150: Geschenk."],1,"Beginne mit der höchsten Grenze. Dann ist der erste DANN-Fall eindeutig. Im SONST-Zweig prüfst du weiter mit >=."]
+},
+{
+title:"Weitere Funktionen zum Entdecken",
+body:`
+<h3>ZÄHLENWENN</h3>
+<p>Zählt Zellen, die ein Kriterium erfüllen.</p>
+<code class="formula">=ZÄHLENWENN(B2:B4;">=5")</code>
+<p>Die Funktion zählt, wie viele Zahlenwerte in B2 bis B4 mindestens 5 betragen. Das Vergleichskriterium steht hier als Text in Anführungszeichen.</p>
+<h3>SUMMEWENN</h3>
+<p>Addiert Werte, deren zugehörige Zeilen ein Kriterium erfüllen.</p>
+<code class="formula">=SUMMEWENN(A2:A4;"Premium";B2:B4)</code>
+<p>Nur die Beträge aus B2 bis B4 werden addiert, deren Kundentyp in Spalte A „Premium“ ist.</p>
+<h3>Verweisfunktionen</h3>
+<p>Sie suchen einen Schlüssel in einer Zuordnungstabelle und liefern den passenden Wert zurück. So kannst du beispielsweise zu einer Artikelnummer einen Preis finden. Beispiele sind SVERWEIS und XVERWEIS. Bei der Verwendung musst du insbesondere zwischen exakter und ungefährer Suche unterscheiden.</p>
+<div class="note">Diese Funktionen sind freiwillige Vertiefungen. Im kleinen Tabellenlabor werden sie nicht ausgewertet. Zum Ausprobieren kannst du ein vollständiges Tabellenkalkulationsprogramm verwenden.</div>`,
+quiz:["Was macht ZÄHLENWENN?",["Es zählt Zellen, die ein Kriterium erfüllen.","Es verändert die Zellfarbe."],0,"Das Kriterium entscheidet, welche Zellen gezählt werden."]
+},
+{
+title:"★ WENN mit UND und ODER",
+body:`
+<div class="note warn">Freiwillige Schlussrunde: Übe zuerst die einfachen und verschachtelten WENN-Funktionen.</div>
+<h3>UND: Alle Bedingungen müssen stimmen</h3>
+<code class="formula">=WENN(UND(A2&gt;=12;B2="ja");"zugelassen";"noch nicht")</code>
+<p>Nur wenn das Alter mindestens 12 beträgt und beim Grundkurs „ja“ steht, erscheint „zugelassen“.</p>
+<h3>ODER: Mindestens eine Bedingung genügt</h3>
+<code class="formula">=WENN(ODER(A2="Silber";A2="Gold");"ja";"nein")</code>
+<p>Das Abzeichen Silber oder Gold genügt. ODER ist auch wahr, wenn mehrere Teilbedingungen wahr sind.</p>
+<table class="doc-table"><tr><th>Bedingung 1</th><th>Bedingung 2</th><th>UND</th><th>ODER</th></tr><tr><td>wahr</td><td>wahr</td><td>wahr</td><td>wahr</td></tr><tr><td>wahr</td><td>falsch</td><td>falsch</td><td>wahr</td></tr><tr><td>falsch</td><td>wahr</td><td>falsch</td><td>wahr</td></tr><tr><td>falsch</td><td>falsch</td><td>falsch</td><td>falsch</td></tr></table>
+<h3>UND und ODER kombinieren</h3>
+<code class="formula">=WENN(UND(A2&gt;=12;ODER(B2="Silber";B2="Gold"));"ja";"nein")</code>
+<p>Die Altersbedingung muss stimmen. Zusätzlich muss eines der beiden Abzeichen vorliegen. Die Klammern zeigen, welche Bedingungen zusammengehören.</p>`,
+quiz:["Wann ist ODER wahr?",["Nur wenn alle Bedingungen wahr sind.","Wenn mindestens eine Bedingung wahr ist."],1,"Mindestens eine wahre Bedingung genügt."]
+}
+];
+
+const tasks=[];
+function add(id,cat,title,prompt,grid,targets,solution,expected,changes,hints,required){
+tasks.push({id,cat,title,prompt,grid,targets,solution,expected,changes,hints,required});
+}
+add("sum",0,"Addition mit Zellklick","Berechne in C2 die Summe der beiden Werte und kopiere nach unten.",[["a","b","Summe"],[3,4,null],[1.4,1.8,null],[12,8,null]],["C2","C3","C4"],"=A2+B2",(g,r)=>g["A"+r]+g["B"+r],{A2:11,B3:7,A4:-2},["Tippe =, klicke A2, tippe + und klicke B2.","Kopiere anschließend die Formel in die weiteren Zielzellen."]);
+add("product",0,"Eine Rechnung erstellen","Berechne mit PRODUKT die Anzahl mal Einzelpreis.",[["Anzahl","Einzelpreis (€)","Gesamt (€)"],[10,50,null],[2,24,null],[5,5,null]],["C2","C3","C4"],"=PRODUKT(A2;B2)",(g,r)=>g["A"+r]*g["B"+r],{A2:4,B3:18,A4:9},["Tippe =PRODUKT( und füge die Zelladressen durch Anklicken ein.","Trenne die Argumente mit einem Semikolon und schließe die Klammer."],"PRODUKT");
+add("mean",0,"Durchschnitt per Bereich","Berechne mit MITTELWERT den Durchschnitt aus Montag und Dienstag. Ziehe für das Argument über A2:B2.",[["Mo (€)","Di (€)","Durchschnitt"],[23,8,null],[33,13,null],[26,12,null]],["C2","C3","C4"],"=MITTELWERT(A2:B2)",(g,r)=>(g["A"+r]+g["B"+r])/2,{A2:31,B3:25,A4:18},["Tippe =MITTELWERT( und ziehe von A2 nach B2.","Schließe mit ) ab."],"MITTELWERT");
+add("sumrange",0,"Ein Bereich, eine Summe","Addiere in B5 die drei Werte mit SUMME.",[["Tag","Verdienst (€)"],["Mo",23],["Di",43],["Mi",16],["Summe",null]],["B5"],"=SUMME(B2:B4)",g=>g.B2+g.B3+g.B4,{B2:31,B3:7,B4:29},["Tippe =SUMME( und ziehe von B2 nach B4.","Der Bereich lautet B2:B4."],"SUMME");
+add("max",0,"Den größten Wert finden","Bestimme mit MAX in B5 den höchsten Verdienst.",[["Tag","Verdienst (€)"],["Mo",23],["Di",43],["Mi",16],["Maximum",null]],["B5"],"=MAX(B2:B4)",g=>Math.max(g.B2,g.B3,g.B4),{B2:61,B3:12,B4:9},["MAX sucht den größten Zahlenwert.","Beziehe alle drei Tageswerte ein."],"MAX");
+add("count",0,"Nur Zahlen zählen","Zähle mit ANZAHL, wie viele Zahlen in B2:B4 stehen. Der Text „fehlt“ ist keine Zahl.",[["Tag","Wert"],["Mo",4],["Di","fehlt"],["Mi",8],["Anzahl",null]],["B5"],"=ANZAHL(B2:B4)",g=>[g.B2,g.B3,g.B4].filter(x=>typeof x==="number").length,{B2:"fehlt",B3:"fehlt",B4:9},["ANZAHL zählt Zahlenwerte in einem Bereich.","Wähle B2:B4, nicht nur einzelne sichtbare Zahlen."],"ANZAHL");
+add("vat",1,"Von netto zu brutto","Berechne Brutto bei einem vorgegebenen Steuersatz von 19 %.",[["Netto (€)","Brutto (€)"],[50,null],[12.5,null],[80,null]],["B2","B3","B4"],"=A2*(1+19%)",(g,r)=>g["A"+r]*1.19,{A2:72,A3:18,A4:25},["Brutto enthält 100 % Netto plus 19 % Steuer.","Multipliziere mit 1+19%."]);
+add("net",1,"Von brutto zu netto","Die Preise enthalten 19 % Steuer. Berechne Netto.",[["Brutto (€)","Netto (€)"],[119,null],[59.5,null],[23.8,null]],["B2","B3","B4"],"=A2/1,19",(g,r)=>g["A"+r]/1.19,{A2:238,A3:83.3,A4:35.7},["Brutto ist das 1,19-Fache von Netto.","Die Umkehrung der Multiplikation ist die Division."]);
+add("raise",1,"Preise erhöhen","Erhöhe jeden Preis um 10 %.",[["Alter Preis (€)","Neuer Preis (€)"],[5.5,null],[5,null],[6.5,null]],["B2","B3","B4"],"=A2*(1+10%)",(g,r)=>g["A"+r]*1.1,{A2:7,A3:6,A4:9},["Der neue Preis besteht aus 100 % plus 10 %.","Multipliziere den alten Preis mit 1,1."]);
+add("phone",2,"Eine Grundgebühr für alle","B1 enthält die Grundgebühr. Berechne in C3 variable Kosten plus Grundgebühr und kopiere nach unten. B1 soll später änderbar bleiben.",[["Grundgebühr (€)",5,""],["Monat","Variable Kosten (€)","Gesamt (€)"],["Januar",3.49,null],["Februar",3.56,null],["März",3.05,null]],["C3","C4","C5"],"=B3+$B$1",(g,r)=>g["B"+r]+g.B1,{B1:8,B3:2.1,B4:4.2},["B3 soll beim Kopieren wandern, B1 nicht.","Fixiere B1 mit F4 oder mit „Bezug fixieren“."]);
+add("fixedvat",2,"Ein zentraler Steuersatz","B1 enthält 0,19, also 19 %. Berechne Brutto aus Netto. Verwende den Satz aus B1.",[["Steuersatz",.19],["Netto (€)","Brutto (€)"],[50,null],[12.5,null],[100,null]],["B3","B4","B5"],"=A3*(1+$B$1)",(g,r)=>g["A"+r]*(1+g.B1),{B1:.07,A3:72,A4:40},["Der Nettopreis wandert, der Steuersatz bleibt fest.","Fixiere sowohl die Spalte als auch die Zeile von B1."]);
+add("mixed",2,"★ In zwei Richtungen kopieren","Zeile 1 enthält Kilometer, Spalte A Euro pro Kilometer. Berechne in B2 die Vergütung. Kopiere bis D4.",[["€/km · km",100,150,200],[.23,null,null,null],[.28,null,null,null],[.32,null,null,null]],["B2","C2","D2","B3","C3","D3","B4","C4","D4"],"=B$1*$A2",(g,r,c)=>g["A"+r]*g[c+"1"],{B1:120,C1:180,D1:220,A2:.25,A4:.4},["Bei den Kilometern bleibt Zeile 1 fest.","Beim Betrag je Kilometer bleibt Spalte A fest."]);
+add("age",3,"Kind oder erwachsen?","Unter 18 soll „Kind“ erscheinen, sonst „Erwachsen“.",[["Alter","Status"],[14,null],[18,null],[25,null],[17,null]],["B2","B3","B4","B5"],'=WENN(A2<18;"Kind";"Erwachsen")',(g,r)=>g["A"+r]<18?"Kind":"Erwachsen",{A2:19,A3:16,A4:18,A5:12},["Die Bedingung lautet A2<18.","Texte stehen in geraden Anführungszeichen."],"WENN");
+add("pass",3,"Grenzwert beachten","Bei mehr als 5 Punkten soll „bestanden“ erscheinen, sonst „nicht bestanden“.",[["Punkte","Urteil"],[4,null],[6,null],[5,null]],["B2","B3","B4"],'=WENN(A2>5;"bestanden";"nicht bestanden")',(g,r)=>g["A"+r]>5?"bestanden":"nicht bestanden",{A2:9,A3:5,A4:3},["Mehr als 5 bedeutet >5.","Genau 5 reicht in dieser Aufgabe nicht."],"WENN");
+add("risk",3,"Ein fiktiver Warnhinweis","Erfundene Übungsregel: Bei mindestens 2 mangelhaften Leistungen „versetzungsgefährdet“, sonst „nicht versetzungsgefährdet“. Dies ist keine echte Versetzungsordnung.",[["Mangelhafte Leistungen","Hinweis"],[0,null],[2,null],[3,null]],["B2","B3","B4"],'=WENN(A2>=2;"versetzungsgefährdet";"nicht versetzungsgefährdet")',(g,r)=>g["A"+r]>=2?"versetzungsgefährdet":"nicht versetzungsgefährdet",{A2:2,A3:1,A4:0},["Mindestens bedeutet größer oder gleich.","Verwende >=2."],"WENN");
+add("premium",4,"Premium-Rabatt","Premiumkunden zahlen 5 % weniger. Sonst wird der volle Preis bezahlt.",[["Kundentyp","Preis (€)","Zahlbetrag (€)"],["Premium",100,null],["Standard",80,null],["Premium",40,null]],["C2","C3","C4"],'=WENN(A2="Premium";B2*95%;B2)',(g,r)=>g["B"+r]*(g["A"+r]==="Premium"?.95:1),{A2:"Standard",A3:"Premium",B2:120,B4:75},['Vergleiche den Kundentyp mit "Premium".',"5 % Rabatt bedeutet: 95 % bezahlen."],"WENN");
+add("divide",4,"Keine Division durch null","Berechne A geteilt durch B, aber nur bei B ungleich 0. Sonst soll „nicht möglich“ erscheinen.",[["Dividend","Divisor","Ergebnis"],[10,5,null],[5,0,null],[3,2,null]],["C2","C3","C4"],'=WENN(B2<>0;A2/B2;"nicht möglich")',(g,r)=>g["B"+r]!==0?g["A"+r]/g["B"+r]:"nicht möglich",{B2:0,B3:4,A4:9},["Das Zeichen für ungleich ist <>.","Die Division gehört in den Zweig für einen Divisor ungleich null."],"WENN");
+add("angle",4,"Nebenwinkel","Für nichtnegative Eingabewinkel unter 180°: Berechne 180 minus Winkel. Sonst gib „nicht möglich“ aus.",[["Winkel (°)","Nebenwinkel (°)"],[60,null],[180,null],[182,null],[42,null]],["B2","B3","B4","B5"],'=WENN(A2<180;180-A2;"nicht möglich")',(g,r)=>g["A"+r]<180?180-g["A"+r]:"nicht möglich",{A2:120,A3:179,A4:200,A5:0},["Prüfe, ob der Eingabewinkel unter 180 liegt.","Nebenwinkel ergänzen sich zu 180°."],"WENN");
+add("categoryvat",4,"Zwei Steuersätze auswählen","Rechenmodell: Kategorie „reduziert“ → 7 %, sonst 19 %. Berechne den Steuerbetrag, nicht Brutto.",[["Kategorie","Netto (€)","Steuer (€)"],["reduziert",10,null],["normal",20,null],["reduziert",30,null]],["C2","C3","C4"],'=WENN(A2="reduziert";B2*7%;B2*19%)',(g,r)=>g["B"+r]*(g["A"+r]==="reduziert"?.07:.19),{A2:"normal",A3:"reduziert",B4:50},["WENN wählt zwischen zwei Berechnungen.","Beide Zweige multiplizieren den Nettopreis mit einem Steuersatz."],"WENN");
+add("nested",5,"Drei Altersgruppen","Unter 14: „Kind“. Ab 14 bis unter 18: „Jugendlich“. Ab 18: „Erwachsen“. Nutze durchgehend < und beginne mit der kleinsten Grenze.",[["Alter","Gruppe"],[7,null],[14,null],[18,null],[17,null]],["B2","B3","B4","B5"],'=WENN(A2<14;"Kind";WENN(A2<18;"Jugendlich";"Erwachsen"))',(g,r)=>g["A"+r]<14?"Kind":g["A"+r]<18?"Jugendlich":"Erwachsen",{A2:19,A3:13,A4:16,A5:18},["Wähle <. Mit A2<14 ist der erste DANN-Fall „Kind“ bereits eindeutig.","Behalte < bei: Im SONST-Zweig prüfst du A2<18. Danach bleibt nur „Erwachsen“."],"WENN");
+add("gift",5,"Gutschein oder Geschenk?","Ab 150 €: „Geschenk“. Ab 50 €: „Gutschein“. Darunter: „keine Prämie“. Nutze durchgehend >= und beginne mit der höchsten Grenze.",[["Betrag (€)","Prämie"],[34.23,null],[59.31,null],[163.29,null],[150,null]],["B2","B3","B4","B5"],'=WENN(A2>=150;"Geschenk";WENN(A2>=50;"Gutschein";"keine Prämie"))',(g,r)=>g["A"+r]>=150?"Geschenk":g["A"+r]>=50?"Gutschein":"keine Prämie",{A2:50,A3:149.99,A4:20,A5:170},["Starte mit A2>=150. Dann ist im ersten DANN-Block „Geschenk“ eindeutig.","Behalte >= bei. Prüfe im SONST-Zweig A2>=50."],"WENN");
+add("or",6,"★ Ein Kriterium genügt","Ein Teilnahmeschein wird bei mindestens 50 Punkten ODER mindestens 90 % Anwesenheit vergeben. Anwesenheit steht als Zahl von 0 bis 100 da. Ausgabe „ja“ oder „nein“.",[["Punkte","Anwesenheit (%)","Schein?"],[55,80,null],[40,70,null],[45,95,null],[55,90,null]],["C2","C3","C4","C5"],'=WENN(ODER(A2>=50;B2>=90);"ja";"nein")',(g,r)=>g["A"+r]>=50||g["B"+r]>=90?"ja":"nein",{A2:30,B2:90,A3:50,B4:85},["Mindestens eine Bedingung muss stimmen.","ODER steht an der Stelle der WENN-Bedingung."],"ODER");
+add("and",6,"★ Beide Kriterien zählen","Zulassung ab 12 Jahren UND mit Grundkurs „ja“. Ausgabe „zugelassen“ oder „noch nicht“.",[["Alter","Grundkurs?","Zulassung"],[13,"ja",null],[11,"ja",null],[14,"nein",null],[12,"ja",null]],["C2","C3","C4","C5"],'=WENN(UND(A2>=12;B2="ja");"zugelassen";"noch nicht")',(g,r)=>g["A"+r]>=12&&g["B"+r]==="ja"?"zugelassen":"noch nicht",{A2:10,A3:12,B4:"ja",B5:"nein"},["Beide Bedingungen müssen wahr sein.","Verbinde die Alters- und die Kursbedingung mit UND."],"UND");
+add("andor",6,"★ Die Schlussrunde","Teilnahme ab 12 Jahren UND mit Abzeichen „Silber“ ODER „Gold“. Ausgabe „ja“ oder „nein“.",[["Alter","Abzeichen","Teilnahme?"],[13,"Silber",null],[11,"Gold",null],[14,"Bronze",null],[12,"Gold",null]],["C2","C3","C4","C5"],'=WENN(UND(A2>=12;ODER(B2="Silber";B2="Gold"));"ja";"nein")',(g,r)=>g["A"+r]>=12&&["Silber","Gold"].includes(g["B"+r])?"ja":"nein",{A2:10,A3:15,B4:"Gold",B5:"Bronze"},["Verbinde die beiden Abzeichen mit ODER.","Verbinde die gesamte Abzeichenprüfung und die Altersbedingung mit UND."],"UND");
+
+const STORE="formelwerkstatt-eigenstaendig-v3";
+let st={done:{},draft:{},read:{},quiz:{},hint:{},revealed:{}};
+try{
+const saved=JSON.parse(localStorage.getItem(STORE)||"null");
+if(saved)for(const k of Object.keys(st))if(saved[k]&&typeof saved[k]==="object")st[k]=saved[k];
+}catch(e){}
+let view="home",chapter=0,filter="all",task=null,filled=false,formulas=false,referenceMode=true;
+let shiftAnchor=null,lastInsert=null,drag=null,caret={s:0,e:0};
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(st))}catch(e){}stats()}
+function stats(){
+const done=tasks.filter(t=>st.done[t.id]),solo=done.filter(t=>st.done[t.id]==="solo").length;
+$("score").textContent=(solo*100+(done.length-solo)*50)+" Punkte";
+$("progress").textContent=done.length+" / "+tasks.length+" Übungen gelöst";
+$("reading").textContent=chapters.filter((_,i)=>st.read[i]).length+" / "+chapters.length+" Kapitel gelesen";
+}
+function navigate(v){view=v;task=null;drag=null;render();window.scrollTo({top:0,behavior:"smooth"})}
+function renderNav(){
+$("nav").innerHTML=[
+["home","⌂ Lernkompass","Dein Überblick"],
+["theory","▤ Theorie",chapters.length+" Kapitel"],
+["arena","⚑ Trainingsarena",tasks.length+" Tabellenübungen"],
+["help","⌨ Bedienung","Klicken, markieren, kopieren"]
+].map(([v,t,s])=>`<button class="${view===v?"active":""}" ${view===v?'aria-current="page"':""} onclick="navigate('${v}')">${t}<small>${s}</small></button>`).join("");
+}
+function render(){stats();renderNav();if(view==="home")home();else if(view==="theory")theoryPage();else if(view==="arena")arena();else helpPage()}
+function home(){
+$("main").innerHTML=`
+<section class="card">
+<h2>Dein Tabellenlabor</h2>
+<p>Lerne Schritt für Schritt, wie Tabellen rechnen. In der Theorie findest du Erklärungen und Beispiele. In der Arena probierst du eigene Formeln aus – mit Zellklick, Bereichsauswahl und automatisch angepassten Bezügen beim Kopieren.</p>
+<div class="two">
+<div class="note"><strong>Erst verstehen</strong><p>${chapters.length} Kapitel mit Beispielen, Merksätzen und Selbstchecks.</p><button class="primary" onclick="navigate('theory')">Theorie öffnen</button></div>
+<div class="note"><strong>Dann ausprobieren</strong><p>${tasks.length} Übungen mit Hinweisen und zusätzlichen Tests mit veränderten Eingaben.</p><button class="primary" onclick="navigate('arena')">Arena öffnen</button></div>
+</div>
+<p class="small">Kein Zeitdruck, keine Rangliste. Fehler kosten keine Punkte. UND und ODER sind die freiwillige Schlussrunde.</p>
+</section>
+<section class="card"><h3>Dein Lernkompass</h3><div class="tiles">
+${cats.map((c,i)=>{
+const a=tasks.filter(t=>t.cat===i),n=a.filter(t=>st.done[t.id]).length;
+return `<div class="tile"><strong>${c}</strong><div class="bar"><span style="width:${100*n/a.length}%"></span></div><div class="small">${n} von ${a.length} gelöst</div><button onclick="filter='${i}';navigate('arena')">Hier trainieren →</button></div>`;
+}).join("")}
+</div></section>
+<section class="card"><h3>Abzeichen & Punkte</h3>
+${cats.map((c,i)=>tasks.filter(t=>t.cat===i).every(t=>st.done[t.id])?`<span class="badge">✓ ${c}</span>`:"").join("")||'<p class="small">Schließe ein Thema ab, um ein Abzeichen zu erhalten.</p>'}
+<p class="small">100 Punkte ohne eingeblendete Musterlösung, 50 Punkte mit Musterlösung. Hinweise sind kostenlos. Wiederholungen geben keine Extrapunkte. Die Lesemarkierung ist deine eigene Einschätzung.</p>
+<button onclick="$('reset').classList.remove('hidden')">Fortschritt zurücksetzen</button>
+<div id="reset" class="hidden note warn">Alle Fortschritte dieser Version auf diesem Gerät löschen?<div class="actions"><button onclick="resetAll()">Ja, löschen</button><button onclick="$('reset').classList.add('hidden')">Abbrechen</button></div></div>
+</section>`;
+}
+function resetAll(){st={done:{},draft:{},read:{},quiz:{},hint:{},revealed:{}};persist();render()}
+function theoryPage(){
+const c=chapters[chapter];
+$("main").innerHTML=`
+<section class="card"><h2>Theorie-Bibliothek</h2>
+<p>Starte bei Kapitel 1 oder wähle gezielt ein Thema. Vorkenntnisse sind nicht nötig. Nach jedem Kapitel kannst du dich mit einem kurzen Selbstcheck prüfen.</p>
+<div class="toc">${chapters.map((x,i)=>`<button class="${i===chapter?"current":""}" onclick="setChapter(${i})">${st.read[i]?"✓ ":""}${i+1}. ${x.title}</button>`).join("")}</div></section>
+<article class="card" id="chapter"><div class="chapterlabel">KAPITEL ${chapter+1} / ${chapters.length}</div><h2>${c.title}</h2>${c.body}</article>
+<section class="card"><h3>Kurzer Selbstcheck</h3><p>${esc(c.quiz[0])}</p>
+<div class="actions">${c.quiz[1].map((a,i)=>`<button onclick="quizAnswer(${i})">${esc(a)}</button>`).join("")}</div>
+<div id="quizresult" aria-live="polite">${st.quiz[chapter]?'<div class="feedback good">✓ Bereits richtig beantwortet. Du kannst die Frage erneut prüfen.</div>':""}</div></section>
+<section class="card"><div class="actions">
+<button onclick="markRead()">${st.read[chapter]?"✓ Als gelesen markiert":"Kapitel als gelesen markieren"}</button>
+<button onclick="setChapter(${chapter-1})" ${chapter===0?"disabled":""}>← Vorheriges</button>
+<button class="primary" onclick="${chapter===chapters.length-1?"filter='6';navigate('arena')":`setChapter(${chapter+1})`}">${chapter===chapters.length-1?"Extra-Training öffnen":"Nächstes Kapitel →"}</button>
+</div><p class="small">Zur Anwendung: Wähle in der Trainingsarena das passende Thema.</p></section>`;
+}
+function setChapter(i){if(i<0||i>=chapters.length)return;chapter=i;theoryPage();$("chapter").scrollIntoView({behavior:"smooth",block:"start"})}
+function markRead(){st.read[chapter]=!st.read[chapter];persist();theoryPage()}
+function quizAnswer(i){
+const c=chapters[chapter],ok=i===c.quiz[2];
+if(ok){st.quiz[chapter]=true;persist()}
+$("quizresult").innerHTML=`<div class="feedback ${ok?"good":"bad"}"><strong>${ok?"Richtig!":"Noch einmal überlegen."}</strong> ${esc(c.quiz[3])}</div>`;
+}
+function helpPage(){
+$("main").innerHTML=`
+<section class="card"><h2>So bedienst du das Tabellenlabor</h2>
+<h3>1. Formel eingeben</h3>
+<p>Jede Aufgabe hat eine gelbe Startzelle. Ihre Adresse steht links neben der Formelleiste. Dort schreibst du deine Formel. Du kannst den Cursor setzen und Text markieren.</p>
+<h3>2. Zelladressen anklicken</h3>
+<p>Wenn „Zellklick fügt Bezug ein“ aktiviert ist, fügt ein Zellklick die Adresse an der Schreibposition ein. Markierter Formeltext wird ersetzt. Beispiel: <code>=</code> tippen → A2 klicken → <code>+</code> tippen → B2 klicken.</p>
+<h3>3. Mehrere Zellen markieren</h3>
+<p>Tippe beispielsweise <code>=SUMME(</code>. Drücke in B2 die Maustaste, ziehe bis B4 und lasse los. Eingefügt wird <code>B2:B4</code>. Ergänze die schließende Klammer. Auch rechteckige Bereiche über mehrere Spalten sind möglich.</p>
+<p><strong>Alternative:</strong> Klicke zuerst die Startzelle und danach mit gedrückter Umschalttaste die Endzelle. Auf Touchgeräten kannst du über die Zellen ziehen. Innerhalb der Tabelle ist dafür das Scrollen deaktiviert.</p>
+<p><strong>Tastatur:</strong> Fokussiere die Tabelle mit Tab. Navigiere mit den Pfeiltasten. Enter oder Leertaste übernimmt die Zelladresse. Für einen Bereich wählst du zuerst die Startzelle, fokussierst die Tabelle erneut und wählst die Endzelle mit Umschalt+Enter.</p>
+<h3>4. Bezug fixieren</h3>
+<p>Direkt nach dem Einfügen kannst du F4 oder „Bezug fixieren“ verwenden. Die Varianten wechseln zwischen relativem, absolutem und gemischtem Bezug. Bei manuell geschriebenen Bezügen setzt du den Cursor auf oder direkt hinter den Bezug.</p>
+<h3>5. Formel kopieren</h3>
+<p>Ziehe das grüne Quadrat unten rechts in der gelben Zelle bis zur letzten Zielzelle. Alternativ verwendest du „In alle Zielzellen kopieren“. Die Bezüge werden entsprechend ihrer Fixierung angepasst.</p>
+<p>Mit „Formeln anzeigen“ untersuchst du die kopierten Formeln. Auch ein rechteckiger Zielbereich lässt sich über das Ausfüllkästchen befüllen.</p>
+<h3>6. Lösung prüfen</h3>
+<p>Der Check untersucht die Formel in allen Zielzellen und mit veränderten Eingaben. Das erkennt viele typische Fehler, ist aber kein vollständiger mathematischer Beweis. Hinweise sind kostenlos. Eine Musterlösung ist verfügbar, wenn du Hilfe benötigst.</p>
+<div class="note warn">Die Eingabedaten sind vorgegeben. Bearbeitet wird die Formel der gelben Startzelle. Andere Ergebniszellen werden durch Kopieren berechnet. Nicht alle Funktionen und Tastenkürzel eines vollständigen Tabellenprogramms werden unterstützt.</div>
+<button class="primary" onclick="navigate('arena')">Jetzt ausprobieren →</button></section>`;
+}
+function tile(t){
+return `<div class="tile"><span class="tag">${cats[t.cat]}</span><h3>${esc(t.title)}</h3><div class="small">${st.done[t.id]?(st.done[t.id]==="solo"?"✓ Selbstständig gelöst":"✓ Mit Musterlösung gelernt"):"○ Noch offen"}</div><button onclick="openTask('${t.id}')">${st.done[t.id]?"Wiederholen":"Übung starten"} →</button></div>`;
+}
+function arena(){
+$("main").innerHTML=`
+<section class="card"><h2>Trainingsarena</h2><p>Beginne mit einfachen Formeln. Danach folgen Zellbezüge, WENN und verschachtelte Entscheidungen. UND und ODER stehen bewusst am Schluss.</p>
+<div class="toolbar"><label for="topic">Thema</label><select id="topic" onchange="filter=this.value;task=null;arena()"><option value="all">Alle Themen</option>${cats.map((c,i)=>`<option value="${i}" ${filter==i?"selected":""}>${c}</option>`).join("")}</select><button class="primary" onclick="randomTask()">🎲 Offene Aufgabe ziehen</button><button onclick="navigate('help')">Bedienung erklären</button></div></section>
+<div id="exercise"></div><div class="tiles">${tasks.filter(t=>filter==="all"||t.cat==filter).map(tile).join("")}</div>`;
+}
+function randomTask(){
+let a=tasks.filter(t=>filter==="all"||t.cat==filter),open=a.filter(t=>!st.done[t.id]);
+if(open.length)a=open;
+openTask(a[Math.floor(Math.random()*a.length)].id);
+}
+function openTask(id){
+task=tasks.find(t=>t.id===id);filled=false;formulas=false;shiftAnchor=null;lastInsert=null;drag=null;
+const f=st.draft[id]||"";caret={s:f.length,e:f.length};
+$("exercise").innerHTML=`
+<section class="card" id="exercise-card">
+<span class="tag">${cats[task.cat]}</span><h2 style="margin-top:10px">${esc(task.title)}</h2><p>${esc(task.prompt)}</p>
+${task.cat===5?'<div class="note"><strong>Bauplan:</strong> Wähle das Vergleichszeichen so, dass der erste DANN-Fall eindeutig ist. Behalte dieses Zeichen in den folgenden Grenzprüfungen bei und arbeite im SONST-Zweig weiter.</div>':""}
+<div class="formulabar"><span class="namebox">${task.targets[0]}</span><input id="formula" aria-label="Formel in ${task.targets[0]}" spellcheck="false" autocomplete="off" placeholder="=…" value="${esc(f)}"></div>
+<div class="toolbar"><label><input type="checkbox" ${referenceMode?"checked":""} onchange="referenceMode=this.checked"> Zellklick fügt Bezug ein</label><button onpointerdown="event.preventDefault()" onclick="fixReference()">Bezug fixieren · F4</button><label><input type="checkbox" onchange="formulas=this.checked;paintValues()"> Formeln anzeigen</label></div>
+<div id="sheet-host"></div>
+<div id="sheetstatus" class="sheetstatus" aria-live="polite">Klicke eine Zelle oder ziehe einen Bereich. Das grüne Quadrat kopiert die Formel.</div>
+<div id="preview" class="small" aria-live="polite"></div>
+<div class="actions"><button class="primary" onclick="check()">Lösung prüfen</button><button onclick="copyAll()">In alle Zielzellen kopieren</button><button onclick="showHint()">Hinweis</button></div>
+<div id="feedback" aria-live="polite"></div><div id="hints"></div>
+<details><summary>Musterlösung – erst nach eigenem Versuch öffnen</summary><p class="small">Beim ersten Lösen mit eingeblendeter Musterlösung gibt es 50 statt 100 Punkte.</p><button onclick="reveal()">Musterlösung einblenden</button><div id="solution"></div></details>
+<p class="small">Die Vorschau zeigt höchstens zwei Nachkommastellen. Intern wird ungerundet gerechnet. Manche Aufgaben verlangen ausdrücklich eine bestimmte Funktion oder Vorgehensweise.</p>
+</section>`;
+buildSheet();bindFormula();paintValues();drawHints();
+if(st.revealed[id])$("solution").innerHTML=`<code class="formula">${esc(task.solution)}</code>`;
+$("exercise-card").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function addr(a){
+const m=/^([A-Z]+)(\d+)$/.exec(a.replace(/\$/g,"").toUpperCase());
+if(!m)throw Error("Ungültige Zelladresse.");
+let c=0;for(const x of m[1])c=c*26+x.charCodeAt(0)-64;
+return {r:+m[2],c};
+}
+function col(n){let s="";while(n>0){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
+function mapGrid(t){const g={};t.grid.forEach((row,r)=>row.forEach((v,c)=>g[col(c+1)+(r+1)]=v));return g}
+function shift(f,from,to){
+const a=addr(from),b=addr(to);
+return f.split(/("(?:[^"]|"")*")/g).map((part,i)=>i%2?part:part.replace(/(\$?)([A-Za-z]+)(\$?)(\d+)/g,(m,fc,c,fr,r)=>{
+const p=addr(c+r),nc=p.c+(fc?0:b.c-a.c),nr=p.r+(fr?0:b.r-a.r);
+return nc<1||nr<1?"#BEZUG!":fc+col(nc)+fr+nr;
+})).join("");
+}
+function currentFormula(){return $("formula")?$("formula").value:st.draft[task.id]||""}
+function storeFormula(){if(task){st.draft[task.id]=currentFormula();persist()}}
+function clearFeedback(){if($("feedback"))$("feedback").innerHTML=""}
+function bindFormula(){
+const input=$("formula"),remember=()=>caret={s:input.selectionStart??input.value.length,e:input.selectionEnd??input.value.length};
+["keyup","click","select","focus"].forEach(e=>input.addEventListener(e,remember));
+input.addEventListener("input",()=>{remember();lastInsert=null;filled=false;storeFormula();clearFeedback();paintValues()});
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter"){e.preventDefault();check()}
+if(e.key==="F4"){e.preventDefault();remember();fixReference()}
+});
+}
+function buildSheet(){
+let html=`<div class="sheetwrap"><table class="sheet" aria-label="Tabellensimulation"><thead><tr><th class="rn"></th>${task.grid[0].map((_,i)=>`<th scope="col">${col(i+1)}</th>`).join("")}</tr></thead><tbody>`;
+task.grid.forEach((row,r)=>{
+html+=`<tr><th scope="row">${r+1}</th>`;
+row.forEach((v,c)=>{
+const a=col(c+1)+(r+1),output=task.targets.includes(a),origin=a===task.targets[0];
+html+=`<td data-cell="${a}" tabindex="${r===0&&c===0?"0":"-1"}" aria-label="${a}: ${esc(output?"Ergebniszelle":fmt(v))}" class="${r===0?"head ":""}${output?"output ":""}${origin?"origin":""}"><span class="celltext">${esc(output?"":fmt(v))}</span>${origin?'<span class="fillhandle" title="Formel bis zur letzten Zielzelle ziehen" aria-label="Ausfüllkästchen"></span>':""}</td>`;
+});
+html+="</tr>";
+});
+$("sheet-host").innerHTML=html+"</tbody></table></div>";
+$("sheet-host").addEventListener("pointerdown",startPointer);
+$("sheet-host").addEventListener("keydown",cellKey);
+}
+function allCells(){return [...$("sheet-host").querySelectorAll("[data-cell]")]}
+function range(a,b){
+const x=addr(a),y=addr(b),first=col(Math.min(x.c,y.c))+Math.min(x.r,y.r),last=col(Math.max(x.c,y.c))+Math.max(x.r,y.r);
+return first===last?first:first+":"+last;
+}
+function inRect(a,start,end){
+const p=addr(a),s=addr(start),e=addr(end);
+return p.r>=Math.min(s.r,e.r)&&p.r<=Math.max(s.r,e.r)&&p.c>=Math.min(s.c,e.c)&&p.c<=Math.max(s.c,e.c);
+}
+function highlight(start,end,fill=false){
+allCells().forEach(el=>{
+el.classList.toggle("sel",!fill&&inRect(el.dataset.cell,start,end));
+el.classList.toggle("fillpreview",fill&&task.targets.includes(el.dataset.cell)&&inRect(el.dataset.cell,start,end));
+});
+}
+function startPointer(e){
+if(!task||e.button!==0)return;
+const cell=e.target.closest("[data-cell]");if(!cell)return;
+e.preventDefault();
+const a=cell.dataset.cell;
+if(e.target.closest(".fillhandle")){
+drag={type:"fill",start:task.targets[0],end:a};highlight(drag.start,a,true);return;
+}
+if(!referenceMode){highlight(a,a);$("sheetstatus").textContent=a+" ausgewählt. Aktiviere den Zellklick, um Adressen einzufügen.";return}
+if(e.shiftKey&&shiftAnchor&&lastInsert){
+replaceReference(range(shiftAnchor,a),lastInsert.s,lastInsert.e);highlight(shiftAnchor,a);return;
+}
+drag={type:"ref",start:a,end:a,base:currentFormula(),s:caret.s,e:caret.e};
+highlight(a,a);$("sheetstatus").textContent="Auswahl: "+a+" – zum Erweitern ziehen und loslassen.";
+}
+document.addEventListener("pointermove",e=>{
+if(!drag||!task)return;
+if(e.cancelable)e.preventDefault();
+const el=document.elementFromPoint(e.clientX,e.clientY),cell=el&&el.closest("#sheet-host [data-cell]");
+if(!cell)return;
+drag.end=cell.dataset.cell;highlight(drag.start,drag.end,drag.type==="fill");
+$("sheetstatus").textContent=drag.type==="fill"?"Kopieren bis "+drag.end:"Auswahl: "+range(drag.start,drag.end);
+},{passive:false});
+document.addEventListener("pointerup",()=>{
+if(!drag||!task)return;
+const d=drag;drag=null;
+if(d.type==="ref"){
+shiftAnchor=d.start;replaceReference(range(d.start,d.end),d.s,d.e,d.base);highlight(d.start,d.end);
+}else{
+const selected=task.targets.filter(a=>inRect(a,d.start,d.end));
+if(selected.length<task.targets.length){
+$("sheetstatus").textContent="Ziehe bis "+task.targets[task.targets.length-1]+", um alle Zielzellen auszufüllen.";
+allCells().forEach(x=>x.classList.remove("fillpreview"));return;
+}
+copyAll();
+}
+});
+document.addEventListener("pointercancel",()=>{drag=null});
+function replaceReference(ref,s,e,base){
+const input=$("formula");base=base===undefined?input.value:base;
+s=Math.min(s,base.length);e=Math.min(e,base.length);
+if(!base){base="=";s=1;e=1}
+input.value=base.slice(0,s)+ref+base.slice(e);
+lastInsert={s,e:s+ref.length};caret={s:s+ref.length,e:s+ref.length};filled=false;
+storeFormula();clearFeedback();paintValues();
+input.focus({preventScroll:true});input.setSelectionRange(caret.s,caret.e);
+$("sheetstatus").textContent=ref+" eingefügt. Du kannst jetzt weiterschreiben.";
+}
+function cellKey(e){
+const cell=e.target.closest("[data-cell]");if(!cell)return;
+const a=cell.dataset.cell,p=addr(a);
+if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){
+e.preventDefault();
+const r=p.r+(e.key==="ArrowDown"?1:e.key==="ArrowUp"?-1:0),c=p.c+(e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0);
+if(c<1||r<1)return;
+const next=allCells().find(x=>x.dataset.cell===col(c)+r);
+if(next){cell.tabIndex=-1;next.tabIndex=0;next.focus()}
+return;
+}
+if(e.key==="Enter"||e.key===" "){
+e.preventDefault();if(!referenceMode)return;
+if(e.shiftKey&&shiftAnchor&&lastInsert){
+replaceReference(range(shiftAnchor,a),lastInsert.s,lastInsert.e);highlight(shiftAnchor,a);
+}else{shiftAnchor=a;replaceReference(a,caret.s,caret.e);highlight(a,a)}
+}
+}
+function fixReference(){
+const input=$("formula");if(!input)return;
+const f=input.value;let s,e,text;
+if(lastInsert&&caret.s>=lastInsert.s&&caret.s<=lastInsert.e){
+s=lastInsert.s;e=lastInsert.e;text=f.slice(s,e);
+}
+if(!text||!/^\$?[A-Z]+\$?\d+(?::\$?[A-Z]+\$?\d+)?$/i.test(text)){
+const match=[...f.matchAll(/\$?[A-Za-z]+\$?\d+(?::\$?[A-Za-z]+\$?\d+)?/g)].find(m=>caret.s>=m.index&&caret.s<=m.index+m[0].length);
+if(!match){$("sheetstatus").textContent="Setze den Cursor auf oder direkt hinter einen Zellbezug.";return}
+s=match.index;e=s+match[0].length;text=match[0];
+}
+function cycle(v){
+const m=/^(\$?)([A-Z]+)(\$?)(\d+)$/i.exec(v),state=(m[1]?2:0)+(m[3]?1:0),next=({0:3,3:1,1:2,2:0})[state];
+return(next&2?"$":"")+m[2].toUpperCase()+(next&1?"$":"")+m[4];
+}
+const ref=text.split(":").map(cycle).join(":");
+replaceReference(ref,s,e);$("sheetstatus").textContent="Fixierung: "+ref;
+}
+function outputMap(f,g){
+const map={...g};
+for(const a of task.targets)map[a]={formula:shift(f,task.targets[0],a)};
+return map;
+}
+function paintValues(){
+if(!task||!$("sheet-host"))return;
+const f=currentFormula(),map=outputMap(f,mapGrid(task));
+for(const el of allCells()){
+const a=el.dataset.cell;if(!task.targets.includes(a))continue;
+let text="";
+if(f&&(a===task.targets[0]||filled)){
+const ff=shift(f,task.targets[0],a);
+try{text=formulas?ff:fmt(evaluate(ff,map,new Set([a])))}catch(e){text=formulas?ff:"⚠ "+e.message}
+}
+el.querySelector(".celltext").textContent=text;
+el.setAttribute("aria-label",a+": "+(text||"Ergebniszelle"));
+}
+if(!f){$("preview").textContent="Noch keine Formel eingegeben.";return}
+try{$("preview").textContent="Ergebnis in "+task.targets[0]+": "+fmt(evaluate(f,map,new Set([task.targets[0]])))}
+catch(e){$("preview").textContent="Vorschau: "+e.message}
+}
+function copyAll(){
+if(!currentFormula().trim()){$("sheetstatus").textContent="Gib zuerst eine Formel ein.";return}
+filled=true;allCells().forEach(x=>x.classList.remove("fillpreview"));paintValues();
+$("sheetstatus").textContent="Formel in alle Zielzellen kopiert. Mit „Formeln anzeigen“ kannst du die angepassten Bezüge prüfen.";
+}
+function showHint(){st.hint[task.id]=Math.min((st.hint[task.id]||0)+1,task.hints.length);persist();drawHints()}
+function drawHints(){
+$("hints").innerHTML=task.hints.slice(0,st.hint[task.id]||0).map((h,i)=>`<div class="note"><strong>Hinweis ${i+1}:</strong> ${esc(h)}</div>`).join("");
+}
+function reveal(){
+st.revealed[task.id]=true;persist();
+$("solution").innerHTML=`<code class="formula">${esc(task.solution)}</code><p class="small">Gib die Formel selbst ein und untersuche sie anschließend in der Formelansicht.</p>`;
+}
+function equal(a,b){
+return typeof a==="number"&&typeof b==="number"?Math.abs(a-b)<1e-7*Math.max(1,Math.abs(b)):typeof a==="string"&&typeof b==="string"?a.toLowerCase()===b.toLowerCase():a===b;
+}
+function hasFunction(n,name){
+if(!n||typeof n!=="object")return false;
+if(n.type==="call"&&n.name===name)return true;
+return Object.values(n).some(v=>Array.isArray(v)?v.some(x=>hasFunction(x,name)):v&&typeof v==="object"&&hasFunction(v,name));
+}
+function checkNestedMethod(ast,id){
+if(id!=="nested"&&id!=="gift")return;
+const wanted=id==="nested"?"<":">=";
+let count=0;
+function visit(n){
+if(!n||typeof n!=="object")return;
+if(n.type==="call"&&n.name==="WENN"){
+count++;
+const condition=n.args[0];
+if(!condition||condition.type!=="binary"||condition.op!==wanted)
+throw Error("Nutze in dieser Übung durchgehend "+wanted+" für die Grenzprüfungen. Wähle den ersten DANN-Fall so, dass er eindeutig entschieden ist.");
+}
+for(const v of Object.values(n))if(Array.isArray(v))v.forEach(visit);else if(v&&typeof v==="object")visit(v);
+}
+visit(ast);
+if(count<2)throw Error("Verwende für diese drei Fälle eine verschachtelte WENN-Funktion.");
+}
+function check(){
+const t=task,f=currentFormula().trim();storeFormula();
+try{
+const ast=parse(f);
+if(t.required&&!hasFunction(ast,t.required))throw Error("Verwende die geforderte Funktion "+t.required+".");
+checkNestedMethod(ast,t.id);
+for(const changes of [{},t.changes]){
+const changed=Object.keys(changes).length>0,g={...mapGrid(t),...changes},map=outputMap(f,g);
+for(const a of t.targets){
+const p=addr(a),actual=evaluate(shift(f,t.targets[0],a),map,new Set([a])),expected=t.expected(g,p.r,col(p.c));
+if(!equal(actual,expected)){
+let message=changed?"Mit veränderten Eingaben stimmt die Formel noch nicht. Verwende passende Zellbezüge statt fest eingetippter Ergebnisse.":`In ${a} liefert die ${a===t.targets[0]?"eingegebene":"kopierte"} Formel „${fmt(actual)}“, erwartet wird „${fmt(expected)}“.`;
+if(t.cat===2)message+=" Prüfe, welche Zeile oder Spalte fixiert werden muss.";
+else if(t.cat===5)message+=" Beginne mit einem eindeutig entschiedenen DANN-Fall und behalte das Vergleichszeichen bei.";
+else message+=" Prüfe die Rechnung, Grenzwerte und Ausgaben.";
+throw Error(message);
+}
+}
+}
+const old=st.done[t.id];if(!old)st.done[t.id]=st.revealed[t.id]?"guided":"solo";
+persist();copyAll();
+$("feedback").innerHTML=`<div class="feedback good"><strong>✓ Deine Formel funktioniert!</strong><p>Alle Zielzellen und der zusätzliche Test mit veränderten Eingaben passen.</p><strong>${old?"Gut wiederholt!":st.done[t.id]==="solo"?"+100 Punkte · selbstständig gelöst":"+50 Punkte · mit Musterlösung gelernt"}</strong><p class="small">Denkfrage: Warum funktioniert deine Formel auch mit anderen Eingaben?</p></div>`;
+}catch(e){
+$("feedback").innerHTML=`<div class="feedback bad"><strong>Noch nicht ganz.</strong><p>${esc(e.message)}</p><span class="small">Keine Punkte verloren. Nutze bei Bedarf einen Hinweis.</span></div>`;
+}
+}
+
+/* Eigener Formelparser: Formeltext wird niemals als JavaScript ausgeführt. */
+function tokenize(formula){
+const s=formula.slice(1),a=[];let i=0;
+while(i<s.length){
+const x=s.slice(i);let m;
+if(/^\s/.test(x)){i++;continue}
+if(x[0]==='"'){
+let v="",j=1,closed=false;
+for(;j<x.length;j++){
+if(x[j]==='"'){
+if(x[j+1]==='"'){v+='"';j++}
+else{closed=true;j++;break}
+}else v+=x[j];
+}
+if(!closed)throw Error("Ein schließendes Anführungszeichen fehlt.");
+a.push({k:"str",v});i+=j;continue;
+}
+if(m=/^\$?[A-Za-z]+\$?\d+/.exec(x)){a.push({k:"ref",v:m[0].replace(/\$/g,"").toUpperCase()});i+=m[0].length;continue}
+if(m=/^(?:\d+(?:[.,]\d+)?|[.,]\d+)/.exec(x)){a.push({k:"num",v:Number(m[0].replace(",","."))});i+=m[0].length;continue}
+if(m=/^[A-Za-zÄÖÜäöü_]+/.exec(x)){a.push({k:"name",v:m[0].toUpperCase()});i+=m[0].length;continue}
+if(m=/^(?:<=|>=|<>|[+\-*/^%=<>():;])/.exec(x)){a.push({k:m[0]});i+=m[0].length;continue}
+throw Error("Unbekanntes Zeichen „"+x[0]+"“. Nutze gerade Anführungszeichen und Semikolons.");
+}
+a.push({k:"end"});return a;
+}
+function parse(f){
+f=f.trim();
+if(!f.startsWith("="))throw Error("Eine Formel beginnt mit =.");
+if(f.length>1500)throw Error("Die Formel ist für dieses Labor zu lang.");
+const ts=tokenize(f);let p=0,depth=0;
+function take(k){
+if(ts[p].k!==k)throw Error(k===")"?"Eine schließende Klammer fehlt oder ein Argument ist falsch getrennt.":"Erwartet: "+k);
+return ts[p++];
+}
+const priority={"=":1,"<>":1,"<":1,">":1,"<=":1,">=":1,"+":2,"-":2,"*":3,"/":3,"^":4};
+function atom(){
+if(++depth>70)throw Error("Zu viele verschachtelte Ausdrücke.");
+const t=ts[p++];let n;
+if(!t)throw Error("Unvollständige Formel.");
+if(t.k==="num"||t.k==="str")n={type:"lit",v:t.v};
+else if(t.k==="ref"){
+n={type:"ref",v:t.v};
+if(ts[p].k===":"){p++;n={type:"range",from:t.v,to:take("ref").v}}
+}else if(t.k==="name"){
+if(t.v==="WAHR"||t.v==="FALSCH")n={type:"lit",v:t.v==="WAHR"};
+else{
+take("(");const args=[];
+if(ts[p].k!==")"){args.push(expr(0));while(ts[p].k===";"){p++;args.push(expr(0))}}
+take(")");n={type:"call",name:t.v,args};
+}
+}else if(t.k==="("){n=expr(0);take(")")}
+else if(t.k==="+"||t.k==="-")n={type:"unary",op:t.k,a:expr(4)};
+else throw Error("Hier fehlt ein Wert, eine Zelladresse oder eine Funktion.");
+while(ts[p].k==="%"){p++;n={type:"percent",a:n}}
+depth--;return n;
+}
+function expr(min){
+let a=atom();
+while(priority[ts[p].k]!==undefined&&priority[ts[p].k]>=min){
+const op=ts[p++].k,b=expr(priority[op]+(op==="^"?0:1));
+a={type:"binary",op,a,b};
+}
+return a;
+}
+const ast=expr(0);
+if(ts[p].k!=="end")throw Error("Unerwarteter Rest in der Formel. Prüfe Klammern und Semikolons.");
+return ast;
+}
+function evaluate(f,g,visiting=new Set()){
+let steps=0;
+function num(v){
+if(v===null||v==="")return 0;
+if(typeof v!=="number"||!Number.isFinite(v))throw Error("Für diese Rechnung wird eine Zahl benötigt.");
+return v;
+}
+function get(key){
+if(!(key in g))throw Error("Zelle "+key+" liegt außerhalb der Übung.");
+const value=g[key];
+if(value&&typeof value==="object"&&"formula"in value){
+if(visiting.has(key))throw Error("Zirkelbezug: Die Formel verweist auf sich selbst.");
+visiting.add(key);const out=ev(parse(value.formula));visiting.delete(key);return out;
+}
+return value;
+}
+function ev(n){
+if(++steps>3000)throw Error("Die Rechnung ist zu komplex.");
+if(n.type==="lit")return n.v;
+if(n.type==="ref")return get(n.v);
+if(n.type==="range"){
+const a=addr(n.from),b=addr(n.to),size=(Math.abs(a.r-b.r)+1)*(Math.abs(a.c-b.c)+1);
+if(size>300)throw Error("Der Bereich ist zu groß.");
+const out=[];
+for(let r=Math.min(a.r,b.r);r<=Math.max(a.r,b.r);r++)
+for(let c=Math.min(a.c,b.c);c<=Math.max(a.c,b.c);c++)out.push(get(col(c)+r));
+return out;
+}
+if(n.type==="unary")return(n.op==="-"?-1:1)*num(ev(n.a));
+if(n.type==="percent")return num(ev(n.a))/100;
+if(n.type==="binary"){
+let a=ev(n.a),b=ev(n.b);
+if(["=","<>","<",">","<=",">="].includes(n.op)){
+if(typeof a==="string"&&typeof b==="string"){a=a.toLowerCase();b=b.toLowerCase()}
+switch(n.op){case"=":return a===b;case"<>":return a!==b;case"<":return a<b;case">":return a>b;case"<=":return a<=b;case">=":return a>=b}
+}
+a=num(a);b=num(b);
+switch(n.op){
+case"+":return a+b;
+case"-":return a-b;
+case"*":return a*b;
+case"/":if(b===0)throw Error("#DIV/0! Division durch null.");return a/b;
+case"^":return a**b;
+}
+}
+if(n.type==="call"){
+const args=n.args;
+if(n.name==="WENN"){
+if(args.length!==3)throw Error("WENN braucht drei Argumente: Bedingung; Dann; Sonst.");
+return ev(args[0])?ev(args[1]):ev(args[2]);
+}
+if(!["SUMME","PRODUKT","MITTELWERT","MIN","MAX","ANZAHL","WURZEL","ABS","RUNDEN","UND","ODER"].includes(n.name))
+throw Error("Diese Funktion wird hier nicht simuliert: "+n.name);
+const v=args.map(ev).flat();
+if(n.name==="UND"||n.name==="ODER"){
+if(!v.length)throw Error("Mindestens eine Bedingung fehlt.");
+return n.name==="UND"?v.every(Boolean):v.some(Boolean);
+}
+if(n.name==="WURZEL"||n.name==="ABS"){
+if(v.length!==1)throw Error(n.name+" braucht ein Argument.");
+const x=num(v[0]);
+if(n.name==="WURZEL"&&x<0)throw Error("Keine reelle Wurzel aus einer negativen Zahl.");
+return n.name==="WURZEL"?Math.sqrt(x):Math.abs(x);
+}
+if(n.name==="RUNDEN"){
+if(v.length!==2)throw Error("RUNDEN braucht zwei Argumente.");
+const x=num(v[0]),d=num(v[1]);
+if(!Number.isInteger(d)||Math.abs(d)>15)throw Error("Verwende eine ganzzahlige Rundungsstelle zwischen -15 und 15.");
+const factor=10**d;
+return Math.sign(x)*Math.round((Math.abs(x)+Number.EPSILON)*factor)/factor;
+}
+if(!args.length)throw Error(n.name+" braucht mindestens ein Argument.");
+const nums=v.filter(x=>typeof x==="number");
+switch(n.name){
+case"SUMME":return nums.reduce((a,b)=>a+b,0);
+case"PRODUKT":return nums.length?nums.reduce((a,b)=>a*b,1):0;
+case"MITTELWERT":if(!nums.length)throw Error("Der Bereich enthält keine Zahlen.");return nums.reduce((a,b)=>a+b,0)/nums.length;
+case"ANZAHL":return nums.length;
+case"MIN":return nums.length?Math.min(...nums):0;
+case"MAX":return nums.length?Math.max(...nums):0;
+}
+}
+throw Error("Die Formel kann nicht ausgewertet werden.");
+}
+const v=ev(parse(f));
+if(Array.isArray(v))throw Error("Ein Bereich braucht hier eine Funktion wie SUMME.");
+if(typeof v==="number"&&!Number.isFinite(v))throw Error("#ZAHL! Kein endliches Ergebnis.");
+return v;
+}
+render();
+</script>
+</body>
+</html>
