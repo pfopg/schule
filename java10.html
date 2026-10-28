@@ -639,7 +639,428 @@ while (weiter) {
 }`)}<p>Ist das Guthaben aufgebraucht, ist keine weitere Runde möglich. In dieser Variante wird dann die Frage übersprungen. Der Sechserpasch bringt 10, nicht 13 Euro Gewinn.</p>`,
 test:"Zufallswerte zum Testen vorübergehend durch feste Werte ersetzen. Von 5 aus: (2,3) → 4; (2,2) → 7; (6,6) → 14. Zusätzlich: letzte Runde mit Guthaben 1 ohne Pasch → 0 und Ende; freiwilliges Ende bei positivem Guthaben."}
 ];
+/* Ergänzung des Übungsbereichs:
+   Vorgegebene Struktogramme und grafische Musterlösungen.
+   Nutzt den vorhandenen Renderer mit der bestätigten Dreiecksspitze. */
+
+function exerciseDiagram(nodes, label) {
+    return `<div class="struct-scroll">
+        <div class="struct" role="img" aria-label="${esc(label)}">
+            ${drawNodes(nodes)}
+        </div>
+    </div>`;
+}
+
+function exerciseById(id) {
+    return exercises.find(exercise => exercise.id === id);
+}
+
+/* Wiederverwendbare Abläufe ohne Variablendeklarationen:
+   Deklarationen stehen weiterhin im zugehörigen Java-Code. */
+
+const ageOriginalNodes = [
+    inp("alter", "Int", "Alter eingeben!"),
+    {
+        type: "if",
+        cond: "alter < 18",
+        yes: [out('"Kind"')],
+        no: []
+    },
+    {
+        type: "if",
+        cond: "alter >= 18",
+        yes: [out('"Erwachsen"')],
+        no: []
+    }
+];
+
+const ageShortNodes = [
+    inp("alter", "Int", "Alter eingeben!"),
+    {
+        type: "if",
+        cond: "alter < 18",
+        yes: [out('"Kind"')],
+        no: [out('"Erwachsen"')]
+    }
+];
+
+const ageExtendedNodes = [
+    inp("alter", "Int", "Alter eingeben!"),
+    {
+        type: "if",
+        cond: "alter < 14",
+        yes: [out('"Kind"')],
+        no: [
+            {
+                type: "if",
+                cond: "alter < 18",
+                yes: [out('"Jugendlich"')],
+                no: [out('"Erwachsen"')]
+            }
+        ]
+    }
+];
+
+const branchExercise3Nodes = [
+    inp("a", "Int", "a?"),
+    inp("b", "Int", "b?"),
+    {
+        type: "if",
+        cond: "a == 0",
+        yes: [
+            stmt("c = 2 * b"),
+            stmt("d = 8")
+        ],
+        no: [
+            stmt("c = 5"),
+            {
+                type: "if",
+                cond: "b > 10",
+                yes: [stmt("d = c - b")],
+                no: [stmt("d = c + b")]
+            }
+        ]
+    },
+    out("d")
+];
+
+const bmiExerciseNodes = [
+    inp("m (in kg)", "Double", "Masse in kg?"),
+    inp("s (in m)", "Double", "Größe in m?"),
+    stmt("erg = m / (s * s)"),
+    {
+        type: "if",
+        cond: "erg < 18.5",
+        yes: [stmt('e = "unter"')],
+        no: [
+            {
+                type: "if",
+                cond: "erg < 25",
+                yes: [stmt('e = "normal"')],
+                no: [stmt('e = "über"')]
+            }
+        ]
+    },
+    out('"Sie sind " + e + "gewichtig."')
+];
+
+const parkingExerciseNodes = [
+    inp("minuten", "Int", "Parkdauer in Minuten?"),
+    {
+        type: "if",
+        cond: "minuten <= 60",
+        yes: [stmt("gebuehr = 0")],
+        no: [
+            stmt("rest = minuten - 60"),
+            stmt("stunden = (rest + 59) / 60"),
+            stmt("gebuehr = stunden * 2"),
+            {
+                type: "if",
+                cond: "gebuehr > 6",
+                yes: [stmt("gebuehr = 6")],
+                no: []
+            }
+        ]
+    },
+    out('"Parkgebühr: " + gebuehr + " Euro."')
+];
+
+const guessingExerciseNodes = [
+    stmt("eingabe = 0"),
+    stmt("geheimzahl = 0"),
+    out('"Errate eine Zahl zwischen 1 und 100."'),
+    stmt("geheimzahl = (int) (100 * Math.random() + 1)"),
+    {
+        type: "while",
+        cond: "eingabe != geheimzahl",
+        body: [
+            inp("eingabe", "Int", "Ihr Tipp:"),
+            {
+                type: "if",
+                cond: "eingabe < geheimzahl",
+                yes: [out('"Zahl zu klein"')],
+                no: [
+                    {
+                        type: "if",
+                        cond: "eingabe > geheimzahl",
+                        yes: [out('"Zahl zu groß"')],
+                        no: [out('"korrekt!"')]
+                    }
+                ]
+            }
+        ]
+    }
+];
+
+const squaresExerciseNodes = [
+    inp("n", "Int", "Nichtnegative ganze Zahl?"),
+    stmt("i = 0"),
+    {
+        type: "while",
+        cond: "i <= n",
+        body: [
+            out("i * i"),
+            stmt("i = i + 1")
+        ]
+    }
+];
+
+const loopExercise4Nodes = [
+    stmt("a = 10"),
+    stmt("b = 0"),
+    {
+        type: "while",
+        cond: "a > 0",
+        body: [
+            stmt("a = a - 3"),
+            stmt("b = b + 1")
+        ]
+    }
+];
+
+const diceExerciseNodes = [
+    stmt("guthaben = 5"),
+    stmt("weiter = true"),
+    {
+        type: "while",
+        cond: "weiter",
+        body: [
+            stmt("guthaben = guthaben - 1"),
+            stmt("w1 = (int) (6 * Math.random() + 1)"),
+            stmt("w2 = (int) (6 * Math.random() + 1)"),
+            {
+                type: "if",
+                cond: "w1 == w2",
+                yes: [
+                    {
+                        type: "if",
+                        cond: "w1 == 6",
+                        yes: [stmt("guthaben = guthaben + 10")],
+                        no: [stmt("guthaben = guthaben + 3")]
+                    }
+                ],
+                no: []
+            },
+            out('"Würfel: " + w1 + ", " + w2'),
+            out('"Guthaben: " + guthaben + " Euro"'),
+            {
+                type: "if",
+                cond: "guthaben > 0",
+                yes: [
+                    inp("weiter", "Boolean", "Noch einmal würfeln?")
+                ],
+                no: [stmt("weiter = false")]
+            }
+        ]
+    }
+];
+
+/* Verzweigungen · Übung 1:
+   Struktogramm des vorgegebenen Temperaturprogramms ergänzen. */
+
+exerciseById("v1").solution += `
+    <h4>Muster-Struktogramm · Temperaturumrechnung</h4>
+    ${exerciseDiagram(
+        tempNodes(),
+        "Musterlösung zur Temperaturumrechnung"
+    )}
+    <p>Die Eingaben stehen vor der Verzweigung.
+    In jedem Zweig werden die passende Umrechnung und die
+    zugehörige Ausgabe ausgeführt.</p>
+`;
+
+/* Verzweigungen · Übung 2:
+   Teil d erhält die auf dem Arbeitsblatt vorgegebene Grafik. */
+
+exerciseById("v2").body = exerciseById("v2").body.replace(
+    "Erweitere die Einteilung: unter 14 → „Kind“, von 14 bis unter 18 → „Jugendlich“, ab 18 → „Erwachsen“. Zeichne die verschachtelte Verzweigung.",
+    "Erweitere dein Programm entsprechend dem unten vorgegebenen Struktogramm: unter 14 → „Kind“, von 14 bis unter 18 → „Jugendlich“, ab 18 → „Erwachsen“."
+);
+
+exerciseById("v2").body += `
+    <h4>Vorgegebenes Struktogramm zu Teil d</h4>
+    ${exerciseDiagram(
+        ageExtendedNodes,
+        "Vorgegebene Altersprüfung mit drei Altersgruppen"
+    )}
+`;
+
+exerciseById("v2").solution += `
+    <h4>Teil b · Ausgangsalgorithmus in Java</h4>
+    ${pre(`int alter;
+alter = IO.getInt("Alter eingeben!");
+if (alter < 18) {
+    System.out.println("Kind");
+}
+if (alter >= 18) {
+    System.out.println("Erwachsen");
+}`)}
+
+    <h4>Teil c · Verkürzte Variante in Java</h4>
+    ${pre(`int alter;
+alter = IO.getInt("Alter eingeben!");
+if (alter < 18) {
+    System.out.println("Kind");
+} else {
+    System.out.println("Erwachsen");
+}`)}
+
+    <h4>Teil c · Struktogramm der verkürzten Variante</h4>
+    ${exerciseDiagram(
+        ageShortNodes,
+        "Altersprüfung mit einer zweiseitigen Verzweigung"
+    )}
+    <p>Die beiden getrennten Prüfungen werden durch eine
+    zweiseitige Verzweigung ersetzt. Genau einer der beiden
+    Ausgabezweige wird ausgeführt.</p>
+    <p>Der bereits oben gezeigte Java-Code mit drei Altersgruppen
+    gehört zu Teil d und setzt das dort vorgegebene Struktogramm um.</p>
+`;
+
+/* Verzweigungen · Übung 3:
+   Die ausdrücklich verlangte Struktogramm-Lösung ergänzen. */
+
+exerciseById("v3").solution += `
+    <h4>Muster-Struktogramm</h4>
+    ${exerciseDiagram(
+        branchExercise3Nodes,
+        "Musterlösung zur verschachtelten Auswahl mit a, b, c und d"
+    )}
+    <p>Die Ausgabe von d steht unterhalb der gesamten
+    Verzweigung und wird unabhängig vom gewählten Pfad ausgeführt.</p>
+`;
+
+/* Verzweigungen · Übung 4:
+   Prosa-Vorgabe durch das vorgegebene Struktogramm ersetzen.
+   Kein zusätzlicher Zeichenauftrag. */
+
+exerciseById("v4").body = `
+    <p>Das folgende Struktogramm gibt die Berechnung und
+    Auswertung des Body-Mass-Index vor, wie auf dem Arbeitsblatt.
+    Die Masse m wird in Kilogramm und die Größe s in Metern eingegeben.</p>
+
+    <h4>Vorgegebenes Struktogramm</h4>
+    ${exerciseDiagram(
+        bmiExerciseNodes,
+        "Vorgegebener Algorithmus zur Berechnung und Auswertung des BMI"
+    )}
+
+    <ol type="a">
+        <li>Markiere und benenne die Kontrollstrukturen.
+        Notiere hier, wo sie im Struktogramm vorkommen,
+        oder markiere sie auf deinem Arbeitsblatt.</li>
+        <li>Berechne den BMI für die vorgegebenen Beispielwerte
+        1,80 m und 80 kg.</li>
+        <li>Implementiere den vorgegebenen Algorithmus in Java.
+        Teste damit deine vorherige Berechnung.</li>
+    </ol>
+
+    <div class="note">
+        <strong>Beachte:</strong> Das Struktogramm ist vorgegeben.
+        Du sollst es lesen, seine Kontrollstrukturen erkennen
+        und den Ablauf in Java übertragen.
+        Ein eigenes Struktogramm ist hier nicht verlangt.
+    </div>
+
+    <div class="note warn">
+        Nur ein Rechen- und Programmierbeispiel.
+        Verwende keine Körperdaten von Mitschülerinnen oder Mitschülern.
+        Die festen Grenzwerte des Blatts sind keine geeignete
+        persönliche Gesundheitsbeurteilung für Jugendliche.
+    </div>
+`;
+
+exerciseById("v4").solution += `
+    <h4>Kontrollstrukturen im vorgegebenen Struktogramm</h4>
+    <ul>
+        <li><strong>Sequenz:</strong> Die beiden Eingaben und
+        die Berechnung folgen nacheinander.</li>
+        <li><strong>Äußere zweiseitige Verzweigung:</strong>
+        Die Bedingung erg &lt; 18.5 entscheidet zwischen
+        dem Textteil „unter“ und einer weiteren Prüfung.</li>
+        <li><strong>Innere zweiseitige Verzweigung:</strong>
+        Im Falsch-Zweig entscheidet erg &lt; 25 zwischen
+        „normal“ und „über“.</li>
+        <li><strong>Schachtelung:</strong> Die zweite Verzweigung
+        liegt vollständig im Falsch-Zweig der ersten.</li>
+    </ul>
+    <p>Die abschließende Ausgabe steht außerhalb der Verzweigungen.
+    Für die Beispielwerte wird „Sie sind normalgewichtig.“ ausgegeben.</p>
+`;
+
+/* Zusatz · Parkgebühren:
+   Das in der Werkstatt verlangte Struktogramm ergänzen. */
+
+exerciseById("vz").solution += `
+    <h4>Muster-Struktogramm</h4>
+    ${exerciseDiagram(
+        parkingExerciseNodes,
+        "Musterlösung zur Berechnung der Parkgebühren"
+    )}
+    <p>Die zusätzliche Begrenzung auf 6 Euro ist eine
+    einseitige Verzweigung: Wenn die Gebühr nicht größer
+    als 6 ist, bleibt sie unverändert.</p>
+`;
+
+/* Schleifen · Übung 1:
+   Struktogramm des Ausgangsprogramms, ohne Erweiterungen. */
+
+exerciseById("s1").solution += `
+    <h4>Muster-Struktogramm · Ausgangsprogramm</h4>
+    ${exerciseDiagram(
+        guessingExerciseNodes,
+        "Musterlösung zum ursprünglichen Zahlenraten"
+    )}
+    <p>Dieses Struktogramm gehört zum Ausgangscode.
+    Versuchszähler und Spielwiederholung sind darin noch
+    nicht enthalten. Der Java-Ausschnitt darüber zeigt
+    die zusätzliche Erweiterung.</p>
+    <p>„Ausgabe“ steht hier allgemein für eine Ausgabe;
+    im vorgegebenen Zahlenraten-Code wird dafür IO.show verwendet.</p>
+`;
+
+/* Schleifen · Übung 2:
+   Grafische Planung zur vorhandenen Java-Musterlösung. */
+
+exerciseById("s2").solution += `
+    <h4>Muster-Struktogramm</h4>
+    ${exerciseDiagram(
+        squaresExerciseNodes,
+        "Musterlösung zur Ausgabe der Quadratzahlen"
+    )}
+    <p>Durch die Bedingung i &lt;= n wird auch das Quadrat
+    der eingegebenen Obergrenze ausgegeben.</p>
+`;
+
+/* Schleifen · Übung 4:
+   Den ausdrücklich verlangten grafischen Ablauf ergänzen. */
+
+exerciseById("s4").solution += `
+    <h4>Muster-Struktogramm</h4>
+    ${exerciseDiagram(
+        loopExercise4Nodes,
+        "Musterlösung zu Schleifen Übung 4"
+    )}
+    <p>Beide Wertzuweisungen liegen im Schleifenrumpf.
+    Nach jedem vollständigen Durchlauf wird a &gt; 0 erneut geprüft.</p>
+`;
+
+/* Schleifen · Übung 5:
+   Struktogramm passend zur vorhandenen Java-Lösung. */
+
+exerciseById("s5").solution += `
+    <h4>Mögliches Muster-Struktogramm</h4>
+    ${exerciseDiagram(
+        diceExerciseNodes,
+        "Musterlösung zum Würfelalgorithmus mit fiktivem Guthaben"
+    )}
+    <p>Das Struktogramm entspricht der Java-Lösung darüber.
+    Ohne Pasch bleibt der Gewinnzweig leer. Bei einem
+    Sechserpasch werden 10 statt 3 Euro zum fiktiven Guthaben addiert.</p>
+`;
+
 let currentFilter="all";
+
 function renderExercises(){
  const arr=exercises.filter(e=>currentFilter==="all"||(currentFilter==="open"?!store.done[e.id]:e.group===currentFilter));
  $("exerciseList").innerHTML=arr.length?arr.map(e=>`<article class="card" id="exercise-${e.id}"><div class="exercise-head"><div><span class="pill ${e.group==="s"?"teal":""}">${e.group==="v"?"Verzweigungen":"Schleifen"}</span><h3>${e.title}</h3><small>${e.tags}</small></div><button class="btn done-toggle ${store.done[e.id]?"done":""}" data-done="${e.id}" aria-pressed="${!!store.done[e.id]}">${store.done[e.id]?"✓ Als erledigt markiert":"○ Als erledigt markieren"}</button></div><div class="exercise-body">${e.body}</div><details><summary>Starthilfe – ein Denkanstoß</summary><p>${esc(e.hint)}</p></details><div class="note good"><strong>So testest du systematisch:</strong> ${esc(e.test)}</div><div class="workspace"><label for="note-${e.id}">Deine Lösung, dein Werteprotokoll oder Java-Code</label><textarea id="note-${e.id}" class="mono" data-note="${e.id}" spellcheck="false" placeholder="Schreibe zuerst deinen eigenen Ansatz …">${esc(store.notes[e.id]||"")}</textarea><div id="save-${e.id}" class="saved" aria-live="polite"></div></div><details><summary>Lösungshinweise vergleichen – erst nach dem eigenen Versuch</summary><div class="answer-box">${e.solution}</div><p class="muted">Vergleiche nicht nur das Ergebnis: Erkläre einen Unterschied zwischen deinem Ansatz und dieser Lösung. Andere korrekte Lösungen sind möglich.</p></details></article>`).join(""):`<div class="card"><h3>Keine offenen Aufgaben mehr.</h3><p>Prüfe im Lernstand, welche Kompetenzen du schon sicher erklären kannst.</p></div>`;
