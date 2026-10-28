@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java-Werkstatt · Klasse 10</title>
+<style>
+:root{--bg:#f3f6fb;--paper:#fff;--ink:#182841;--muted:#566780;--line:#d5dfed;--blue:#2458cf;--teal:#087e79;--orange:#a85c00;--red:#b13243;--soft:#eaf0ff;--shadow:0 8px 28px #1630590a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #eb9d22;outline-offset:3px}
+header{background:#132744;color:#fff;padding:28px max(22px,calc((100vw - 1220px)/2));}
+header p{color:#c6d7f3;margin:8px 0 0;max-width:850px}h1{font-size:clamp(25px,4vw,39px);line-height:1.2;margin:9px 0}h2{font-size:27px;line-height:1.25;margin:0 0 12px}h3{font-size:20px;line-height:1.35;margin:0 0 12px}h4{margin:16px 0 8px}
+.kicker{font-size:12px;letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:#9cddda}
+nav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:10px max(16px,calc((100vw - 1220px)/2));background:#ffffffed;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+nav button{white-space:nowrap;border:0;background:transparent;padding:11px 17px;border-radius:10px;color:var(--muted);font-weight:700}
+nav button.active{background:var(--blue);color:white}
+main{max-width:1260px;margin:auto;padding:28px 20px 60px}.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:23px;box-shadow:var(--shadow);margin-bottom:20px;min-width:0}
+.grid>.card{margin:0}.intro{max-width:870px;color:var(--muted);margin:0 0 24px}
+.pill{display:inline-block;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:800;background:var(--soft);color:var(--blue);margin:0 6px 6px 0}
+.pill.teal{background:#dff3ef;color:#08695c}.pill.orange{background:#fff0d9;color:#8a4d00}
+.btn{border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);padding:8px 13px;font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn.primary{background:var(--blue);color:white;border-color:var(--blue)}.btn.teal{background:var(--teal);color:#fff;border-color:var(--teal)}.btn.small{padding:4px 9px;font-size:13px}.btn.danger{color:var(--red)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.spread{justify-content:space-between}
+.note{border-left:4px solid var(--blue);background:var(--soft);padding:13px 16px;border-radius:0 9px 9px 0;margin:15px 0}
+.note.warn{background:#fff4e3;border-color:#bd7b12}.note.good{background:#e3f5ef;border-color:var(--teal)}
+small,.muted{color:var(--muted)}p{margin:9px 0 15px}ul,ol{padding-left:23px;margin-top:10px}li{margin:6px 0}
+code,pre,.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px}code{background:#eef2f9;padding:2px 5px;border-radius:5px}
+pre{background:#12223a;color:#e2edff;padding:18px;border-radius:12px;overflow:auto;line-height:1.65;tab-size:4;white-space:pre;margin:12px 0}
+pre code{background:none;padding:0;color:inherit}
+label{display:block;font-weight:650;margin:10px 0 5px}
+input[type=number],input[type=text],select,textarea{border:1px solid #b8c7dc;border-radius:8px;background:white;color:var(--ink);padding:9px 11px;max-width:100%}
+input[type=number]{width:145px}textarea{width:100%;min-height:160px;resize:vertical;line-height:1.55}
+details{border:1px solid var(--line);border-radius:11px;padding:13px 16px;margin:13px 0;background:#fff}
+summary{cursor:pointer;font-weight:750}details[open]>summary{margin-bottom:14px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{background:#edf2fa}.table-wrap{overflow:auto}
+.feedback{padding:11px 14px;background:#edf2fb;border-radius:9px;margin-top:12px;min-height:45px}
+.feedback:empty{display:none}.feedback.ok{background:#dff3e9;color:#07513b}.feedback.bad{background:#fff0e3;color:#834200}
+.choice{display:block;width:100%;text-align:left;border:1px solid var(--line);background:white;border-radius:9px;padding:12px;margin:8px 0}
+.choice:hover{border-color:var(--blue);background:#f3f6ff}.choice.selected{border-color:var(--blue);background:#eaf0ff}
+.progress-track{height:9px;background:#e3eaf5;border-radius:99px;overflow:hidden;margin:12px 0}.progress-fill{height:100%;background:var(--teal);transition:width .3s}
+.toc{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.toc button.active{background:#132744;color:white}
+.knowledge{display:none}.knowledge.active{display:block}
+.hero-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:22px}
+.feature{border-top:3px solid var(--teal)}
+.path-step{display:flex;gap:15px;margin:18px 0}.step-number{display:grid;place-items:center;width:35px;height:35px;flex-shrink:0;border-radius:50%;background:var(--soft);color:var(--blue);font-weight:800}
+.console{background:#102a2a;color:#b5f4d0;padding:17px;border-radius:10px;min-height:100px;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:14px}
+.trace-code{background:#12223a;color:#dce8fc;border-radius:12px;padding:13px 6px;overflow:auto;font:14px/1.85 ui-monospace,monospace}
+.trace-line{padding:2px 12px;white-space:pre}.trace-line.current{background:#eeb94a;color:#142037;border-radius:5px}
+.trace-line .ln{display:inline-block;width:25px;color:#889ab8;user-select:none}.trace-line.current .ln{color:#3d4e69}
+.state-chips{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.state-chip{padding:9px 13px;background:#edf2fa;border-radius:9px;font-family:monospace}.state-chip.changed{background:#d9f2e7}
+.slot{border:2px dashed #a9bfdc;min-height:55px;padding:12px;text-align:center;background:#f8faff}
+.exercise-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.exercise-head h3{margin-bottom:4px}
+.exercise-body{margin-top:15px}.task-list{padding-left:23px}.task-list li{padding:3px 0}
+.done-toggle{white-space:nowrap}.done-toggle.done{background:#dcf3e8;color:#075840;border-color:#99d5be}
+.exercise-filter{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0 22px}
+.answer-box{background:#f4f7fc;border-radius:10px;padding:15px}.workspace{margin:14px 0}
+.node-palette{display:flex;gap:7px;flex-wrap:wrap}.builder-layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:20px;align-items:start}
+.node-list{max-height:620px;overflow:auto}.edit-node{background:#f5f8fd;border:1px solid var(--line);border-radius:9px;padding:10px;margin:10px 0}
+.edit-node input,.edit-node select{width:100%;font:13px ui-monospace,monospace;padding:7px;margin-top:6px}
+.edit-node .nested{margin:10px 0 0 10px;padding-left:10px;border-left:3px solid #b5c9ee}
+.edit-node .node-title{font-size:13px;font-weight:800}.child-label{font-size:12px;font-weight:800;color:var(--teal);margin-top:10px}
+.struct-scroll{overflow:auto;padding:12px 4px}.struct{min-width:320px;border:2px solid #172b47;background:white;color:#10233d;font:14px/1.35 system-ui,sans-serif}
+.sg-stmt{border-bottom:1px solid #172b47;padding:10px 14px;min-height:39px;overflow-wrap:anywhere}
+.struct> :last-child{border-bottom:0}.sg-if{border-bottom:1px solid #172b47}
+.sg-if-head {
+  height: 120px;
+  position: relative;
+  border-bottom: 1px solid #172b47;
+  overflow: hidden;
+}
+.sg-if-head svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sg-condition{position:absolute;left:8%;right:8%;top:6px;text-align:center;font-weight:650;font-size:13px;overflow-wrap:anywhere}
+.sg-yes{position:absolute;left:10px;bottom:7px;font-size:12px}.sg-no{position:absolute;right:10px;bottom:7px;font-size:12px}
+.sg-branches{display:grid;grid-template-columns:1fr 1fr;min-height:44px}.sg-branch{min-width:0}.sg-branch+ .sg-branch{border-left:1px solid #172b47}.sg-branch> :last-child{border-bottom:0}
+.sg-loop{display:grid;grid-template-columns:22px minmax(0,1fr);border-bottom:1px solid #172b47}.sg-loop-head{grid-column:1/-1;padding:10px 12px;border-bottom:1px solid #172b47;background:#f2f6fc;font-weight:650;overflow-wrap:anywhere}
+.sg-loop-rail{border-right:1px solid #172b47;background:#edf3fb}.sg-loop-body{min-width:0}.sg-loop-body> :last-child{border-bottom:0}
+.sg-loop-foot{grid-column:1/-1;border-top:1px solid #172b47;padding:10px 12px;background:#f2f6fc;font-weight:650}
+.sg-empty{padding:13px;color:#697c95;text-align:center;font-size:12px;min-height:43px}
+.sg-highlight{background:#fff0bd}
+.editor-tabs{margin-bottom:15px}.source-label{font-size:12px;color:var(--muted);margin-top:12px}
+.memory{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.memory-box{border:2px solid #aebfda;border-radius:12px;padding:15px;text-align:center;min-height:110px;background:white}.memory-box strong{display:block;color:var(--blue);font-size:26px}
+footer{max-width:1220px;margin:auto;padding:0 20px 28px;color:var(--muted);font-size:12px}
+.badge-large{font-size:30px;font-weight:850;color:var(--teal)}
+.saved{font-size:12px;color:var(--teal);min-height:20px}
+@media(max-width:950px){.builder-layout{grid-template-columns:1fr}.node-list{max-height:400px}.three{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}}
+@media(max-width:680px){.grid{grid-template-columns:1fr}.card{padding:17px}main{padding:20px 12px}nav{padding:8px}nav button{padding:9px 12px;font-size:14px}.exercise-head{flex-direction:column}.memory{grid-template-columns:1fr}h2{font-size:24px}header{padding:24px 18px}}
+@media print{header,nav,footer,.no-print,.builder-layout>aside{display:none!important}body{background:white}.page{display:none!important}#editor.page.active{display:block!important}.builder-layout{display:block}.card{box-shadow:none;border:none;padding:0}.struct{break-inside:avoid}#editorCodePanel{display:none!important}}
+</style>
+</head>
+<body>
+<header>
+<div class="kicker">Informatik · Klasse 10 · Problemlösen durch Programmieren</div>
+<h1>Die Java-Werkstatt</h1>
+</header>
+<nav aria-label="Hauptnavigation">
+<button class="active" data-page="start">Start</button>
+<button data-page="wissen">Wissen</button>
+<button data-page="labor">Ablauf-Labor</button>
+<button data-page="aufgaben">Übungsbereich</button>
+<button data-page="editor">Struktogramm-Werkstatt</button>
+<button data-page="stand">Mein Lernstand</button>
+</nav>
+<main>
+<section id="start" class="page active">
+<div class="hero-grid">
+<div class="card">
+<span class="pill teal">Dein Lernweg</span>
+<h2>Vom Problem zum eigenen Programm</h2>
+<p>Hier lernst du mit denselben Grundlagen wie im Skript: Variablen, Eingaben, Sequenzen, Verzweigungen und Schleifen. Du brauchst noch keine objektorientierte Programmierung.</p>
+<div class="path-step"><span class="step-number">1</span><div><strong>Verstehen</strong><br><small>Lies einen Wissensbaustein und prüfe deine Vorstellung.</small></div></div>
+<div class="path-step"><span class="step-number">2</span><div><strong>Sichtbar machen</strong><br><small>Führe Programme schrittweise aus. Beobachte Variablen und Bedingungen.</small></div></div>
+<div class="path-step"><span class="step-number">3</span><div><strong>Selbst entwickeln</strong><br><small>Bearbeite die Originalaufgaben, konstruiere Struktogramme und teste Java in eurer Software.</small></div></div>
+<button class="btn primary" data-go="wissen">Mit den Grundlagen beginnen →</button>
+</div>
+<div>
+<div class="card feature"><h3>Was ist hier interaktiv?</h3><ul><li>Schrittweise Programmausführung mit Werteprotokoll</li><li>Temperatur- und Zahlenraten-Modelle</li><li>Rückmeldungen zu Verständnisfragen</li><li>Struktogramme mit verschachtelten Verzweigungen und Schleifen</li><li>Eigene Notizen, Quelltexte und Lernfortschritte</li></ul></div>
+<div class="note warn"><strong>Kein Java-Compiler.</strong> Die Modelle führen nur ihre fest hinterlegten Abläufe aus. Selbst geschriebener Java-Code wird hier nicht ausgeführt. Kopiere ihn in eure Programmierumgebung und teste ihn dort.</div>
+</div>
+</div>
+<div class="grid" style="margin-top:20px">
+<div class="card"><h3>Eure Sprache bleibt erhalten</h3><pre><code>int alter;
+alter = IO.getInt("Bitte Alter eingeben!");
+System.out.println("Alter: " + alter);</code></pre><p>Keine Umstellung auf <code>Scanner</code>, keine unbekannten Frameworks. Klassenrahmen und <code>main</code> werden nur als bekanntes Programmgerüst benutzt.</p></div>
+<div class="card"><h3>Arbeite wie beim Programmieren</h3><p><strong>Vorhersagen → ausführen → vergleichen → erklären.</strong> Klicke eine Lösung nicht sofort auf. Prüfe Grenzfälle und begründe, warum dein Algorithmus funktioniert.</p><p class="muted">Deine Einträge werden, soweit der Browser es zulässt, lokal gespeichert. Sie werden nicht an eine Lehrkraft übertragen. Beim Neuladen dieser eingebetteten Vorschau können sie verloren gehen. Sichere wichtige Texte über „Lernstand exportieren“.</p></div>
+</div>
+</section>
+
+<section id="wissen" class="page">
+<h2>Wissensbausteine</h2>
+<p class="intro">Aus dem Skript „Problemlösen durch Programmieren“, passend zu den Arbeitsblättern. Die kleinen Selbsttests sind zusätzliche Lernhilfen.</p>
+<div class="toc" id="knowledgeTabs"></div>
+<div id="knowledgeContent"></div>
+</section>
+
+<section id="labor" class="page">
+<h2>Ablauf-Labor</h2>
+<p class="intro">Die Modelle sind keine Java-Laufzeit. Sie machen ausgewählte Algorithmen aus euren Materialien sichtbar. Vermute immer zuerst, was als Nächstes passiert.</p>
+<div class="toc">
+<button class="btn active" data-lab="trace">Schleifen verfolgen</button>
+<button class="btn" data-lab="temp">Temperatur verstehen</button>
+<button class="btn" data-lab="guess">Zahlenraten untersuchen</button>
+<button class="btn" data-lab="swap">Werte tauschen</button>
+</div>
+<div id="lab-trace" class="lab-panel">
+<div class="card">
+<div class="row spread"><h3>Ein Befehl pro Schritt</h3><select id="traceModel" aria-label="Algorithmus auswählen"><option value="u4">Schleifen · Übung 4</option><option value="u3">Schleifen · Übung 3</option><option value="quad">Quadratzahlen · Übung 2</option><option value="pre">Vorprüfend: Startwert 6</option><option value="post">Nachprüfend: Startwert 6</option></select></div>
+<div id="quadConfig" hidden><label for="quadN">Obergrenze der Zahl (0 bis 12)</label><input id="quadN" type="number" min="0" max="12" value="5"></div>
+<p id="traceDescription" class="muted"></p>
+<div class="grid">
+<div><div id="traceCode" class="trace-code"></div><div class="row" style="margin-top:15px"><button class="btn primary" id="traceNext">Nächster Schritt →</button><button class="btn" id="traceBack">← Zurück</button><button class="btn" id="traceReset">Neustart</button></div><div id="traceMessage" class="feedback" aria-live="polite"></div></div>
+<div><h4>Variablenspeicher</h4><div id="traceState" class="state-chips"></div><h4>Ausgabe</h4><div id="traceOutput" class="console">Noch keine Ausgabe.</div><p id="traceCount"></p></div>
+</div>
+<details><summary>Werteprotokoll der ausgeführten Schritte</summary><div class="table-wrap" id="traceHistory"></div></details>
+<div class="note">Die gelb markierte Zeile ist die <strong>als Nächstes</strong> auszuführende Zeile. Das Protokoll zeigt dagegen bereits ausgeführte Schritte. Variablen ohne zugewiesenen Wert werden mit „—“ angezeigt.</div>
+</div>
+<div class="card"><h3>Vorhersage zu Übung 4</h3><p>Wie oft wird der Schleifenrumpf bei den Startwerten <code>a = 10</code> und <code>b = 0</code> ausgeführt?</p><div class="row"><input type="number" id="tracePrediction" aria-label="Vermutete Anzahl Durchläufe" min="0"><button class="btn" id="checkTracePrediction">Vorhersage prüfen</button></div><div class="feedback" id="tracePredictionFeedback" aria-live="polite"></div></div>
+</div>
+<div id="lab-temp" class="lab-panel" hidden>
+<div class="grid">
+<div class="card"><h3>Welchen Zweig nimmt das Programm?</h3><label for="tempValue">Temperaturwert</label><input id="tempValue" type="number" value="25" step="any"><label for="tempUnit">Eingabeeinheit</label><select id="tempUnit"><option value="c">Grad Celsius · in_celsius = true</option><option value="f">Grad Fahrenheit · in_celsius = false</option></select><p>Berechne vor dem Ausführen selbst. Für die Arbeitsblattwerte: 25 °C und 10 °F.</p><button id="runTemp" class="btn primary">Verzweigung ausführen</button><div id="tempFeedback" class="feedback" aria-live="polite"></div><div id="tempConsole" class="console" style="margin-top:15px">Noch nicht ausgeführt.</div></div>
+<div class="card"><h3>Struktogramm und Java</h3><div id="tempStruct" class="struct-scroll"></div><pre><code>double wert, ausgabe;
+boolean in_celsius;
+wert = IO.getDouble("Temperaturwert?");
+in_celsius = IO.getBoolean("In °C gegeben?");
+if (in_celsius) {
+    ausgabe = wert * 1.8 + 32;
+    System.out.println(ausgabe + " °F");
+} else {
+    ausgabe = (wert - 32) * 5.0 / 9.0;
+    System.out.println(ausgabe + " °C");
+}</code></pre></div>
+</div>
+</div>
+<div id="lab-guess" class="lab-panel" hidden>
+<div class="grid">
+<div class="card"><h3>Experiment: Warum funktioniert die Schleife?</h3><p>Das Modell wählt eine ganze Zahl von 1 bis 100. Nach jedem Tipp wird die Bedingung für den nächsten Durchlauf sichtbar.</p><div class="row"><button class="btn" id="guessNew">Neue geheime Zahl</button><label style="margin:0"><input type="checkbox" id="guessReveal"> Geheime Zahl zum Untersuchen zeigen</label></div><p id="guessSecret" class="mono"></p><label for="guessInput">Dein Tipp (ganze Zahl von 1 bis 100)</label><div class="row"><input id="guessInput" type="number" min="1" max="100"><button class="btn primary" id="guessSubmit">Tipp ausführen</button></div><div id="guessFeedback" class="feedback" aria-live="polite"></div><div id="guessConsole" class="console" style="margin-top:15px"></div></div>
+<div class="card"><h3>Vom Spiel zum Algorithmus</h3><div id="guessState" class="state-chips"></div><p id="guessCondition"></p><pre><code>int eingabe = 0;
+int geheimzahl = 0;
+IO.show("Errate eine Zahl zwischen 1 und 100.");
+geheimzahl = (int) (100 * Math.random() + 1);
+while (eingabe != geheimzahl) {
+    eingabe = IO.getInt("Ihr Tipp:");
+    if (eingabe &lt; geheimzahl) {
+        IO.show("Zahl zu klein");
+    } else {
+        if (eingabe &gt; geheimzahl) {
+            IO.show("Zahl zu groß");
+        } else {
+            IO.show("korrekt!");
+        }
+    }
+}</code></pre><div class="note">Die angezeigte Versuchszahl ist die Erweiterung aus Aufgabe 8a. Im Originalprogramm gibt es diesen Zähler noch nicht. Browser-Eingaben im Modell ersetzen nur die IO-Dialoge.</div></div>
+</div>
+</div>
+<div id="lab-swap" class="lab-panel" hidden>
+<div class="card"><h3>Werte tauschen – warum eine Hilfsvariable?</h3><p>Beide Versuche starten mit <code>a = 3</code> und <code>b = 8</code>. Vergleiche den fehlerhaften direkten Tausch mit dem Tausch aus dem Skript.</p><div class="row"><select id="swapMode" aria-label="Tauschvariante"><option value="good">Mit Hilfsvariable x</option><option value="bad">Ohne Hilfsvariable</option></select><button class="btn primary" id="swapStep">Nächster Befehl</button><button class="btn" id="swapReset">Zurücksetzen</button></div><div id="swapMemory" class="memory" style="margin-top:20px"></div><pre id="swapCode"></pre><div id="swapFeedback" class="feedback" aria-live="polite"></div></div>
+</div>
+</section>
+
+<section id="aufgaben" class="page">
+<h2>Deine Übungswerkstatt</h2>
+<p class="intro">Alle Aufgaben der beiden Übungsblätter – mit Arbeitsaufträgen, Hilfen, Lösungshinweisen und einer eigenen Arbeitsfläche. Die Nummern entsprechen den Vorlagen. „Erledigt“ ist deine Selbsteinschätzung, keine automatische Bewertung.</p>
+<div class="exercise-filter"><button class="btn active" data-filter="all">Alle Aufgaben</button><button class="btn" data-filter="v">Verzweigungen</button><button class="btn" data-filter="s">Schleifen</button><button class="btn" data-filter="open">Noch offen</button></div>
+<div id="exerciseList"></div>
+</section>
+
+<section id="editor" class="page">
+<h2>Struktogramm-Werkstatt</h2>
+<p class="intro">Baue einen Ablauf aus Blöcken. Ein Struktogramm ist kein Flussdiagramm: Es hat keine Pfeile und keine frei schwebenden Entscheidungsrauten. Verschachtelung und Aufteilung der Rechteckfläche zeigen die Struktur.</p>
+<div class="note no-print"><strong>So arbeitest du:</strong> Füge Bausteine hinzu. Bei „Falls“ bearbeitest du Wahr- und Falsch-Zweig getrennt; bei einer Schleife ihren Rumpf. Die Reihenfolge lässt sich mit ↑ und ↓ ändern. Variablen deklarierst du im eigenen Feld – sie erscheinen wie im Skript <strong>nicht im Struktogramm</strong>, sondern im Java-Code.</div>
+<div class="builder-layout">
+<aside class="card no-print">
+<h3>1 · Programm vorbereiten</h3>
+<label for="programName">Klassenname</label><input id="programName" type="text" value="MeinProgramm">
+<label for="declarations">Deklarationen (Java)</label><textarea id="declarations" class="mono" style="min-height:100px" spellcheck="false">int alter;</textarea>
+<small>Beispiel: <code>double wert, ausgabe;</code><br>Erst deklarieren, dann Werte zuweisen.</small>
+<h3 style="margin-top:23px">2 · Ablauf konstruieren</h3>
+<div class="node-palette" id="rootPalette"></div>
+<div id="nodeList" class="node-list"></div>
+<div class="row" style="margin-top:15px"><button class="btn small" id="clearEditor">Ablauf leeren</button><button class="btn small" id="undoEditor">Letzte Änderung rückgängig</button></div>
+<label for="templateSelect">Beispiel laden (ersetzt deinen Entwurf)</label>
+<select id="templateSelect"><option value="">Bitte wählen …</option><option value="age">Altersprüfung · zwei Zweige</option><option value="age3">Altersprüfung · drei Gruppen</option><option value="loop4">Schleifen · Übung 4</option><option value="loop3">Schleifen · Übung 3</option><option value="temperature">Temperaturumrechnung</option><option value="empty">Leerer Entwurf</option></select>
+<div id="editorSaved" class="saved" aria-live="polite"></div>
+</aside>
+<div>
+<div class="card">
+<div class="row spread no-print"><h3>3 · Darstellung prüfen</h3><div class="row"><button class="btn small" id="copyJava">Java kopieren</button><button class="btn small" id="printStruct">Struktogramm drucken</button></div></div>
+<div id="diagram" class="struct-scroll"></div>
+<div id="editorValidation" class="feedback" aria-live="polite"></div>
+<p class="muted no-print">Links stehen „wahr“ und rechts „falsch“. Eine einseitige Verzweigung hat rechts einen leeren Zweig. Die vorprüfende Schleife besitzt ihren Bedingungskopf oben, die nachprüfende unten.</p>
+</div>
+<div class="card" id="editorCodePanel"><h3>Passender Java-Quelltext</h3><pre id="generatedJava"></pre><div class="note warn"><strong>Übersetzung, keine Prüfung:</strong> Der Editor setzt deine Bausteine in Java-Syntax um. Er prüft weder Datentypen noch Variablennamen, Initialisierung, sinnvolle Bedingungen oder Endlosschleifen. <code>IO</code> muss eure Unterrichtssoftware bereitstellen. Teste den Code dort!</div></div>
+</div>
+</div>
+</section>
+
+<section id="stand" class="page">
+<h2>Mein Lernstand</h2>
+<div class="grid">
+<div class="card"><h3>Aufgabenfortschritt</h3><div id="progressNumber" class="badge-large"></div><div class="progress-track"><div id="progressBar" class="progress-fill"></div></div><p id="progressText"></p><div id="progressGroups"></div><button class="btn" data-go="aufgaben">Zurück zu den Aufgaben</button></div>
+<div class="card"><h3>Meine Selbsttests</h3><div id="quizProgress"></div><p class="muted">Ein grüner Eintrag bedeutet, dass du die letzte Antwort richtig gewählt hast. Er ist keine Note.</p><div class="row"><button class="btn primary" id="exportProgress">Lernstand exportieren</button><button class="btn danger" id="resetProgress">Lokale Daten zurücksetzen</button></div><div id="exportFeedback" class="feedback" aria-live="polite"></div></div>
+</div>
+<div class="card"><h3>Das sollte ich erklären können</h3><div id="competencies"></div></div>
+<div class="card"><h3>Mein nächster Lernschritt</h3><label for="reflection">Was kann ich schon? Wo brauche ich noch einen Testfall oder eine Erklärung?</label><textarea id="reflection" placeholder="Zum Beispiel: Ich kann den letzten Schleifendurchlauf noch nicht sicher bestimmen. Deshalb …"></textarea><div class="saved" id="reflectionSaved" aria-live="polite"></div></div>
+</section>
+</main>
+<footer>Grundlage: „Skript.pdf“, „03_Verzweigungen_Übungen.pdf“ mit Lösungshinweisen sowie „04_Schleifen_Übungen.pdf“ mit Erwartungshorizont. Ergänzt um interaktive Lernhilfen. Offensichtliche Syntaxfehler der Lösungsvorlage sind berichtigt, etwa 18.5 statt 18,5 in Java. Beim Schleifen-Struktogramm aus Übung 3 wird die abschließende Ausgabe von d entsprechend dem Lösungscode außerhalb der Schleife behandelt. Keine Übertragung von Schülerdaten; lokale Speicherung nur in diesem Browserkontext.</footer>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const key="javaWerkstatt10.v1";
+let store={done:{},notes:{},quiz:{},skills:{},reflection:"",editor:null};
+try{const old=JSON.parse(localStorage.getItem(key)||"null");if(old)store={...store,...old}}catch(e){}
+function save(){try{localStorage.setItem(key,JSON.stringify(store));return true}catch(e){return false}}
+function feedback(id,text,ok=null){const el=$(id);el.textContent=text;el.className="feedback"+(ok===true?" ok":ok===false?" bad":"")}
+function showPage(name){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));if(name==="stand")renderProgress();if(name==="aufgaben")renderExercises();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>showPage(b.dataset.go));
+const quizzes={
+variables:{q:"Was passiert bei a = a + 1, wenn a vorher 4 ist?",answers:["Die Gleichung ist falsch, also stoppt Java.","Zuerst wird rechts 5 berechnet; danach wird 5 in a gespeichert.","a und 1 werden zu einem Text verbunden."],correct:1,why:"Eine Wertzuweisung ist keine mathematische Gleichung: erst rechte Seite auswerten, dann den alten Speicherinhalt ersetzen."},
+io:{q:"Welche Eingabe passt zu einer Temperatur mit Nachkommastellen?",answers:['int wert = IO.getInt("Temperatur?");','double wert = IO.getDouble("Temperatur?");','boolean wert = IO.getBoolean("Temperatur?");'],correct:1,why:"double speichert Fließkommazahlen. getDouble liest einen dazu passenden Wert ein."},
+branch:{q:"Was bewirkt ein if-else, wenn die Bedingung false ist?",answers:["Beide Zweige laufen.","Kein Zweig läuft.","Nur der else-Zweig läuft."],correct:2,why:"Bei einer zweiseitigen Verzweigung wird genau einer der beiden Zweige ausgeführt."},
+loop:{q:"a ist am Anfang 6. Wie oft läuft while (a < 6) { a++; }?",answers:["Keinmal.","Einmal.","Sechsmal."],correct:0,why:"Die Bedingung wird vor dem Rumpf geprüft und ist sofort falsch. Eine do-while-Schleife würde den Rumpf dagegen mindestens einmal ausführen."},
+algo:{q:"Was ist der Unterschied zwischen Algorithmus und Programm?",answers:["Ein Algorithmus muss in Java geschrieben sein.","Ein Programm ist ein Algorithmus, der in einer Programmiersprache notiert ist.","Algorithmen besitzen keine Anweisungen."],correct:1,why:"Ein Algorithmus beschreibt die Problemlösung. Das Programm formuliert sie in einer konkreten Programmiersprache."},
+struct:{q:"Wo wird die Deklaration int alter; in den Struktogrammen eures Skripts dargestellt?",answers:["In jedem Bedingungsdreieck.","Nicht als eigener Schritt; sie gehört in den Java-Quelltext.","Immer im Falsch-Zweig."],correct:1,why:"Das Skript weist ausdrücklich darauf hin: Die Variablendeklaration ist im Struktogramm nicht sichtbar."}
+};
+function quizHTML(id){const q=quizzes[id];return `<div class="card" style="margin-top:20px"><span class="pill teal">Selbsttest</span><h3>${esc(q.q)}</h3>${q.answers.map((a,i)=>`<button class="choice" data-quiz="${id}" data-answer="${i}">${esc(a)}</button>`).join("")}<div id="qfb-${id}" class="feedback" aria-live="polite"></div></div>`}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-quiz]");if(!b)return;const id=b.dataset.quiz,q=quizzes[id],ok=Number(b.dataset.answer)===q.correct;store.quiz[id]=ok;save();document.querySelectorAll(`[data-quiz="${id}"]`).forEach(el=>el.classList.toggle("selected",el===b));feedback("qfb-"+id,(ok?"Richtig. ":"Noch nicht. ")+q.why,ok)});
+const knowledge=[
+{title:"Algorithmus & Programm",id:"algo",html:`
+<div class="grid"><div class="card"><h3>Eine Lösung schrittweise präzisieren</h3><p>Ein <strong>Algorithmus</strong> ist eine Folge von Anweisungen zur Lösung eines Problems. Ein <strong>Programm</strong> ist ein Algorithmus, notiert in einer Programmiersprache.</p><div class="note">Problem → Algorithmus → Programm → Maschinenprogramm</div><p>Die ersten Schritte werden vom Menschen formalisiert. Der Compiler übersetzt anschließend das Programm in die maschinennahe Form. Umgangssprache kann mehrdeutig sein; ein Programm muss exakt formuliert sein.</p><h4>Alltagsbeispiele aus dem Skript</h4><p>Tee kochen oder sich am Schul-PC anmelden: Die Schritte müssen verständlich sein und in einer passenden Reihenfolge stehen.</p></div>
+<div class="card"><h3>Eigenschaften im Skript</h3><table><tr><th>Begriff</th><th>Bedeutung</th></tr><tr><td>Endlichkeit</td><td>Die Beschreibung ist endlich lang.</td></tr><tr><td>Terminiertheit</td><td>Der Ablauf endet nach endlich vielen Schritten.</td></tr><tr><td>Eindeutigkeit</td><td>Die Anweisungen legen den weiteren Ablauf fest.</td></tr><tr><td>Ausführbarkeit</td><td>Die Anweisungen sind verständlich und ausführbar.</td></tr><tr><td>Determiniertheit</td><td>Gleiche Startbedingungen und Eingaben führen zum gleichen Ergebnis.</td></tr><tr><td>Allgemeingültigkeit</td><td>Die Lösung gilt für eine Klasse gleichartiger Probleme.</td></tr></table><small>Beim Zahlenraten gehört die erzeugte Zufallszahl zu den Bedingungen des konkreten Ablaufs.</small></div></div>`},
+{title:"Variablen & Datentypen",id:"variables",html:`
+<div class="grid"><div class="card"><h3>Ein beschrifteter Speicherplatz</h3><p>Eine Variable speichert veränderliche Daten. Sie besitzt einen eindeutigen <strong>Namen</strong> und einen <strong>Datentyp</strong>.</p><pre><code>int alter;             // Deklaration
+alter = 15;            // Wertzuweisung
+double temperatur = 2.3; // beides zusammen</code></pre><p><strong>Deklaration:</strong> Datentyp und Variablenname festlegen.<br><strong>Wertzuweisung:</strong> Einen Wert mit <code>=</code> speichern.</p><div class="note"><code>a = a + 1;</code> bedeutet: alten Wert von a lesen, 1 addieren, Ergebnis in a speichern. <code>a++;</code> erhöht a ebenfalls um 1.</div><button class="btn" data-go="labor">Speicher im Ablauf-Labor beobachten</button></div>
+<div class="card"><h3>Die Datentypen eures Skripts</h3><table><tr><th>Art</th><th>Java</th><th>Beispiel</th></tr><tr><td>Ganze Zahl</td><td><code>int</code></td><td><code>18</code></td></tr><tr><td>Fließkommazahl</td><td><code>double</code></td><td><code>18.5</code></td></tr><tr><td>Wahrheitswert</td><td><code>boolean</code></td><td><code>true</code> / <code>false</code></td></tr><tr><td>Einzelnes Zeichen</td><td><code>char</code></td><td><code>'x'</code></td></tr><tr><td>Zeichenkette</td><td><code>String</code></td><td><code>"Hallo"</code></td></tr></table><p><code>String</code> ist kein primitiver Datentyp. Texte stehen in doppelten, einzelne Zeichen in einfachen Anführungszeichen.</p><div class="note warn">In Java schreibt man Dezimalzahlen mit Punkt: <code>18.5</code>, nicht <code>18,5</code>.</div></div></div>`},
+{title:"IO & Java-Grundregeln",id:"io",html:`
+<div class="grid"><div class="card"><h3>Eingaben mit euren IO-Befehlen</h3><pre><code>String vorname;
+int alter;
+double wert;
+boolean in_celsius;
+
+vorname = IO.getString("Vorname?");
+alter = IO.getInt("Alter?");
+wert = IO.getDouble("Temperatur?");
+in_celsius = IO.getBoolean("In °C gegeben?");</code></pre><p>Der Rückgabewert der Eingabe wird in einer passenden Variablen gespeichert. Der Hinweistext in den Klammern sagt der nutzenden Person, was eingegeben werden soll.</p><div class="note">Diese Seite nutzt die <code>IO</code>-Klasse für Eingaben. Im learnj-Editor nutzt man andere Eingabebefehle. Nutze in eurer Unterrichtssoftware die dort bereitgestellte IO-Klasse.</div></div>
+<div class="card"><h3>Ausgeben und lesbar schreiben</h3><pre><code>System.out.print("Hallo "); // ohne Umbruch
+System.out.println(vorname); // mit Umbruch
+IO.show("Willkommen!");      // Dialogfenster
+
+// Einzeiliger Kommentar
+/* Mehrzeiliger
+   Kommentar */</code></pre><p>Mit <code>+</code> verknüpfst du Texte und Werte: <code>"Alter: " + alter</code>.</p><ul><li>Anweisungen mit Semikolon abschließen.</li><li>Zu jeder öffnenden Klammer gehört eine schließende.</li><li>Code innerhalb von Blöcken einrücken.</li><li>Sinnvolle Namen und hilfreiche Kommentare verwenden.</li></ul><small>Blockköpfe wie <code>if (...) {</code> bekommen kein zusätzliches Semikolon. Bei <code>do ... while (...);</code> steht dagegen am Ende eines.</small></div></div>`},
+{title:"Sequenz & Struktogramm",id:"struct",html:`
+<div class="grid"><div class="card"><h3>Ein Befehl nach dem anderen</h3><p>Eine <strong>Anweisung</strong> ist ein einzelner Befehl. Eine <strong>Sequenz</strong> ist eine Folge von Anweisungen in festgelegter Reihenfolge.</p><pre><code>double w, h, bmi;
+w = IO.getDouble("Gewicht in kg?");
+h = IO.getDouble("Größe in m?");
+bmi = w / (h * h);
+System.out.println("BMI: " + bmi);</code></pre><p>Die Reihenfolge ist wichtig: Die Eingaben müssen vor der Berechnung vorliegen.</p><div class="note warn">Der BMI ist hier nur ein Rechenbeispiel des Arbeitsblatts. Die dortigen festen Kategorien sind keine persönliche Gesundheitsbewertung und insbesondere für Jugendliche kein geeignetes Beurteilungsverfahren. Verwende die vorgegebenen Beispieldaten.</div></div>
+<div class="card"><h3>Struktogramme lesen</h3><p>Der Programmablauf wird in einer zusammenhängenden Rechteckfläche dargestellt.</p><ul><li><strong>Sequenz:</strong> Rechtecke untereinander.</li><li><strong>Verzweigung:</strong> Bedingung im Kopf; Wahr- und Falsch-Zweig nebeneinander.</li><li><strong>Vorprüfende Schleife:</strong> Bedingung oben; der Rumpf ist umschlossen.</li><li><strong>Nachprüfende Schleife:</strong> Bedingung unten.</li><li><strong>Schachtelung:</strong> Eine Struktur liegt vollständig in einer anderen.</li></ul><p>Deklarationen sind nach der Konvention des Skripts im Struktogramm nicht sichtbar. Ein Vergleich darf dort etwa <code>a = 0</code> heißen; in Java muss er <code>a == 0</code> lauten.</p><button class="btn primary" data-go="editor">Ein Struktogramm konstruieren →</button></div></div>`},
+{title:"Verzweigungen",id:"branch",html:`
+<div class="grid"><div class="card"><h3>Einseitige Auswahl</h3><p>Ist die Bedingung wahr, wird der Block ausgeführt. Ist sie falsch, geht es nach dem Block weiter.</p><pre><code>if (alter &lt; 18) {
+    System.out.println("Kind");
+}</code></pre><h3 style="margin-top:20px">Zweiseitige Auswahl</h3><p>Genau einer von zwei Zweigen wird ausgeführt.</p><pre><code>if (alter &lt; 18) {
+    System.out.println("Kind");
+} else {
+    System.out.println("Erwachsen");
+}</code></pre><small>Diese Bezeichnungen folgen dem vereinfachten Altersbeispiel des Arbeitsblatts.</small></div>
+<div class="card"><h3>Boolesche Ausdrücke</h3><p>Ein boolescher Ausdruck besitzt den Wert <code>true</code> oder <code>false</code>.</p><table><tr><th>Java</th><th>Bedeutung</th></tr><tr><td><code>a &lt; b</code> / <code>a &gt; b</code></td><td>kleiner / größer</td></tr><tr><td><code>a &lt;= b</code> / <code>a &gt;= b</code></td><td>kleiner gleich / größer gleich</td></tr><tr><td><code>a == b</code></td><td>Zahlen gleich?</td></tr><tr><td><code>a != b</code></td><td>Zahlen ungleich?</td></tr><tr><td><code>in_celsius</code></td><td>Wert einer boolean-Variablen</td></tr></table><div class="note warn"><code>=</code> weist einen Wert zu. <code>==</code> vergleicht Zahlen. Verwechsle beides nicht!</div><p>Eine verschachtelte Verzweigung steht im Zweig einer anderen Verzweigung – wie bei „Kind / Jugendlich / Erwachsen“ oder beim Zahlenraten.</p></div></div>`},
+{title:"Schleifen",id:"loop",html:`
+<div class="grid"><div class="card"><h3>Vorprüfend: while</h3><p>Solange die Bedingung wahr ist, wird der Rumpf wiederholt. Die Prüfung erfolgt vor jedem Durchlauf. Deshalb sind auch null Durchläufe möglich.</p><pre><code>int a = 1;
+while (a &lt; 6) {
+    System.out.println(a);
+    a++;
+}</code></pre><p>Ausgabe: 1, 2, 3, 4, 5. Nach dem letzten Durchlauf ist a gleich 6; die nächste Prüfung ist falsch.</p><div class="note">Startwert → Bedingung → Rumpf → Veränderung → erneute Bedingung</div></div>
+<div class="card"><h3>Nachprüfend: do-while</h3><p>Der Rumpf wird zuerst ausgeführt. Erst anschließend wird geprüft. Daher läuft er mindestens einmal.</p><pre><code>int a = 4;
+do {
+    System.out.println(a);
+    a++;
+} while (a &lt; 9);</code></pre><p>Ausgabe: 4, 5, 6, 7, 8. Nach dem letzten Durchlauf ist a gleich 9.</p><h4>Wertebelegungstabelle</h4><p>Halte Startwerte und die Werte nach den Befehlen oder Durchläufen fest. Notiere deutlich, zu welchem Zeitpunkt eine Tabellenzeile gehört.</p><div class="note warn">Achte darauf, dass sich die Bedingung ändern kann. Sonst kann eine Endlosschleife entstehen.</div><button class="btn primary" data-go="labor">Beide Schleifenarten vergleichen →</button></div></div>`}
+];
+function renderKnowledge(){ $("knowledgeTabs").innerHTML=knowledge.map((k,i)=>`<button class="btn ${i===0?"active":""}" data-knowledge="${i}">${k.title}</button>`).join("");$("knowledgeContent").innerHTML=knowledge.map((k,i)=>`<div class="knowledge ${i===0?"active":""}" id="knowledge-${i}">${k.html}${quizHTML(k.id)}<p class="source-label">Grundlage: Skript · ${esc(k.title)}</p></div>`).join("");document.querySelectorAll("[data-knowledge]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-knowledge]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".knowledge").forEach((x,i)=>x.classList.toggle("active",i===Number(b.dataset.knowledge)))});document.querySelectorAll("#knowledgeContent [data-go]").forEach(b=>b.onclick=()=>showPage(b.dataset.go))}
+renderKnowledge();
+
+/* Shared Nassi–Shneiderman renderer: no arrows or free-standing diamonds. */
+function drawNodes(nodes,highlight=""){return nodes.length?nodes.map(n=>drawNode(n,highlight)).join(""):`<div class="sg-empty">—</div>`}
+function drawNode(n,highlight){
+ const cl=n.id===highlight?" sg-highlight":"";
+ if(n.type==="if")return `<div class="sg-if${cl}"><div class="sg-if-head"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 0 L 50 100 L 100 0" fill="none" stroke="#172b47" stroke-width="1" vector-effect="non-scaling-stroke"/></svg><div class="sg-condition">${esc(n.cond)}</div><span class="sg-yes">wahr</span><span class="sg-no">falsch</span></div><div class="sg-branches"><div class="sg-branch">${drawNodes(n.yes,highlight)}</div><div class="sg-branch">${drawNodes(n.no,highlight)}</div></div></div>`;
+ if(n.type==="while")return `<div class="sg-loop${cl}"><div class="sg-loop-head">Solange ${esc(n.cond)}</div><div class="sg-loop-rail"></div><div class="sg-loop-body">${drawNodes(n.body,highlight)}</div></div>`;
+ if(n.type==="do")return `<div class="sg-loop${cl}"><div class="sg-loop-rail"></div><div class="sg-loop-body">${drawNodes(n.body,highlight)}</div><div class="sg-loop-foot">Solange ${esc(n.cond)}</div></div>`;
+ const txt=n.type==="input"?"Eingabe: "+n.variable:n.type==="output"?"Ausgabe: "+n.expr:n.expr;
+ return `<div class="sg-stmt${cl}">${esc(txt)}</div>`;
+}
+const stmt=expr=>({type:"assign",expr});
+const out=expr=>({type:"output",expr});
+const inp=(variable,datatype,prompt)=>({type:"input",variable,datatype,prompt});
+function tempNodes(){return [inp("wert","Double","Temperaturwert?"),inp("in_celsius","Boolean","In °C gegeben?"),{type:"if",cond:"in_celsius",yes:[{...stmt("ausgabe = wert * 1.8 + 32"),id:"tc"},out('ausgabe + " °F"')],no:[{...stmt("ausgabe = (wert - 32) * 5.0 / 9.0"),id:"tf"},out('ausgabe + " °C"')]}]}
+$("tempStruct").innerHTML=`<div class="struct">${drawNodes(tempNodes())}</div>`;
+document.querySelectorAll("[data-lab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-lab]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".lab-panel").forEach(p=>p.hidden=p.id!=="lab-"+b.dataset.lab)});
+$("runTemp").onclick=()=>{const raw=$("tempValue").value,v=Number(raw);if(!raw.trim()||!Number.isFinite(v)){feedback("tempFeedback","Bitte gib einen endlichen Zahlenwert ein.",false);return}const c=$("tempUnit").value==="c",res=c?v*1.8+32:(v-32)*5/9;feedback("tempFeedback",`in_celsius ist ${c?"true":"false"}. Deshalb läuft nur der ${c?"Wahr":"Falsch"}-Zweig.`,true);$("tempConsole").textContent=`Die Temperatur beträgt ${Number(res.toFixed(6)).toLocaleString("de-DE")} ${c?"Grad Fahrenheit":"Grad Celsius"}.\nRechnung: ${c?`${v} * 1.8 + 32`:`(${v} - 32) * 5.0 / 9.0`}`;$("tempStruct").innerHTML=`<div class="struct">${drawNodes(tempNodes(),c?"tc":"tf")}</div>`};
+
+/* Deterministic step models. Never eval learner code. */
+let traceFrames=[],traceIndex=0,traceLines=[],traceVars=[];
+function buildTrace(){
+ const model=$("traceModel").value;
+ $("quadConfig").hidden=model!=="quad";
+ let state={},output=[],count=0,frames=[];
+ function record(line,next,msg){frames.push({line:next,executed:line,state:{...state},output:[...output],count,msg})}
+ function initial(){record(null,0,"Bereit. Zuerst werden die Startwerte zugewiesen.")}
+ if(model==="u4"){
+ traceLines=["int a = 10;","int b = 0;","while (a > 0) {","    a = a - 3;","    b = b + 1;","}"];traceVars=["a","b"];
+ $("traceDescription").textContent="Arbeitsblatt Schleifen · Übung 4. Beobachte besonders den Übergang von a = 1 zu a = -2.";
+ initial();state.a=10;record(0,1,"a erhält den Startwert 10.");state.b=0;record(1,2,"b erhält den Startwert 0.");
+ while(state.a>0){record(2,3,`${state.a} > 0 ist true. Der nächste Rumpfdurchlauf beginnt.`);count++;state.a-=3;record(3,4,"a wird um 3 verringert. Die Bedingung wird erst nach dem ganzen Rumpf erneut geprüft.");state.b++;record(4,2,"b wird um 1 erhöht; der Rumpf ist beendet.");}
+ record(2,null,`${state.a} > 0 ist false. Die Schleife endet nach ${count} Durchläufen.`);
+ }else if(model==="u3"){
+ traceLines=["int a = 10;","int b = 2;","int c;","int d = 0;","while (a > 5) {","    c = b * a;","    d = b + a;","    System.out.println(c);","    a = a - 3;","    b = b - 1;","}","System.out.println(d);"];traceVars=["a","b","c","d"];
+ $("traceDescription").textContent="Arbeitsblatt Schleifen · Übung 3. Ergänzung aus dem Arbeitsauftrag: d = 0 vor der Schleife. Die Ausgabe von d steht nach der Schleife.";
+ initial();state.a=10;record(0,1,"a = 10.");state.b=2;record(1,2,"b = 2.");record(2,3,"c ist deklariert, hat aber noch keinen zugewiesenen Wert.");state.d=0;record(3,4,"d erhält vor der Schleife den Wert 0.");
+ while(state.a>5){record(4,5,`${state.a} > 5 ist true.`);count++;state.c=state.b*state.a;record(5,6,"c wird aus den aktuellen Werten von b und a berechnet.");state.d=state.b+state.a;record(6,7,"d wird neu berechnet.");output.push(state.c);record(7,8,"Der aktuelle Wert von c wird ausgegeben.");state.a-=3;record(8,9,"a wird um 3 verringert.");state.b--;record(9,4,"b wird um 1 verringert; zurück zur Bedingung.");}
+ record(4,11,`${state.a} > 5 ist false. Weiter nach der Schleife.`);output.push(state.d);record(11,null,"d wird genau einmal nach der Schleife ausgegeben.");
+ }else if(model==="quad"){
+ let n=Number($("quadN").value);if(!Number.isInteger(n)||n<0||n>12){n=5;$("quadN").value=5}
+ traceLines=[`int n = ${n}; // Eingabe im Modell`,"int i = 0;","while (i <= n) {","    System.out.println(i * i);","    i++;","}"];traceVars=["n","i"];$("traceDescription").textContent="Zusätzliche Musterlösung zu Schleifen · Übung 2. Die Eingabe wird hier zur Veranschaulichung direkt als Startwert gesetzt; im eigenen Programm nutzt du IO.getInt.";
+ initial();state.n=n;record(0,1,"Die eingegebene Obergrenze wird in n gespeichert.");state.i=0;record(1,2,"Die Zählvariable startet bei 0.");
+ while(state.i<=state.n){record(2,3,`${state.i} <= ${state.n} ist true.`);count++;output.push(state.i*state.i);record(3,4,`Das Quadrat von ${state.i} wird ausgegeben.`);state.i++;record(4,2,"Die Zählvariable wird erhöht.");}
+ record(2,null,`${state.i} <= ${state.n} ist false. Fertig. Auch das Quadrat der Obergrenze wurde ausgegeben.`);
+ }else{
+ const post=model==="post";traceLines=post?["int a = 6;","do {","    System.out.println(a);","    a++;","} while (a < 6);"]:["int a = 6;","while (a < 6) {","    System.out.println(a);","    a++;","}"];traceVars=["a"];$("traceDescription").textContent="Vergleichsexperiment mit verändertem Startwert: Die Bedingung a < 6 ist schon zu Beginn falsch.";
+ initial();state.a=6;record(0,1,"a startet bei 6.");
+ if(post){record(1,2,"Ohne Vorprüfung beginnt der erste Durchlauf.");count++;output.push(state.a);record(2,3,"6 wird ausgegeben.");state.a++;record(3,4,"a wird auf 7 erhöht.");record(4,null,"7 < 6 ist false. Ende nach einem Durchlauf.");}
+ else record(1,null,"6 < 6 ist false. Der Rumpf wird kein einziges Mal ausgeführt.");
+ }
+ traceFrames=frames;traceIndex=0;renderTrace();
+}
+function renderTrace(){
+ const f=traceFrames[traceIndex],prev=traceFrames[traceIndex-1]||{state:{}};
+ $("traceCode").innerHTML=traceLines.map((line,i)=>`<div class="trace-line ${i===f.line?"current":""}"><span class="ln">${i+1}</span>${esc(line)}</div>`).join("");
+ $("traceState").innerHTML=traceVars.map(v=>`<span class="state-chip ${f.state[v]!==prev.state[v]?"changed":""}">${v} = <strong>${f.state[v]??"—"}</strong></span>`).join("");
+ $("traceOutput").textContent=f.output.length?f.output.join("\n"):"Noch keine Ausgabe.";
+ $("traceCount").textContent=`Begonnene Rumpfdurchläufe: ${f.count} · Schritt ${traceIndex} von ${traceFrames.length-1}`;
+ feedback("traceMessage",f.msg,f.line===null?true:null);
+ $("traceNext").disabled=traceIndex>=traceFrames.length-1;$("traceBack").disabled=traceIndex===0;
+ $("traceHistory").innerHTML=`<table><thead><tr><th>Schritt</th><th>Ausgeführte Zeile</th>${traceVars.map(v=>`<th>${v}</th>`).join("")}<th>Rumpfdurchläufe</th></tr></thead><tbody>${traceFrames.slice(0,traceIndex+1).map((r,i)=>`<tr><td>${i}</td><td>${r.executed===null?"Start":r.executed+1}</td>${traceVars.map(v=>`<td>${r.state[v]??"—"}</td>`).join("")}<td>${r.count}</td></tr>`).join("")}</tbody></table>`;
+}
+$("traceNext").onclick=()=>{if(traceIndex<traceFrames.length-1){traceIndex++;renderTrace()}};
+$("traceBack").onclick=()=>{if(traceIndex>0){traceIndex--;renderTrace()}};
+$("traceReset").onclick=buildTrace;$("traceModel").onchange=buildTrace;$("quadN").onchange=buildTrace;
+$("checkTracePrediction").onclick=()=>{const raw=$("tracePrediction").value;if(raw===""){feedback("tracePredictionFeedback","Trage zuerst deine Vermutung ein.",false);return}feedback("tracePredictionFeedback",Number(raw)===4?"Richtig: Startwerte von a vor den Durchläufen: 10, 7, 4, 1. Erst danach ist a = -2 und die Bedingung falsch.":"Noch nicht. Prüfe auch a = 1: 1 > 0 ist noch wahr. Ein negativer Endwert bedeutet nicht, dass der letzte Durchlauf ausfällt.",Number(raw)===4)};
+buildTrace();
+let secret=0,guess=0,attempts=0,guessLog=[];
+function renderGuess(){
+ $("guessSecret").textContent=$("guessReveal").checked?`geheimzahl = ${secret}`:"geheimzahl = verdeckt";
+ const end=guess===secret;
+ $("guessState").innerHTML=`<span class="state-chip">eingabe = ${guess}</span><span class="state-chip">Versuche = ${attempts}</span>`;
+ $("guessCondition").textContent=`Vor dem nächsten Durchlauf: eingabe != geheimzahl ist ${end?"false → Die Schleife endet.":"true → Es folgt eine weitere Eingabe."}`;
+ $("guessConsole").textContent=guessLog.length?guessLog.join("\n"):"Errate eine Zahl zwischen 1 und 100.";
+ $("guessSubmit").disabled=end;$("guessInput").disabled=end;
+}
+function newGuess(){secret=Math.floor(Math.random()*100)+1;guess=0;attempts=0;guessLog=[];$("guessInput").value="";feedback("guessFeedback","Startwert eingabe = 0. Er liegt außerhalb des möglichen Geheimzahlbereichs; deshalb beginnt die Schleife.");renderGuess()}
+$("guessNew").onclick=newGuess;$("guessReveal").onchange=renderGuess;
+$("guessSubmit").onclick=()=>{const raw=$("guessInput").value,n=Number(raw);if(!raw||!Number.isInteger(n)||n<1||n>100){feedback("guessFeedback","Bitte eine ganze Zahl von 1 bis 100 eingeben. Diese zusätzliche Bereichsprüfung gehört zum Browser-Modell.",false);return}guess=n;attempts++;const hint=n<secret?"Zahl zu klein":n>secret?"Zahl zu groß":"korrekt!";guessLog.push(`Versuch ${attempts}: ${n} → ${hint}`);feedback("guessFeedback",n<secret?"Erste Verzweigung wahr: eingabe < geheimzahl.":n>secret?"Erste Verzweigung falsch, innere Verzweigung wahr: eingabe > geheimzahl.":"Beide Vergleiche falsch: eingabe ist gleich geheimzahl. Der innere else-Zweig läuft.",n===secret);renderGuess()};
+$("guessInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!$("guessSubmit").disabled)$("guessSubmit").click()});newGuess();
+let swap={a:3,b:8,x:null,index:0};
+function resetSwap(){swap={a:3,b:8,x:null,index:0};renderSwap();feedback("swapFeedback","Startwerte gesetzt. Sage voraus, welcher Wert als Nächstes überschrieben wird.")}
+function renderSwap(){const good=$("swapMode").value==="good";$("swapMemory").innerHTML=["a","b","x"].map(v=>`<div class="memory-box"><span>Variable ${v}</span><strong>${swap[v]??"—"}</strong></div>`).join("");$("swapCode").textContent=good?"x = a;\na = b;\nb = x;":"a = b;\nb = a;";$("swapStep").disabled=swap.index>=(good?3:2)}
+$("swapStep").onclick=()=>{const good=$("swapMode").value==="good";let msg="";if(good){if(swap.index===0){swap.x=swap.a;msg="x bewahrt den alten Wert von a auf: 3."}if(swap.index===1){swap.a=swap.b;msg="a wird mit 8 überschrieben. Der alte Wert 3 ist noch in x gespeichert."}if(swap.index===2){swap.b=swap.x;msg="b erhält den gesicherten Wert 3. Der Tausch ist gelungen."}}else{if(swap.index===0){swap.a=swap.b;msg="a wird 8. Der alte Wert 3 ist nun verloren."}else{swap.b=swap.a;msg="b erhält ebenfalls 8. Das ist kein Tausch: Beide Variablen enthalten denselben Wert."}}swap.index++;renderSwap();feedback("swapFeedback",msg,swap.index===(good?3:2)?good:null)};
+$("swapMode").onchange=resetSwap;$("swapReset").onclick=resetSwap;resetSwap();
+
+/* Exercise content, with all original task groups. */
+const tempCode=`public class Temperatur {
+    public static void main(String[] args) {
+        double wert, ausgabe;
+        boolean in_celsius;
+        wert = IO.getDouble("Geben Sie den Wert der Temperatur an.");
+        in_celsius = IO.getBoolean("Ist der Wert in °C gegeben?");
+        if (in_celsius) {
+            ausgabe = wert * 1.8 + 32;
+            System.out.println("Die Temperatur beträgt " + ausgabe + " Grad Fahrenheit.");
+        } else {
+            ausgabe = (wert - 32) * 5.0 / 9.0;
+            System.out.println("Die Temperatur beträgt " + ausgabe + " Grad Celsius.");
+        }
+    }
+}`;
+const guessCode=`public class Zahlenraten {
+    public static void main(String[] args) {
+        int eingabe = 0;
+        int geheimzahl = 0;
+        IO.show("Errate eine Zahl zwischen 1 und 100.");
+        geheimzahl = (int) (100 * Math.random() + 1);
+        while (eingabe != geheimzahl) {
+            eingabe = IO.getInt("Ihr Tipp:");
+            if (eingabe < geheimzahl) {
+                IO.show("Zahl zu klein");
+            } else {
+                if (eingabe > geheimzahl) {
+                    IO.show("Zahl zu groß");
+                } else {
+                    IO.show("korrekt!");
+                }
+            }
+        }
+    }
+}`;
+const branch3=`int a, b, c, d;
+a = IO.getInt("a?");
+b = IO.getInt("b?");
+if (a == 0) {
+    c = 2 * b;
+    d = 8;
+} else {
+    c = 5;
+    if (b > 10) {
+        d = c - b;
+    } else {
+        d = c + b;
+    }
+}
+System.out.println(d);`;
+function pre(code){return `<pre><code>${esc(code)}</code></pre>`}
+const exercises=[
+{id:"v1",group:"v",title:"Übung 1 · Temperaturen umrechnen",tags:"IO · double · boolean · if-else",body:`
+<p>Übertrage den Ausgangscode als <code>Temperatur.java</code> in eure Programmierumgebung. Die kompakte Darstellung hier enthält dieselbe Logik wie die Vorlage; Zeilennummern können abweichen.</p>
+<details><summary>Ausgangscode anzeigen</summary>${pre(tempCode)}</details>
+<ol class="task-list"><li>Erläutere Deklaration und Wertzuweisung anhand des Codes.</li><li>Berechne die Ergebnisse für 25 °C und 10 °F zuerst selbst und bestätige sie durch einen Programmlauf.</li><li>Nenne alle Variablen und ihre Datentypen.</li><li>Beschreibe in einem Satz, was das Programm allgemein leistet.</li><li>Benenne die Auswahlstruktur und erkläre ihre Arbeitsweise.</li><li>Erstelle das Struktogramm in der Werkstatt.</li><li><strong>Zusatz:</strong> Entwickle <code>Geschwindigkeit.java</code>: Eingabe einer Geschwindigkeit, Umrechnung wahlweise von km/h in m/s oder umgekehrt. 1 m/s entspricht 3,6 km/h.</li></ol>
+<div class="row"><button class="btn small" data-jump-lab="temp">Temperaturmodell öffnen</button><button class="btn small" data-template-open="temperature">Struktogramm-Beispiel laden</button></div>`,
+hint:"Lege zuerst fest: Bedeutet true, dass die Eingabe in Celsius vorliegt? Dann muss genau dieser Zweig in Fahrenheit umrechnen. Für die Geschwindigkeit brauchst du ebenfalls einen Zahlenwert und einen Wahrheitswert für die Eingabeeinheit.",
+solution:`<p><code>wert</code> und <code>ausgabe</code>: <code>double</code>; <code>in_celsius</code>: <code>boolean</code>. Eine Deklaration legt Name und Typ fest; eine Zuweisung speichert einen Wert. Das Programm rechnet eine Temperatur abhängig von ihrer Eingabeeinheit um.</p><p>25 °C → <strong>77 °F</strong>; 10 °F → <strong>ungefähr −12,22 °C</strong>. Bei true läuft der Celsius-nach-Fahrenheit-Zweig, bei false der andere Zweig: zweiseitige Verzweigung.</p><p>Geschwindigkeit: bei Eingabe in km/h durch 3.6 teilen, sonst mit 3.6 multiplizieren.</p>${pre(`double geschwindigkeit, umrechnung;
+boolean inKmH;
+geschwindigkeit = IO.getDouble("Geschwindigkeit?");
+inKmH = IO.getBoolean("In km/h gegeben?");
+if (inKmH) {
+    umrechnung = geschwindigkeit / 3.6;
+    System.out.println(umrechnung + " m/s");
+} else {
+    umrechnung = geschwindigkeit * 3.6;
+    System.out.println(umrechnung + " km/h");
+}`)}`,
+test:"Temperatur: 25 °C, 10 °F, 0 °C, −40 °C. Geschwindigkeit: 36 km/h → 10 m/s; 10 m/s → 36 km/h."},
+{id:"v2",group:"v",title:"Übung 2 · Altersprüfung",tags:"einseitig · zweiseitig · verschachtelt",body:`
+<p>Ausgangsalgorithmus: Eingabe von <code>alter</code>. Danach zwei getrennte einseitige Prüfungen: Bei <code>alter &lt; 18</code> Ausgabe „Kind“; bei <code>alter &gt;= 18</code> Ausgabe „Erwachsen“.</p>
+<div class="struct-scroll"><div class="struct">${drawNodes([inp("alter","Int","Alter?"),{type:"if",cond:"alter < 18",yes:[out('"Kind"')],no:[]},{type:"if",cond:"alter >= 18",yes:[out('"Erwachsen"')],no:[]}])}</div></div>
+<ol type="a"><li>Benenne zwei unterschiedliche Grundstrukturen im Ausgangsalgorithmus.</li><li>Implementiere ihn mit einem sinnvollen Datentyp und teste ihn.</li><li>Verkürze ihn mithilfe einer zweiseitigen Verzweigung.</li><li>Erweitere die Einteilung: unter 14 → „Kind“, von 14 bis unter 18 → „Jugendlich“, ab 18 → „Erwachsen“. Zeichne die verschachtelte Verzweigung.</li></ol><button class="btn small" data-template-open="age3">Beispiel für drei Gruppen laden</button>`,
+hint:"Nutze int für ein Alter in ganzen Jahren. Im else-Zweig von alter < 14 ist bereits klar, dass alter mindestens 14 ist. Dort reicht daher die weitere Prüfung alter < 18.",
+solution:`<p>Grundstrukturen: Sequenz und einseitige Verzweigung. Die verkürzte Variante verwendet <code>if (alter &lt; 18)</code> mit einem <code>else</code>-Zweig.</p>${pre(`int alter;
+alter = IO.getInt("Alter eingeben!");
+if (alter < 14) {
+    System.out.println("Kind");
+} else {
+    if (alter < 18) {
+        System.out.println("Jugendlich");
+    } else {
+        System.out.println("Erwachsen");
+    }
+}`)}<p>Die Kategorien folgen dem Arbeitsblatt; sie sind hier eine Übung zu Grenzwerten.</p>`,
+test:"Teste besonders 13, 14, 17 und 18. Negative Alterswerte sind für das Sachproblem ungültig; die Eingabeprüfung wäre eine zusätzliche Erweiterung."},
+{id:"v3",group:"v",title:"Übung 3 · Verschachtelte Auswahl verfolgen",tags:"Werteverfolgung · Struktogramm",body:`<p>Bestimme die Ausgabe für <code>a = 2</code> und <code>b = 20</code>. Zeichne anschließend das Struktogramm.</p>${pre(branch3)}<p><strong>Erst vorhersagen:</strong> Welcher Zweig der äußeren Auswahl läuft? Wird <code>c = 2 * b</code> überhaupt ausgeführt?</p>`,
+hint:"Prüfe zuerst a == 0. Nur im else-Zweig wird c = 5 gesetzt und danach b > 10 geprüft. Eine Zuweisung in einem nicht betretenen Zweig verändert nichts.",
+solution:"<p>2 == 0 ist false. Deshalb wird c = 5 gesetzt. 20 > 10 ist true, daher d = 5 − 20 = <strong>−15</strong>. Nur d wird ausgegeben. Im Struktogramm liegt die Prüfung b > 10 vollständig im Falsch-Zweig der Prüfung a = 0.</p>",
+test:"Zusätzliche Pfadtests: a = 0, b = 20 → 8; a = 2, b = 10 → 15; a = 2, b = 11 → −6."},
+{id:"v4",group:"v",title:"Übung 4 · BMI berechnen und auswerten",tags:"Sequenz · geschachtelte Auswahl",body:`
+<p>Vorgegebener Ablauf: <code>m</code> in kg und <code>s</code> in m einlesen. <code>erg = m / (s * s)</code> berechnen. Falls erg kleiner als 18.5 ist: <code>e = "unter"</code>. Sonst prüfen, ob erg kleiner als 25 ist: <code>e = "normal"</code>, andernfalls <code>e = "über"</code>. Abschließend den Text <code>"Sie sind " + e + "gewichtig."</code> ausgeben.</p>
+<ol type="a"><li>Benenne die Kontrollstrukturen.</li><li>Berechne das Ergebnis für die vorgegebenen Werte 1,80 m und 80 kg.</li><li>Implementiere den Algorithmus und teste deine Berechnung. Erstelle das Struktogramm.</li></ol>
+<div class="note warn">Nur ein Rechen- und Programmierbeispiel. Verwende keine Körperdaten von Mitschülerinnen oder Mitschülern. Die festen Grenzwerte des Blatts sind keine geeignete persönliche Gesundheitsbeurteilung für Jugendliche.</div>`,
+hint:"Verwende double für Masse, Größe und Ergebnis sowie String für den Textteil. In Java lautet der Grenzwert 18.5. Die abschließende Ausgabe gehört hinter die gesamte Verzweigung, damit sie bei jedem Ergebnis ausgeführt wird.",
+solution:`<p>Sequenz und zwei zweiseitige, ineinander verschachtelte Verzweigungen. 80 / (1,8 · 1,8) ≈ <strong>24,69</strong>. Der Algorithmus wählt den Textteil „normal“.</p>${pre(`double m, s, erg;
+String e;
+m = IO.getDouble("Masse in kg?");
+s = IO.getDouble("Größe in m?");
+erg = m / (s * s);
+if (erg < 18.5) {
+    e = "unter";
+} else {
+    if (erg < 25) {
+        e = "normal";
+    } else {
+        e = "über";
+    }
+}
+System.out.println("Sie sind " + e + "gewichtig.");`)}<p>Berichtigung zur Lösungsvorlage: Dezimalpunkt in 18.5; die Ausgabe steht außerhalb beider Zweige.</p>`,
+test:"Prüfe die Auswahl zusätzlich mit gedachten Ergebniswerten 18.49, 18.5, 24.99 und 25. Die Größe muss für das Sachproblem positiv sein."},
+{id:"vz",group:"v",title:"Zusatz · Parkgebühren",tags:"Grenzfälle · Rechnen · Begrenzung",body:`
+<p>Die ersten 60 Minuten sind kostenlos. Danach kostet jede Stunde 2 Euro. Die maximale Gebühr beträgt 6 Euro. Entwickle ein Java-Programm und ein Struktogramm.</p><div class="note">Präzisierung entsprechend der Lösungsvorlage: Jede <strong>angefangene</strong> weitere Stunde wird berechnet. Eine Parkdauer von 61 Minuten kostet daher 2 Euro. Die Parkdauer wird in ganzen, nichtnegativen Minuten eingegeben.</div>`,
+hint:"Ziehe zuerst die kostenlose Stunde ab. Bei ganzzahligen, positiven Restminuten berechnet (rest + 59) / 60 die Zahl der angefangenen Stunden. Begrenze danach die Gebühr auf höchstens 6.",
+solution:pre(`int minuten = IO.getInt("Parkdauer in Minuten?");
+int gebuehr;
+if (minuten <= 60) {
+    gebuehr = 0;
+} else {
+    int rest = minuten - 60;
+    int stunden = (rest + 59) / 60;
+    gebuehr = stunden * 2;
+    if (gebuehr > 6) {
+        gebuehr = 6;
+    }
+}
+System.out.println("Parkgebühr: " + gebuehr + " Euro.");`)+`<p>Die Division zweier int-Werte verwirft in Java den Nachkommateil. Zusammen mit +59 entsteht für die positiven Restminuten die gewünschte Aufrundung.</p>`,
+test:"0 → 0; 60 → 0; 61 → 2; 120 → 2; 121 → 4; 180 → 4; 181 → 6; 600 → 6. Negative Minuten sind kein gültiger Testfall für die angegebene Spezifikation."},
+{id:"s1",group:"s",title:"Übung 1 · Zahlenraten analysieren und erweitern",tags:"while · Zufall · geschachtelte Auswahl",body:`
+<p>Übertrage den Code als <code>Zahlenraten.java</code> in eure Umgebung.</p><details><summary>Ausgangscode anzeigen</summary>${pre(guessCode)}</details>
+<ol class="task-list" start="2"><li>Markiere den Deklarationsbereich.</li><li>Begründe den Datentyp von <code>eingabe</code>.</li><li>Markiere Wertzuweisungen und boolesche Ausdrücke unterschiedlich.</li><li>Benenne drei verschiedene Kontrollstrukturen mit einem Beispiel aus dem Code.</li><li>Erstelle das Struktogramm.</li><li>Beschreibe den Algorithmus zusammenhängend.</li><li><strong>Erweiterungen:</strong> a) Zähle die Versuche und gib ihre Anzahl am Ende aus. b) Ermögliche eine Wiederholung des gesamten Spiels.</li></ol>
+<button class="btn small" data-jump-lab="guess">Zahlenraten im Ablaufmodell untersuchen</button>`,
+hint:"Die Initialisierungen eingabe = 0 und geheimzahl = 0 sind Deklarationen mit Wertzuweisung. Für 8a: Versuche vor dem Raten auf 0 setzen und nach jeder Eingabe erhöhen. Für 8b: Eine äußere Schleife muss die Erzeugung einer neuen Geheimzahl und das Zurücksetzen von eingabe und versuche einschließen.",
+solution:`<p><code>eingabe</code> und <code>geheimzahl</code> werden am Anfang als <code>int</code> deklariert. Ganze Zahlen sind passend, weil eine ganze Zahl von 1 bis 100 geraten wird.</p><p>Zuweisungen: die beiden Initialisierungen, die Zufallszahlzuweisung und die Eingabezuweisung. Bedingungen: <code>eingabe != geheimzahl</code>, <code>eingabe &lt; geheimzahl</code>, <code>eingabe &gt; geheimzahl</code>. Strukturen: Sequenz, vorprüfende Schleife und zweiseitige Verzweigung (verschachtelt).</p><p>Das Programm erzeugt eine geheime Zahl und wiederholt Eingaben, bis die Zahl getroffen wurde. Jeder Tipp erhält eine Rückmeldung.</p><h4>Mögliche Erweiterung (Programmausschnitt)</h4>${pre(`boolean nochmal;
+do {
+    int eingabe = 0;
+    int geheimzahl = (int) (100 * Math.random() + 1);
+    int versuche = 0;
+    while (eingabe != geheimzahl) {
+        eingabe = IO.getInt("Ihr Tipp:");
+        versuche++;
+        if (eingabe < geheimzahl) {
+            IO.show("Zahl zu klein");
+        } else {
+            if (eingabe > geheimzahl) {
+                IO.show("Zahl zu groß");
+            } else {
+                IO.show("korrekt!");
+            }
+        }
+    }
+    IO.show("Versuche: " + versuche);
+    nochmal = IO.getBoolean("Noch einmal?");
+} while (nochmal);`)}`,
+test:"Setze zum Testen die Geheimzahl vorübergehend fest, z. B. auf 50. Teste kleiner, größer und gleich; dann Treffer im ersten Versuch und eine komplette Spielwiederholung. Danach Zufallserzeugung wiederherstellen."},
+{id:"s2",group:"s",title:"Übung 2 · Quadratzahlen",tags:"Zählvariable · einschließlich Obergrenze",body:`
+<p>Entwickle einen Algorithmus mit einer Schleife, der alle Quadratzahlen von 0 bis zum Quadrat einer eingegebenen Zahl ausgibt.</p><p>Beispiel: Eingabe 5 → Ausgabe der Quadrate von 0, 1, 2, 3, 4 und 5, also <strong>0, 1, 4, 9, 16, 25</strong>.</p><p>Verwende eine nichtnegative ganze Eingabe. Plane zuerst mit einem Struktogramm, implementiere dann mit <code>IO.getInt</code>.</p><button class="btn small" data-jump-lab="trace" data-trace-select="quad">Musterablauf schrittweise untersuchen</button>`,
+hint:"Die Zählvariable beginnt bei 0. Wenn auch die eingegebene Zahl berücksichtigt werden soll, brauchst du <= statt <. Erhöhe die Zählvariable in jedem Durchlauf.",
+solution:pre(`int n, i;
+n = IO.getInt("Nichtnegative ganze Zahl?");
+i = 0;
+while (i <= n) {
+    System.out.println(i * i);
+    i++;
+}`)+`<p>Bei n = 5 läuft der Rumpf sechsmal. Für diese einfache int-Lösung werden nur kleine Eingaben vorausgesetzt; sehr große Quadrate passen nicht mehr in int.</p>`,
+test:"n = 0 → nur 0; n = 1 → 0, 1; n = 5 → sechs Ausgaben bis 25. Negative Eingaben liegen außerhalb der vereinbarten Spezifikation."},
+{id:"s3",group:"s",title:"Übung 3 · Struktogramm in Java übersetzen",tags:"Wertebelegung · Ausgabezeitpunkt",body:`
+<p>Protokolliere die Variablenwerte und implementiere den Ablauf. Ergänze gemäß Arbeitsauftrag <code>d = 0</code> vor der Schleife.</p><div class="struct-scroll"><div class="struct">${drawNodes([stmt("a = 10"),stmt("b = 2"),stmt("d = 0"),{type:"while",cond:"a > 5",body:[stmt("c = b * a"),stmt("d = b + a"),out("c"),stmt("a = a - 3"),stmt("b = b - 1")]},out("d")])}</div></div>
+<ol type="a"><li>Erstelle eine Variablenbelegungstabelle.</li><li>Übersetze den Ablauf in Java. Teste, ob die Werte zu deiner Tabelle passen.</li></ol><div class="note">Die abschließende Ausgabe von d steht nach der Schleife, wie im Lösungscode. Deshalb wird der Zwischenwert 12 nicht ausgegeben.</div><button class="btn small" data-jump-lab="trace" data-trace-select="u3">Ablauf mit Einzelbefehlen prüfen</button>`,
+hint:"Berechne c und d zuerst mit den noch unveränderten Werten von a und b. Erst anschließend werden a und b verringert. Die Schleife läuft für a = 10 und a = 7.",
+solution:`<table><tr><th>Zeitpunkt</th><th>a</th><th>b</th><th>c</th><th>d</th></tr><tr><td>Vor der Schleife</td><td>10</td><td>2</td><td>—</td><td>0</td></tr><tr><td>Nach Durchlauf 1</td><td>7</td><td>1</td><td>20</td><td>12</td></tr><tr><td>Nach Durchlauf 2</td><td>4</td><td>0</td><td>7</td><td>8</td></tr></table><p>Ausgabe in dieser Reihenfolge: <strong>20, 7, 8</strong>.</p>${pre(`int a, b, c, d;
+a = 10;
+b = 2;
+d = 0;
+while (a > 5) {
+    c = b * a;
+    d = b + a;
+    System.out.println(c);
+    a = a - 3;
+    b = b - 1;
+}
+System.out.println(d);`)}`,
+test:"Vergleiche nach jedem Befehl mit deinem Werteprotokoll. Ändere zusätzlich a testweise auf 5: Kein Schleifendurchlauf, abschließend Ausgabe 0 wegen d = 0."},
+{id:"s4",group:"s",title:"Übung 4 · Wie oft läuft die Schleife?",tags:"letzter Durchlauf · Bedingung",body:`
+${pre(`int a = 10;
+int b = 0;
+while (a > 0) {
+    a = a - 3;
+    b = b + 1;
+}`)}
+<ol type="a"><li>Erfasse die Variablenwerte in einer Wertebelegungstabelle.</li><li>Bestimme die Anzahl der Schleifendurchläufe.</li><li>Erstelle das Struktogramm.</li></ol><button class="btn small" data-jump-lab="trace" data-trace-select="u4">Vorhersage im Ablauf-Labor prüfen</button>`,
+hint:"Notiere zuerst die Startwerte. Prüfe die Bedingung vor jedem Durchlauf. Auch bei a = 1 wird der ganze Rumpf noch ausgeführt.",
+solution:`<table><tr><th>Zeitpunkt</th><th>Start</th><th>Nach 1</th><th>Nach 2</th><th>Nach 3</th><th>Nach 4</th></tr><tr><th>a</th><td>10</td><td>7</td><td>4</td><td>1</td><td>−2</td></tr><tr><th>b</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr></table><p><strong>4 Durchläufe.</strong> Ein negativer Endwert von a ist möglich, weil nur vor dem Rumpf geprüft wird.</p>`,
+test:"Zusatzexperiment: Startwert a = 0 → kein Durchlauf. Startwert a = 1 → ein Durchlauf, Endwert −2."},
+{id:"s5",group:"s",title:"Übung 5 · Zwei Würfel als Programmiermodell",tags:"Partnerarbeit · Zufall · Schleife · Bedingungen",body:`
+<p>Entwickelt zu zweit den Algorithmus des Arbeitsblatts. Nutzt ausschließlich ein <strong>fiktives Guthaben</strong> als Rechenmodell, ohne echtes Geld oder Einsätze.</p>
+<ul><li>Startguthaben: 5 Euro (nur Modellgröße).</li><li>Ein gemeinsamer Wurf beider Würfel kostet 1 Euro.</li><li>Ein Pasch bringt 3 Euro; ein Sechserpasch stattdessen 10 Euro.</li><li>Nach dem Wurf wird das neue Guthaben ausgegeben.</li><li>Die nächste Runde wird nur durchgeführt, wenn die Person weitermachen möchte und noch Guthaben vorhanden ist.</li></ul>
+<p>Ein Würfelwert wird so erzeugt:</p>${pre("int z = (int) (6 * Math.random() + 1);")}
+<p>Plant Variablen, Bedingungen und Struktogramm. Wechselt zwischen Entwerfen und Prüfen. Hier gibt es absichtlich keinen spielbaren Geldsimulator; im Mittelpunkt steht der Algorithmus.</p>`,
+hint:"Erzeuge zwei unabhängige Würfelwerte. Ziehe die Kosten einmal pro Runde ab. Prüfe zuerst den Pasch und darin, ob es ein Sechserpasch ist: So wird der Sondergewinn nicht zusätzlich zum normalen Paschgewinn vergeben. Ohne && kannst du die Fortsetzung durch zwei einfache Prüfungen steuern.",
+solution:`<p>Eine mögliche Lösung mit bekannten Kontrollstrukturen und ohne benötigte zusammengesetzte Bedingung:</p>${pre(`int guthaben = 5;
+int w1, w2;
+boolean weiter = true;
+while (weiter) {
+    guthaben = guthaben - 1;
+    w1 = (int) (6 * Math.random() + 1);
+    w2 = (int) (6 * Math.random() + 1);
+    if (w1 == w2) {
+        if (w1 == 6) {
+            guthaben = guthaben + 10;
+        } else {
+            guthaben = guthaben + 3;
+        }
+    }
+    IO.show("Würfel: " + w1 + ", " + w2);
+    IO.show("Guthaben: " + guthaben + " Euro");
+    if (guthaben > 0) {
+        weiter = IO.getBoolean("Noch einmal würfeln?");
+    } else {
+        weiter = false;
+    }
+}`)}<p>Ist das Guthaben aufgebraucht, ist keine weitere Runde möglich. In dieser Variante wird dann die Frage übersprungen. Der Sechserpasch bringt 10, nicht 13 Euro Gewinn.</p>`,
+test:"Zufallswerte zum Testen vorübergehend durch feste Werte ersetzen. Von 5 aus: (2,3) → 4; (2,2) → 7; (6,6) → 14. Zusätzlich: letzte Runde mit Guthaben 1 ohne Pasch → 0 und Ende; freiwilliges Ende bei positivem Guthaben."}
+];
+let currentFilter="all";
+function renderExercises(){
+ const arr=exercises.filter(e=>currentFilter==="all"||(currentFilter==="open"?!store.done[e.id]:e.group===currentFilter));
+ $("exerciseList").innerHTML=arr.length?arr.map(e=>`<article class="card" id="exercise-${e.id}"><div class="exercise-head"><div><span class="pill ${e.group==="s"?"teal":""}">${e.group==="v"?"Verzweigungen":"Schleifen"}</span><h3>${e.title}</h3><small>${e.tags}</small></div><button class="btn done-toggle ${store.done[e.id]?"done":""}" data-done="${e.id}" aria-pressed="${!!store.done[e.id]}">${store.done[e.id]?"✓ Als erledigt markiert":"○ Als erledigt markieren"}</button></div><div class="exercise-body">${e.body}</div><details><summary>Starthilfe – ein Denkanstoß</summary><p>${esc(e.hint)}</p></details><div class="note good"><strong>So testest du systematisch:</strong> ${esc(e.test)}</div><div class="workspace"><label for="note-${e.id}">Deine Lösung, dein Werteprotokoll oder Java-Code</label><textarea id="note-${e.id}" class="mono" data-note="${e.id}" spellcheck="false" placeholder="Schreibe zuerst deinen eigenen Ansatz …">${esc(store.notes[e.id]||"")}</textarea><div id="save-${e.id}" class="saved" aria-live="polite"></div></div><details><summary>Lösungshinweise vergleichen – erst nach dem eigenen Versuch</summary><div class="answer-box">${e.solution}</div><p class="muted">Vergleiche nicht nur das Ergebnis: Erkläre einen Unterschied zwischen deinem Ansatz und dieser Lösung. Andere korrekte Lösungen sind möglich.</p></details></article>`).join(""):`<div class="card"><h3>Keine offenen Aufgaben mehr.</h3><p>Prüfe im Lernstand, welche Kompetenzen du schon sicher erklären kannst.</p></div>`;
+}
+document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{currentFilter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));renderExercises()});
+$("exerciseList").addEventListener("input",e=>{const id=e.target.dataset.note;if(id){store.notes[id]=e.target.value;const ok=save();$("save-"+id).textContent=ok?"Lokal gespeichert.":"Lokale Speicherung nicht möglich – Text bitte kopieren."}});
+$("exerciseList").addEventListener("click",e=>{
+ const d=e.target.closest("[data-done]");if(d){const id=d.dataset.done;store.done[id]=!store.done[id];save();d.classList.toggle("done",!!store.done[id]);d.setAttribute("aria-pressed",!!store.done[id]);d.textContent=store.done[id]?"✓ Als erledigt markiert":"○ Als erledigt markieren";return}
+ const l=e.target.closest("[data-jump-lab]");if(l){showPage("labor");document.querySelector(`[data-lab="${l.dataset.jumpLab}"]`).click();if(l.dataset.traceSelect){$("traceModel").value=l.dataset.traceSelect;buildTrace()}return}
+ const t=e.target.closest("[data-template-open]");if(t)requestTemplate(t.dataset.templateOpen,true);
+});
+renderExercises();
+
+/* Editable structured program model. All output is escaped; no user code is executed. */
+let idCounter=Date.now();
+function withIDs(nodes){return nodes.map(n=>{const x={...n,id:"n"+idCounter++};if(x.type==="if"){x.yes=withIDs(x.yes);x.no=withIDs(x.no)}if(x.type==="while"||x.type==="do")x.body=withIDs(x.body);return x})}
+function makeTemplate(name){
+ if(name==="age")return {name:"Alterspruefung",decl:"int alter;",nodes:withIDs([inp("alter","Int","Alter eingeben!"),{type:"if",cond:"alter < 18",yes:[out('"Kind"')],no:[out('"Erwachsen"')]}])};
+ if(name==="age3")return {name:"Alterspruefung",decl:"int alter;",nodes:withIDs([inp("alter","Int","Alter eingeben!"),{type:"if",cond:"alter < 14",yes:[out('"Kind"')],no:[{type:"if",cond:"alter < 18",yes:[out('"Jugendlich"')],no:[out('"Erwachsen"')]}]}])};
+ if(name==="loop4")return {name:"Schleife4",decl:"int a, b;",nodes:withIDs([stmt("a = 10"),stmt("b = 0"),{type:"while",cond:"a > 0",body:[stmt("a = a - 3"),stmt("b = b + 1")]}])};
+ if(name==="loop3")return {name:"Schleife3",decl:"int a, b, c, d;",nodes:withIDs([stmt("a = 10"),stmt("b = 2"),stmt("d = 0"),{type:"while",cond:"a > 5",body:[stmt("c = b * a"),stmt("d = b + a"),out("c"),stmt("a = a - 3"),stmt("b = b - 1")]},out("d")])};
+ if(name==="temperature")return {name:"Temperatur",decl:"double wert, ausgabe;\nboolean in_celsius;",nodes:withIDs(tempNodes())};
+ return {name:"MeinProgramm",decl:"",nodes:[]};
+}
+let editor=store.editor||makeTemplate("age"),undo=[];
+const typeNames={input:"Eingabe",assign:"Anweisung",output:"Ausgabe",if:"Falls",while:"Solange",do:"Wiederhole"};
+function paletteHTML(parent="root",branch="nodes"){return Object.entries(typeNames).map(([type,name])=>`<button class="btn small" data-add="${type}" data-parent="${parent}" data-branch="${branch}" title="${name} hinzufügen">+ ${name}</button>`).join("")}
+function findNode(id,nodes=editor.nodes){for(const n of nodes){if(n.id===id)return n;const children=n.type==="if"?[n.yes,n.no]:(n.type==="while"||n.type==="do")?[n.body]:[];for(const a of children){const f=findNode(id,a);if(f)return f}}return null}
+function findContainer(id,nodes=editor.nodes){if(nodes.some(n=>n.id===id))return nodes;for(const n of nodes){for(const a of n.type==="if"?[n.yes,n.no]:(n.type==="while"||n.type==="do")?[n.body]:[]){const c=findContainer(id,a);if(c)return c}}return null}
+function snapshot(){undo.push(JSON.stringify(editor));if(undo.length>40)undo.shift()}
+function persistEditor(){store.editor=editor;const ok=save();$("editorSaved").textContent=ok?"Entwurf lokal gespeichert.":"Speichern nicht möglich: Java-Code bitte kopieren.";updateEditorOutput()}
+function field(n,key,label){return `<input type="text" data-node="${n.id}" data-field="${key}" value="${esc(n[key])}" aria-label="${esc(label)}" placeholder="${esc(label)}" spellcheck="false">`}
+function editNodes(nodes){return nodes.map((n,i)=>`<div class="edit-node"><div class="row spread"><span class="node-title">${typeNames[n.type]}</span><div class="row" style="gap:3px"><button class="btn small" data-move="${n.id}" data-dir="-1" ${i===0?"disabled":""} aria-label="Nach oben">↑</button><button class="btn small" data-move="${n.id}" data-dir="1" ${i===nodes.length-1?"disabled":""} aria-label="Nach unten">↓</button><button class="btn small danger" data-delete="${n.id}" aria-label="Baustein löschen">×</button></div></div>
+${n.type==="input"?`${field(n,"variable","Variable der Eingabe")}<select data-node="${n.id}" data-field="datatype" aria-label="IO-Eingabetyp">${["Int","Double","Boolean","String"].map(t=>`<option ${n.datatype===t?"selected":""}>${t}</option>`).join("")}</select>${field(n,"prompt","Hinweistext für die Eingabe")}`:
+n.type==="assign"||n.type==="output"?field(n,"expr",n.type==="output"?'Ausdruck, z. B. "Hallo " + vorname':"Anweisung ohne Semikolon, z. B. a = a + 1"):
+`${field(n,"cond","Java-Bedingung, z. B. a > 0")}
+${n.type==="if"?`<div class="nested"><div class="child-label">Wahr-Zweig</div>${editNodes(n.yes)}<div class="node-palette">${paletteHTML(n.id,"yes")}</div><div class="child-label">Falsch-Zweig (leer bei einseitiger Auswahl)</div>${editNodes(n.no)}<div class="node-palette">${paletteHTML(n.id,"no")}</div></div>`:`<div class="nested"><div class="child-label">Schleifenrumpf</div>${editNodes(n.body)}<div class="node-palette">${paletteHTML(n.id,"body")}</div></div>`}`}
+</div>`).join("")}
+function renderEditorControls(){$("programName").value=editor.name;$("declarations").value=editor.decl;$("rootPalette").innerHTML=paletteHTML();$("nodeList").innerHTML=editNodes(editor.nodes);updateEditorOutput()}
+function javaString(s){return JSON.stringify(String(s)).replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029")}
+function cleanStatement(s){return String(s).trim().replace(/;+\s*$/,"")}
+function javaNodes(nodes,depth=2){const pad="    ".repeat(depth);let lines=[];for(const n of nodes){
+ if(n.type==="input")lines.push(`${pad}${n.variable} = IO.get${n.datatype}(${javaString(n.prompt)});`);
+ if(n.type==="assign")lines.push(`${pad}${cleanStatement(n.expr)};`);
+ if(n.type==="output")lines.push(`${pad}System.out.println(${cleanStatement(n.expr)});`);
+ if(n.type==="if"){lines.push(`${pad}if (${n.cond}) {`,...javaNodes(n.yes,depth+1));if(n.no.length)lines.push(`${pad}} else {`,...javaNodes(n.no,depth+1));lines.push(`${pad}}`)}
+ if(n.type==="while")lines.push(`${pad}while (${n.cond}) {`,...javaNodes(n.body,depth+1),`${pad}}`);
+ if(n.type==="do")lines.push(`${pad}do {`,...javaNodes(n.body,depth+1),`${pad}} while (${n.cond});`);
+ }return lines}
+function generatedJava(){return [`public class ${editor.name||"MeinProgramm"} {`,`    public static void main(String[] args) {`,...editor.decl.split("\n").filter(x=>x.trim()).map(x=>"        "+x.trim()),...javaNodes(editor.nodes),`    }`,`}`].join("\n")}
+function updateEditorOutput(){
+ $("diagram").innerHTML=`<div class="struct" role="img" aria-label="Struktogramm des aktuellen Entwurfs">${drawNodes(editor.nodes)}</div>`;
+ $("generatedJava").textContent=generatedJava();$("undoEditor").disabled=!undo.length;
+ const warnings=[];
+ if(!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(editor.name))warnings.push("Der Klassenname muss ein einfacher Java-Bezeichner ohne Leerzeichen sein.");
+ function inspect(nodes){for(const n of nodes){if(n.type==="if"||n.type==="while"||n.type==="do"){if(!n.cond.trim())warnings.push("Eine Bedingung fehlt.");if(/(^|[^=!<>])=([^=]|$)/.test(n.cond))warnings.push("Eine Bedingung enthält ein einzelnes =. Prüfe, ob für einen Zahlenvergleich == gemeint ist.");if(n.type==="if"){inspect(n.yes);inspect(n.no)}else inspect(n.body)}else if(n.type==="input"){if(!n.variable.trim())warnings.push("Bei einer Eingabe fehlt die Variable.")}else if(!n.expr.trim())warnings.push("Ein Ausdruck oder eine Anweisung fehlt.")}}
+ inspect(editor.nodes);
+ feedback("editorValidation",warnings.length?[...new Set(warnings)].join(" "):"Darstellung aktualisiert. Dies ist nur eine einfache Formkontrolle, keine Java-Kompilierung.",warnings.length?false:null);
+}
+function newNode(type){const id="n"+idCounter++;if(type==="input")return{id,type,variable:"zahl",datatype:"Int",prompt:"Zahl eingeben?"};if(type==="assign")return{id,type,expr:"zahl = 0"};if(type==="output")return{id,type,expr:"zahl"};if(type==="if")return{id,type,cond:"zahl > 0",yes:[],no:[]};return{id,type,cond:"zahl < 5",body:[]}}
+$("editor").addEventListener("click",e=>{
+ const add=e.target.closest("[data-add]");if(add){snapshot();const arr=add.dataset.parent==="root"?editor.nodes:findNode(add.dataset.parent)[add.dataset.branch];arr.push(newNode(add.dataset.add));renderEditorControls();persistEditor();return}
+ const del=e.target.closest("[data-delete]");if(del){snapshot();const arr=findContainer(del.dataset.delete);arr.splice(arr.findIndex(n=>n.id===del.dataset.delete),1);renderEditorControls();persistEditor();return}
+ const mov=e.target.closest("[data-move]");if(mov){const arr=findContainer(mov.dataset.move),i=arr.findIndex(n=>n.id===mov.dataset.move),j=i+Number(mov.dataset.dir);if(j>=0&&j<arr.length){snapshot();[arr[i],arr[j]]=[arr[j],arr[i]];renderEditorControls();persistEditor()}}
+});
+$("editor").addEventListener("focusin",e=>{if(e.target.matches("[data-field],#programName,#declarations"))snapshot()});
+$("editor").addEventListener("input",e=>{if(e.target.dataset.node){const n=findNode(e.target.dataset.node);n[e.target.dataset.field]=e.target.value;persistEditor()}else if(e.target.id==="programName"){editor.name=e.target.value;persistEditor()}else if(e.target.id==="declarations"){editor.decl=e.target.value;persistEditor()}});
+$("undoEditor").onclick=()=>{if(undo.length){editor=JSON.parse(undo.pop());renderEditorControls();persistEditor()}};
+let pendingTemplate=null;
+function requestTemplate(name,go=false){
+ pendingTemplate=name;
+ const old=$("replaceNotice");if(old)old.remove();
+ const box=document.createElement("div");box.id="replaceNotice";box.className="note warn no-print";box.innerHTML=`<strong>Entwurf ersetzen?</strong><p>Das gewählte Beispiel ersetzt deinen aktuellen Struktogramm-Entwurf. Du kannst anschließend die letzte Änderung rückgängig machen.</p><div class="row"><button class="btn primary" id="confirmTemplate">Beispiel jetzt laden</button><button class="btn" id="cancelTemplate">Abbrechen</button></div>`;
+ $("editor").insertBefore(box,$("editor").querySelector(".builder-layout"));
+ if(go)showPage("editor");
+ $("confirmTemplate").onclick=()=>{snapshot();editor=makeTemplate(pendingTemplate);renderEditorControls();persistEditor();box.remove();$("templateSelect").value=""};
+ $("cancelTemplate").onclick=()=>{box.remove();$("templateSelect").value=""};
+ box.scrollIntoView({behavior:"smooth",block:"center"});
+}
+$("templateSelect").onchange=()=>{if($("templateSelect").value)requestTemplate($("templateSelect").value)};
+$("clearEditor").onclick=()=>requestTemplate("empty");
+async function copyText(text){try{await navigator.clipboard.writeText(text);return true}catch(e){return false}}
+$("copyJava").onclick=async()=>{const ok=await copyText(generatedJava());if(ok)feedback("editorValidation","Java-Code kopiert. Führe ihn nun in eurer Unterrichtssoftware aus.",true);else{feedback("editorValidation","Automatisches Kopieren ist hier gesperrt. Der Code ist markiert: Kopiere ihn mit Strg+C bzw. ⌘C.");const range=document.createRange();range.selectNodeContents($("generatedJava"));const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range)}};
+$("printStruct").onclick=()=>{feedback("editorValidation","Falls diese eingebettete Vorschau den Druckdialog blockiert, nutze einen Screenshot oder den Export deines Entwurfs im Lernstand.");try{window.print()}catch(e){}};
+renderEditorControls();
+
+/* Personal progress and export. */
+const competencies=[
+"Ich erkläre Deklaration, Wertzuweisung und passende Datentypen.",
+"Ich lese Werte mit IO ein und gebe Texte mit Werten aus.",
+"Ich unterscheide = und == im Java-Code.",
+"Ich erkläre einseitige, zweiseitige und geschachtelte Verzweigungen.",
+"Ich bestimme Startwert, Bedingung, Rumpf und Veränderung einer Schleife.",
+"Ich unterscheide vorprüfende und nachprüfende Schleifen.",
+"Ich führe eine Wertebelegungstabelle mit klaren Zeitpunkten.",
+"Ich übersetze zwischen Struktogramm und Java.",
+"Ich teste Grenzfälle und alle relevanten Auswahlpfade."
+];
+function renderProgress(){
+ const n=exercises.filter(e=>store.done[e.id]).length;$("progressNumber").textContent=`${n} / ${exercises.length}`;$("progressBar").style.width=n/exercises.length*100+"%";$("progressText").textContent="Aufgabengruppen selbst als erledigt markiert.";
+ $("progressGroups").innerHTML=["v","s"].map(g=>`<p><strong>${g==="v"?"Verzweigungen":"Schleifen"}:</strong> ${exercises.filter(e=>e.group===g&&store.done[e.id]).length} von ${exercises.filter(e=>e.group===g).length}</p>`).join("");
+ $("quizProgress").innerHTML=knowledge.map(k=>`<p>${store.quiz[k.id]===true?"✅":store.quiz[k.id]===false?"↻":"○"} ${esc(k.title)} <small>${store.quiz[k.id]===true?"letzte Antwort richtig":store.quiz[k.id]===false?"noch einmal üben":"noch nicht beantwortet"}</small></p>`).join("");
+ $("competencies").innerHTML=competencies.map((c,i)=>`<label style="font-weight:normal;display:flex;gap:12px;align-items:flex-start"><input type="checkbox" data-skill="${i}" ${store.skills[i]?"checked":""} style="margin-top:7px"><span>${c}</span></label>`).join("");
+ $("reflection").value=store.reflection||"";
+}
+$("competencies").addEventListener("change",e=>{if(e.target.dataset.skill!==undefined){store.skills[e.target.dataset.skill]=e.target.checked;save()}});
+$("reflection").oninput=()=>{store.reflection=$("reflection").value;$("reflectionSaved").textContent=save()?"Lokal gespeichert.":"Bitte sichere deinen Text durch Kopieren."};
+function exportText(){
+ return ["JAVA-WERKSTATT · KLASSE 10",new Date().toLocaleString("de-DE"),"",
+ "AUFGABEN",...exercises.flatMap(e=>[`${store.done[e.id]?"[x]":"[ ]"} ${e.title}`,store.notes[e.id]||"(kein eigener Eintrag)",""]),
+ "SELBSTTESTS",...knowledge.map(k=>`${k.title}: ${store.quiz[k.id]===true?"letzte Antwort richtig":store.quiz[k.id]===false?"noch üben":"offen"}`),"",
+ "SELBSTEINSCHÄTZUNG",...competencies.map((c,i)=>`${store.skills[i]?"[x]":"[ ]"} ${c}`),"",
+ "REFLEXION",store.reflection||"(leer)","",
+ "AKTUELLER JAVA-ENTWURF",generatedJava(),"",
+ "STRUKTOGRAMM-ENTWURF (JSON zur Dokumentation)",JSON.stringify(editor,null,2)].join("\n");
+}
+$("exportProgress").onclick=()=>{
+ const text=exportText();
+ try{const blob=new Blob([text],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="Java-Werkstatt-Lernstand.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);feedback("exportFeedback","Text-Export angestoßen. Falls der Download in der Vorschau blockiert ist, kannst du unten den gesamten Text kopieren.",true)}catch(e){feedback("exportFeedback","Der Download ist hier nicht möglich. Kopiere stattdessen den Text unten.")}
+ let t=$("exportText");if(!t){t=document.createElement("textarea");t.id="exportText";t.setAttribute("aria-label","Lernstand zum Kopieren");t.className="mono";$("exportFeedback").after(t)}t.value=text;
+};
+$("resetProgress").onclick=()=>{
+ let b=$("resetNotice");if(b){b.remove();return}b=document.createElement("div");b.id="resetNotice";b.className="note warn";b.innerHTML=`<strong>Alle lokalen Eingaben wirklich löschen?</strong><p>Auch Notizen und der Struktogramm-Entwurf werden entfernt. Exportiere sie vorher.</p><button class="btn danger" id="confirmReset">Ja, alle lokalen Daten löschen</button>`;$("exportFeedback").after(b);
+ $("confirmReset").onclick=()=>{store={done:{},notes:{},quiz:{},skills:{},reflection:"",editor:null};editor=makeTemplate("age");undo=[];save();renderEditorControls();renderExercises();renderProgress();document.querySelectorAll("[data-quiz]").forEach(x=>x.classList.remove("selected"));Object.keys(quizzes).forEach(id=>feedback("qfb-"+id,""));const exp=$("exportText");if(exp)exp.remove();b.remove();feedback("exportFeedback","Lokale Lernstände und Entwürfe wurden zurückgesetzt.",true)};
+};
+renderProgress();
+</script>
+</body>
+</html>
