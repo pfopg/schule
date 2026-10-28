@@ -280,7 +280,7 @@ alter = 15;            // Wertzuweisung
 double temperatur = 2.3; // Deklaration und sofortige Wertzuweisung</code></pre><p><strong>Deklaration:</strong> Datentyp und Variablenname festlegen.<br><strong>Wertzuweisung:</strong> Einen Wert mit <code>=</code> speichern.</p><div class="note">Java-Befehle werden immer von rechts nach links ausgewertet. Beispiel: <br><code>a = a + 1;</code> bedeutet: alten Wert von a lesen, 1 addieren, Ergebnis in a speichern. <br>Alternative: <code>a++;</code> erhöht a ebenfalls um 1.</div><button class="btn" data-go="labor">Speicher im Ablauf-Labor beobachten</button></div>
 <div class="card"><h3>Datentypen in Java</h3><table><tr><th>Art</th><th>Java</th><th>Beispiel</th></tr><tr><td>Ganze Zahl</td><td><code>int</code></td><td><code>18</code></td></tr><tr><td>Fließkommazahl</td><td><code>double</code></td><td><code>18.5</code></td></tr><tr><td>Wahrheitswert</td><td><code>boolean</code></td><td><code>true</code> / <code>false</code></td></tr><tr><td>Einzelnes Zeichen</td><td><code>char</code></td><td><code>'x'</code></td></tr><tr><td>Zeichenkette</td><td><code>String</code></td><td><code>"Hallo"</code></td></tr></table><p><code>String</code> ist kein primitiver Datentyp. Texte stehen in doppelten, einzelne Zeichen in einfachen Anführungszeichen.</p><div class="note warn">In Java schreibt man Dezimalzahlen mit Punkt: <code>18.5</code>, nicht <code>18,5</code>.</div></div></div>`},
 {title:"IO & Java-Grundregeln",id:"io",html:`
-<div class="grid"><div class="card"><h3>Eingaben mit euren IO-Befehlen</h3><pre><code>String vorname;
+<div class="grid"><div class="card"><h3>Eingabebefehle: Beispiele</h3><pre><code>String vorname;
 int alter;
 double wert;
 boolean in_celsius;
@@ -289,7 +289,7 @@ vorname = IO.getString("Vorname?");
 alter = IO.getInt("Alter?");
 wert = IO.getDouble("Temperatur?");
 in_celsius = IO.getBoolean("In °C gegeben?");</code></pre><p>Der Rückgabewert der Eingabe wird in einer passenden Variablen gespeichert. Der Hinweistext in den Klammern sagt der nutzenden Person, was eingegeben werden soll.</p><div class="note">Diese Seite nutzt die <code>IO</code>-Klasse für Eingaben. Im learnj-Editor nutzt man andere Eingabebefehle. Nutze in eurer Unterrichtssoftware die dort bereitgestellte IO-Klasse.</div></div>
-<div class="card"><h3>Ausgeben und lesbar schreiben</h3><pre><code>System.out.print("Hallo "); // ohne Umbruch
+<div class="card"><h3>Ausgabebefehle und Kommentare</h3><pre><code>System.out.print("Hallo "); // ohne Umbruch
 System.out.println(vorname); // mit Umbruch
 IO.show("Willkommen!");      // Dialogfenster
 
