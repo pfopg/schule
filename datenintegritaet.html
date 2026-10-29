@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenintegrität – interaktives Lernmodul</title>
+<style>
+:root{--ink:#182638;--muted:#536579;--paper:#f5f8fc;--card:#fff;--blue:#185abd;--blue2:#eaf2ff;--green:#176b45;--greenbg:#e9f7ef;--red:#a52b2b;--redbg:#fff0ef;--line:#d9e2ee;--gold:#8a5b00;--goldbg:#fff5d8}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,#123b72,#185abd);color:white;padding:48px 20px 38px}
+.hero,main,footer{max-width:1050px;margin:auto}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:750;opacity:.85}
+h1{font-size:clamp(2rem,5vw,3.3rem);line-height:1.1;margin:.4rem 0 1rem}header p{max-width:760px;font-size:1.1rem;margin:0}
+main{padding:24px 18px 60px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}.nav a{background:white;border:1px solid var(--line);border-radius:999px;padding:7px 13px;text-decoration:none;color:var(--blue);font-weight:650;font-size:.9rem}
+section,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 4px 16px #18263808}
+h2{font-size:1.6rem;line-height:1.25;margin:0 0 12px}h3{margin:.2rem 0 .5rem;font-size:1.15rem}p{margin:.5rem 0 1rem}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.type{border-top:5px solid var(--blue)}.type:nth-child(2){border-top-color:#8a5b00}.type:nth-child(3){border-top-color:#176b45}
+.tag{display:inline-block;border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:750;background:var(--blue2);color:var(--blue)}
+table{border-collapse:collapse;width:100%;margin:12px 0 16px;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}th{background:#eef3fa}caption{text-align:left;font-weight:700;margin-bottom:6px}
+.good,.bad,.note{padding:12px 14px;border-radius:10px;margin:12px 0}.good{background:var(--greenbg);border-left:4px solid var(--green)}.bad{background:var(--redbg);border-left:4px solid var(--red)}.note{background:var(--goldbg);border-left:4px solid #d69b19}
+code{background:#edf1f6;padding:2px 5px;border-radius:4px;font-size:.93em}.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0}.step{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#f8fafc}.arrow{font-weight:800;color:var(--blue)}
+button,select,input{font:inherit}button{border:0;border-radius:9px;background:var(--blue);color:white;padding:9px 14px;cursor:pointer;font-weight:700}button:hover{filter:brightness(.92)}button.secondary{background:#e8eef7;color:var(--ink)}button.danger{background:#a52b2b}.controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:12px 0}.result{min-height:52px;padding:12px;border-radius:10px;background:#f3f6fa;margin-top:10px}.result:empty{display:none}.result.ok{background:var(--greenbg);color:#124d32}.result.no{background:var(--redbg);color:#7f2020}.quiz-q{padding:14px 0;border-top:1px solid var(--line)}.quiz-q:first-child{border-top:0}.quiz-q label{display:block;margin:7px 0;cursor:pointer}.quiz-q input{margin-right:7px}.small{font-size:.9rem}footer{padding:0 18px 30px;color:var(--muted)}
+@media(max-width:760px){.grid,.two{grid-template-columns:1fr}header{padding-top:34px}section,.card{padding:17px}table{font-size:.85rem}th,td{padding:7px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="hero">
+  <div class="eyebrow">Informatik · Klasse 11</div>
+  <h1>Datenintegrität</h1>
+  <p>Wie sorgt eine Datenbank dafür, dass ihre Daten sinnvoll, korrekt und miteinander vereinbar bleiben? Entdecke drei Arten von Integritätsbedingungen anhand einer kleinen Schul-Datenbank.</p>
+ </div>
+</header>
+<main>
+<nav class="nav" aria-label="Inhaltsübersicht">
+<a href="#idee">Grundidee</a><a href="#arten">Drei Arten</a><a href="#werte">1. Wertebereich</a><a href="#datensatz">2. Datensatz</a><a href="#referenzen">3. Referenzen</a><a href="#quiz">Wissen testen</a>
+</nav>
+
+<section id="idee">
+<h2>1. Die Grundidee</h2>
+<p>Eine Datenbank speichert Informationen. <strong>Datenintegrität</strong> bedeutet, dass diese Informationen bestimmten Regeln entsprechen und zusammen keinen Widerspruch bilden. Ein Datenbankmanagementsystem (DBMS) kann solche Regeln bei Einfügen, Ändern und Löschen prüfen.</p>
+<div class="note"><strong>Stell dir eine Schul-Datenbank vor:</strong> Sie verwaltet Schülerinnen und Schüler, Kurse und die Zuordnung zu Kursen. Was passiert, wenn jemand eine unmögliche Note einträgt oder ein Kurs gelöscht wird, obwohl noch Lernende darin eingetragen sind?</div>
+<div class="flow"><span class="step">Daten ändern</span><span class="arrow">→</span><span class="step">Regeln prüfen</span><span class="arrow">→</span><span class="step">gültig: speichern</span><span class="arrow">/</span><span class="step">ungültig: ablehnen oder geregelt behandeln</span></div>
+</section>
+
+<section id="arten">
+<h2>2. Drei Arten von Integritätsbedingungen</h2>
+<div class="grid">
+ <article class="card type"><span class="tag">Datenfeldebene</span><h3>Wertebereichsintegrität</h3><p>Ist <em>dieser einzelne Wert</em> erlaubt?</p><p class="muted small">Beispiel: Eine Note darf nur 1 bis 6 sein.</p></article>
+ <article class="card type"><span class="tag">Datensatzebene</span><h3>Datensatzintegrität</h3><p>Ist <em>der gesamte Datensatz</em> in sich korrekt?</p><p class="muted small">Beispiel: Eine Schüler-ID muss eindeutig sein und Pflichtfelder dürfen nicht fehlen.</p></article>
+ <article class="card type"><span class="tag">Beziehungsebene</span><h3>Referentielle Integrität</h3><p>Passen die <em>Verknüpfungen zwischen Tabellen</em>?</p><p class="muted small">Beispiel: Eine Kurszuordnung darf nur auf einen existierenden Kurs zeigen.</p></article>
+</div>
+<p><strong>Merksatz:</strong> Einzelwert – ganzer Datensatz – Verbindung zwischen Tabellen.</p>
+</section>
+
+<section id="werte">
+<h2>3. Wertebereichsintegrität: Ist der Wert erlaubt?</h2>
+<p>Eine Spalte hat einen erlaubten Wertebereich. Der kann zum Beispiel durch einen Datentyp, einen Zahlenbereich oder eine Liste erlaubter Werte festgelegt sein.</p>
+<table>
+<caption>Beispiel: Tabelle <code>Leistung</code></caption>
+<thead><tr><th>Schüler-ID</th><th>Fach</th><th>Note</th><th>Prüfung</th></tr></thead>
+<tbody><tr><td>101</td><td>Informatik</td><td>2</td><td>gültig</td></tr><tr><td>102</td><td>Informatik</td><td>5</td><td>gültig</td></tr><tr><td>103</td><td>Informatik</td><td>8</td><td>ungültig</td></tr><tr><td>104</td><td>Informatik</td><td>„gut“</td><td>ungültig, wenn eine Zahl erwartet wird</td></tr></tbody>
+</table>
+<div class="bad"><strong>Warum sind die letzten beiden Einträge problematisch?</strong> Die Note 8 liegt außerhalb des festgelegten Bereichs 1–6. Der Text „gut“ ist kein Zahlenwert, wenn die Spalte eine Zahl erwartet.</div>
+<h3>Probiere es selbst</h3>
+<p>In dieser Mini-Prüfung gilt: Die Note muss eine ganze Zahl von 1 bis 6 sein.</p>
+<div class="controls"><label for="noteInput">Note eingeben:</label><input id="noteInput" type="number" min="0" max="10" value="3" style="width:90px;padding:7px;border:1px solid var(--line);border-radius:7px"><button onclick="checkNote()">Wert prüfen</button></div>
+<div id="noteResult" class="result" aria-live="polite"></div>
+<p class="small muted">In SQL könnte eine solche Regel beispielsweise mit <code>CHECK (Note BETWEEN 1 AND 6)</code> umgesetzt werden.</p>
+</section>
+
+<section id="datensatz">
+<h2>4. Datensatzintegrität: Ist der ganze Eintrag korrekt?</h2>
+<p>Ein Datensatz besteht aus mehreren Feldwerten. Auch wenn jeder Wert für sich erlaubt ist, kann der gesamte Eintrag gegen Regeln verstoßen.</p>
+<table>
+<caption>Beispiel: Tabelle <code>Schueler</code></caption>
+<thead><tr><th>Schüler-ID</th><th>Name</th><th>Klasse</th><th>Bewertung</th></tr></thead>
+<tbody><tr><td>101</td><td>Mina Yilmaz</td><td>11a</td><td><span class="tag">gültig</span></td></tr><tr><td>102</td><td>Jonas Weber</td><td>11b</td><td><span class="tag">gültig</span></td></tr><tr><td>101</td><td>Lea Sommer</td><td>11a</td><td><strong>ungültig</strong>: ID doppelt</td></tr><tr><td>103</td><td>(leer)</td><td>11a</td><td><strong>ungültig</strong>, falls Name Pflicht ist</td></tr></tbody>
+</table>
+<p>Hier gelten zwei Regeln: Die Schüler-ID ist eindeutig (Primärschlüssel), und der Name darf nicht leer sein (<code>NOT NULL</code>). Die ersten beiden Zeilen erfüllen beide Regeln; die folgenden verletzen jeweils eine davon.</p>
+<div class="note"><strong>Wichtig:</strong> In der Praxis wird „Datensatzintegrität“ manchmal als Sammelbegriff verwendet. In diesem Lernmodul meint es Regeln, die einen vollständigen Datensatz betreffen, zum Beispiel eindeutige Schlüssel und Pflichtfelder.</div>
+<h3>Mini-Aufgabe</h3>
+<p>Die Tabelle verlangt eine eindeutige ID und einen ausgefüllten Namen. Was ist mit dem Eintrag <code>(ID 105, Name „Sam“, Klasse leer)</code>, wenn auch die Klasse ein Pflichtfeld ist?</p>
+<div class="controls"><button onclick="showRecord(true)">Der Eintrag ist gültig</button><button class="secondary" onclick="showRecord(false)">Der Eintrag ist ungültig</button></div>
+<div id="recordResult" class="result" aria-live="polite"></div>
+</section>
+
+<section id="referenzen">
+<h2>5. Referentielle Integrität: Stimmen die Verknüpfungen?</h2>
+<p>Relationale Datenbanken verteilen Informationen auf mehrere Tabellen. Eine <strong>Fremdschlüssel</strong>-Spalte verweist auf einen Datensatz in einer anderen Tabelle. Normalerweise darf sie nur auf einen Datensatz zeigen, der tatsächlich existiert.</p>
+<div class="two">
+<div>
+<table><caption>Tabelle <code>Kurs</code></caption><thead><tr><th>Kurs-ID</th><th>Kursname</th></tr></thead><tbody><tr><td>K10</td><td>Informatik</td></tr><tr><td>K20</td><td>Biologie</td></tr><tr><td>K30</td><td>Geschichte</td></tr></tbody></table>
+</div>
+<div>
+<table><caption>Tabelle <code>Belegung</code></caption><thead><tr><th>Schüler-ID</th><th>Kurs-ID (Fremdschlüssel)</th><th>Prüfung</th></tr></thead><tbody><tr><td>101</td><td>K10</td><td>gültig</td></tr><tr><td>102</td><td>K20</td><td>gültig</td></tr><tr><td>103</td><td>K99</td><td>ungültig: Kurs fehlt</td></tr></tbody></table>
+</div>
+</div>
+<p>Die Belegung mit <code>K99</code> ist fehlerhaft, weil es diesen Kurs in der Tabelle <code>Kurs</code> nicht gibt. Der Fremdschlüssel verhindert, dass eine Belegung auf einen nicht vorhandenen Kurs verweist.</p>
+<h3>Was soll beim Löschen eines Kurses passieren?</h3>
+<p>Angenommen, Kurs <code>K10</code> wird gelöscht, aber Schüler 101 ist noch dafür eingetragen. Dafür gibt es unterschiedliche Regeln:</p>
+<table>
+<thead><tr><th>Regel</th><th>Was passiert?</th><th>Wann sinnvoll?</th></tr></thead>
+<tbody>
+<tr><td><strong>RESTRICT / NO ACTION</strong></td><td>Das Löschen wird verhindert, solange noch Belegungen auf den Kurs verweisen.</td><td>Wenn zuerst die Belegungen bewusst entfernt oder geändert werden sollen.</td></tr>
+<tr><td><strong>CASCADE</strong></td><td>Die zugehörigen Belegungen werden automatisch mit gelöscht.</td><td>Wenn abhängige Einträge ohne den Hauptdatensatz keinen Sinn mehr haben.</td></tr>
+<tr><td><strong>SET NULL</strong></td><td>Die Fremdschlüssel in den Belegungen werden auf <code>NULL</code> gesetzt.</td><td>Wenn eine Belegung ohne zugeordneten Kurs bestehen bleiben darf und die Spalte NULL zulässt.</td></tr>
+</tbody></table>
+<div class="note"><strong>Merke:</strong> <code>CASCADE</code> ist praktisch, kann aber viele Einträge auf einmal löschen. Deshalb muss die Regel zur Bedeutung der Daten passen.</div>
+<h3>Interaktive Lösch-Simulation</h3>
+<p>Wähle aus, wie die Datenbank auf das Löschen von Kurs K10 reagieren soll. In der Tabelle gibt es noch eine Belegung für K10.</p>
+<div class="controls"><label for="deleteRule">Löschregel:</label><select id="deleteRule" style="padding:8px;border:1px solid var(--line);border-radius:7px"><option value="restrict">RESTRICT / NO ACTION</option><option value="cascade">CASCADE</option><option value="null">SET NULL</option></select><button onclick="simulateDelete()">Löschen simulieren</button><button class="secondary" onclick="resetDelete()">Zurücksetzen</button></div>
+<div id="deleteResult" class="result" aria-live="polite">Kurs K10 ist vorhanden. Belegung von Schüler 101 verweist auf K10.</div>
+<table><caption>Zustand nach der Simulation</caption><thead><tr><th>Tabelle Kurs</th><th>Tabelle Belegung</th></tr></thead><tbody><tr><td id="courseState">K10 – Informatik</td><td id="enrolState">101 → K10</td></tr></tbody></table>
+<p class="small muted">Die Simulation verändert nur die Beispielanzeige auf dieser Seite, keine echte Datenbank.</p>
+</section>
+
+<section id="quiz">
+<h2>6. Wissen testen</h2>
+<p>Wähle bei jeder Frage eine Antwort aus und klicke anschließend auf „Auswerten“.</p>
+<form id="quizForm">
+<div class="quiz-q"><strong>1. Eine Note von 9 wird eingetragen, obwohl nur 1 bis 6 erlaubt sind. Welche Integrität ist betroffen?</strong>
+<label><input type="radio" name="q1" value="a"> Wertebereichsintegrität</label><label><input type="radio" name="q1" value="b"> Referentielle Integrität</label><label><input type="radio" name="q1" value="c"> Nur die Gestaltung der Tabelle</label></div>
+<div class="quiz-q"><strong>2. Zwei Schüler erhalten dieselbe Primärschlüssel-ID. Was ist das Problem?</strong>
+<label><input type="radio" name="q2" value="a"> Ein Fremdschlüssel zeigt auf eine fehlende Tabelle</label><label><input type="radio" name="q2" value="b"> Eine Eindeutigkeitsregel des Datensatzes wird verletzt</label><label><input type="radio" name="q2" value="c"> Der Wertebereich ist immer korrekt</label></div>
+<div class="quiz-q"><strong>3. Eine Belegung verweist auf Kurs K99, den es nicht gibt. Welche Regel hilft?</strong>
+<label><input type="radio" name="q3" value="a"> Referentielle Integrität durch einen Fremdschlüssel</label><label><input type="radio" name="q3" value="b"> Eine Regel zur Schriftgröße</label><label><input type="radio" name="q3" value="c"> Nur ein Zahlenbereich für die Note</label></div>
+<div class="quiz-q"><strong>4. Was bewirkt CASCADE beim Löschen eines Kurses in unserem Beispiel?</strong>
+<label><input type="radio" name="q4" value="a"> Das Löschen wird immer blockiert</label><label><input type="radio" name="q4" value="b"> Die Kurs-ID wird automatisch in K99 geändert</label><label><input type="radio" name="q4" value="c"> Zugehörige Belegungen werden automatisch mit gelöscht</label></div>
+<div class="controls"><button type="button" onclick="gradeQuiz()">Auswerten</button><button type="reset" class="secondary" onclick="document.getElementById('quizResult').textContent=''">Neu starten</button></div>
+</form>
+<div id="quizResult" class="result" aria-live="polite"></div>
+</section>
+<section>
+<h2>7. Abschluss: Erkläre es mit eigenen Worten</h2>
+<ol>
+<li>Erfinde einen ungültigen Wert für eine Spalte „Geburtsjahr“ und beschreibe die passende Wertebereichsregel.</li>
+<li>Nenne eine Regel, die einen einzelnen Datensatz in einer Schüler-Tabelle schützt.</li>
+<li>Erkläre, warum ein Fremdschlüssel auf einen existierenden Datensatz verweisen sollte.</li>
+<li>Vergleiche RESTRICT und CASCADE: Welche Regel würdest du für Kursbelegungen wählen und warum?</li>
+</ol>
+<p class="muted">Wenn du diese vier Aufgaben erklären kannst, hast du die Grundidee der Datenintegrität verstanden.</p>
+</section>
+</main>
+<footer><p>Interaktives Lernmaterial für Informatik, Klasse 11. Alle Namen und Datensätze sind frei erfundene Beispiele.</p></footer>
+<script>
+function checkNote(){
+ const raw=document.getElementById('noteInput').value;
+ const out=document.getElementById('noteResult');
+ const n=Number(raw);
+ if(raw==='' || !Number.isInteger(n) || n<1 || n>6){out.className='result no';out.textContent='Ungültig: Erlaubt sind nur ganze Zahlen von 1 bis 6. Die Datenbank sollte diesen Wert ablehnen.';}
+ else{out.className='result ok';out.textContent='Gültig: Die Note '+n+' liegt im erlaubten Wertebereich 1–6.';}
+}
+function showRecord(valid){
+ const out=document.getElementById('recordResult');
+ if(valid){out.className='result no';out.textContent='Noch nicht ganz: Die Klasse ist leer, obwohl sie laut Aufgabe ein Pflichtfeld ist. Der Eintrag ist ungültig.';}
+ else{out.className='result ok';out.textContent='Richtig: Wenn die Klasse ein Pflichtfeld ist, darf sie nicht leer sein. Der Datensatz verletzt eine Pflichtfeldregel.';}
+}
+function resetDelete(){
+ document.getElementById('courseState').textContent='K10 – Informatik';
+ document.getElementById('enrolState').textContent='101 → K10';
+ const out=document.getElementById('deleteResult');out.className='result';out.textContent='Kurs K10 ist vorhanden. Belegung von Schüler 101 verweist auf K10.';
+}
+function simulateDelete(){
+ const rule=document.getElementById('deleteRule').value;
+ const course=document.getElementById('courseState'),enrol=document.getElementById('enrolState'),out=document.getElementById('deleteResult');
+ if(rule==='restrict'){
+  course.textContent='K10 – Informatik (bleibt bestehen)';
+  enrol.textContent='101 → K10 (bleibt bestehen)';
+  out.className='result no';out.textContent='Löschen abgelehnt: Es gibt noch eine Belegung, die auf K10 verweist. Erst die abhängige Belegung ändern oder löschen.';
+ }else if(rule==='cascade'){
+  course.textContent='K10 – gelöscht';
+  enrol.textContent='Belegung 101 → K10 wurde mit gelöscht';
+  out.className='result ok';out.textContent='Löschen durchgeführt: Der Kurs und die zugehörige Belegung wurden gelöscht. So bleibt kein Verweis auf einen fehlenden Kurs übrig.';
+ }else{
+  course.textContent='K10 – gelöscht';
+  enrol.textContent='101 → NULL (keinem Kurs zugeordnet)';
+  out.className='result ok';out.textContent='Löschen durchgeführt: Der Kurs wurde gelöscht und die Kurs-ID der Belegung auf NULL gesetzt. Das funktioniert nur, wenn NULL in dieser Spalte erlaubt ist.';
+ }
+}
+function gradeQuiz(){
+ const answers={q1:'a',q2:'b',q3:'a',q4:'c'};
+ let score=0,missing=0;
+ for(const [q,a] of Object.entries(answers)){
+  const chosen=document.querySelector('input[name="'+q+'"]:checked');
+  if(!chosen)missing++;
+  else if(chosen.value===a)score++;
+ }
+ const out=document.getElementById('quizResult');out.className='result '+(score===4?'ok':'');
+ out.textContent='Du hast '+score+' von 4 Fragen richtig.'+(missing?' Noch '+missing+' Frage(n) nicht beantwortet.':'')+(score===4?' Sehr gut – du kannst die drei Ebenen unterscheiden.':' Lies die Rückmeldungen in den Beispielen noch einmal und versuche es erneut.');
+}
+</script>
+</body>
+</html>
