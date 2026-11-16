@@ -41,6 +41,7 @@ p{margin:9px 0 15px}ul,ol{padding-left:24px}li{margin:7px 0}
 .notebook .tb-content p{margin:4px 0}
 .notebook .tb-content .equation{background:#fff;border-left-color:var(--teal);box-shadow:0 1px 2px #1931490b;margin:8px 0}
 .equation{font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.18rem;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere;background:#f2f6fc;padding:13px 16px;border-left:4px solid #9cb7d5;border-radius:8px;margin:14px 0;font-variant-numeric:lining-nums}
+.equation.work-board{display:block;overflow-x:auto;white-space:normal;padding:13px 16px}.work-grid{display:grid;grid-template-columns:max-content max-content 1.25em max-content max-content;align-items:baseline;column-gap:0;row-gap:2px;min-width:max-content;font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.08em;line-height:1.7}.work-row{display:contents}.work-label{padding-right:1.1em;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.78em;font-weight:700;color:#536579;white-space:nowrap}.work-lhs{text-align:right;padding:0 .18em;white-space:nowrap}.work-equals{text-align:center;padding:0 .12em;white-space:nowrap}.work-rhs{text-align:left;padding:0 .18em;white-space:nowrap}.work-operation{padding-left:1.1em;color:#526477;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.78em;font-weight:650;white-space:nowrap}.work-note{grid-column:1/-1;white-space:normal;padding:1px 0}.work-row.single-underline .work-lhs,.work-row.single-underline .work-equals,.work-row.single-underline .work-rhs{border-bottom:1.5px solid currentColor;padding-bottom:1px}.work-row.double-underline .work-lhs,.work-row.double-underline .work-equals,.work-row.double-underline .work-rhs{border-bottom:3px double currentColor;padding-bottom:1px}.work-row.double-underline .work-label{font-weight:850;color:var(--ink)}.work-heading{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.76em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#536579;margin-bottom:4px}.work-explanation p{margin:5px 0 8px}.work-explanation .equation{margin:7px 0}.work-final{margin-top:8px}
 .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.8em;line-height:1;margin:0 .08em;white-space:nowrap}
 .frac>span:first-child{padding:0 .16em .1em;border-bottom:1px solid currentColor}
 .frac>span:last-child{padding:.1em .16em 0}
@@ -158,8 +159,234 @@ function fmt(n){if(Math.abs(n)<1e-10)return"0";if(Math.abs(n-Math.round(n))<1e-9
 function signed(n){return n<0?" − "+fmt(-n):" + "+fmt(n)}
 function lin(a,b,v="x"){let s=Math.abs(a)<1e-10?"":(a===1?"":a===-1?"−":fmt(a))+v;if(Math.abs(b)>1e-10)s+=(s?signed(b):fmt(b));return s||"0"}
 function expression(a,b,c){let s=lin(a,0);if(b)s+=(s?(b<0?" − ":" + "):(b<0?"−":""))+(Math.abs(b)===1?"":fmt(Math.abs(b)))+"y";return(s||"0")+" = "+fmt(c)}
-function eqBlock(eqs){return '<div class="equation">'+typesetFractions(eqs.map((r,i)=>(eqs.length>1?["I","II","III","IV"][i]+":   ":"")+expression(...r)).join("\n"))+'</div>'}
-function E(s){return '<div class="equation">'+typesetFractions(s)+'</div>'}
+function splitWorkLabel(text){
+let m=text.match(/^([^:]{1,42}):\s*(.*)$/);
+if(m && !/[.!?]$/.test(m[1])){
+ const isOperationColon=/\|\s*$/.test(m[1]);
+ const isComparisonLabel=/^(?:I|II|III|IV)\s*=\s*(?:I|II|III|IV)$/i.test(m[1].trim());
+ const firstEq=text.indexOf("="),colon=text.indexOf(":");
+ if(!isOperationColon&&(colon<firstEq||isComparisonLabel))return{label:m[1].trim(),text:m[2].trim()};
+}
+return{label:"",text:text.trim()};
+}
+function extractWorkOperation(text){
+let depth=0,last=-1;
+for(let i=0;i<text.length;i++){
+ const c=text[i];
+ if(c==="("||c==="{"||c==="[")depth++;
+ else if(c===")"||c==="}"||c==="]")depth=Math.max(0,depth-1);
+ else if(c==="|"&&depth===0)last=i;
+}
+if(last<0)return{text,operation:""};
+const tail=text.slice(last+1).trim();
+if(!tail||!/^(?:[+−-]|:|·|×|durch\b|ausmultiplizieren\b|klammer\b|terme\b|zusammenfassen\b|äquivalenz\b|einsetzen\b|addieren\b|subtrahieren\b)/i.test(tail))return{text,operation:""};
+return{text:text.slice(0,last).trim(),operation:tail};
+}
+function scalarValue(s){
+ s=String(s).replace(/−/g,"-").replace(/,/g,".").replace(/\s/g,"");
+ if(/^[-+]?\d+(?:\.\d+)?\/[-+]?\d+(?:\.\d+)?$/.test(s)){const[a,b]=s.split("/").map(Number);return b===0?NaN:a/b}
+ return Number(s);
+}
+function splitLinearTerms(s){
+ const parts=[];let depth=0,start=0;
+ for(let i=0;i<s.length;i++){
+  const c=s[i];if(c==="(")depth++;else if(c===")")depth--;
+  else if((c==="+"||c==="-")&&depth===0&&i>start){parts.push(s.slice(start,i));start=i;}
+ }
+ parts.push(s.slice(start));return parts.filter(Boolean);
+}
+function parseMultiExpression(expr){
+ expr=String(expr).replace(/·/g,"*");
+ let values={x:0,y:0,z:0,c:0};
+ for(const term0 of splitLinearTerms(String(expr).replace(/[−–]/g,"-").replace(/,/g,"."))){
+  let term=term0.trim(),sign=1;
+  if(term[0]==="+")term=term.slice(1);else if(term[0]==="-"){sign=-1;term=term.slice(1)}
+  term=term.trim();if(!term)continue;
+  const par=term.match(/^((?:\d+(?:\.\d+)?|\.\d+))\((.*)\)$/);
+  if(par){const inside=parseMultiExpression(par[2]);if(!inside)return null;for(const k of ["x","y","z","c"])values[k]+=sign*Number(par[1])*inside[k];continue;}
+  const variableMatch=term.match(/[xyz]/i);
+  if(variableMatch){
+   const v=variableMatch[0].toLowerCase(),at=term.indexOf(variableMatch[0]);
+   const prefix=term.slice(0,at).replace(/\*$/,""),tail=term.slice(at+1);
+   let coef=prefix===""?1:prefix==="-"?-1:scalarValue(prefix);
+   if(!Number.isFinite(coef))return null;
+   if(tail.startsWith("/")){const d=scalarValue(tail.slice(1));if(!Number.isFinite(d)||d===0)return null;coef/=d;}
+   else if(tail!=="")return null;
+   values[v]+=sign*coef;
+  }else{
+   let n;
+   if(/^[-+]?\d+(?:\.\d+)?(?:\*[-+]?\d+(?:\.\d+)?)?$/.test(term))n=term.split("*").map(Number).reduce((a,b)=>a*b,1);
+   else n=scalarValue(term);
+   if(!Number.isFinite(n))return null;values.c+=sign*n;
+  }
+ }
+ return values;
+}
+function parseLinearEquation(text){
+ const at=text.indexOf("=");if(at<0||text[at+1]==="=")return null;
+ const left=parseMultiExpression(text.slice(0,at)),right=parseMultiExpression(text.slice(at+1));
+ return left&&right?{left,right}:null;
+}
+function formatMultiSide(values){
+ const parts=[];
+ for(const v of ["x","y","z","c"]){
+  const n=values[v]||0;if(Math.abs(n)<1e-9)continue;
+  const abs=Math.abs(n),term=v==="c"?fmt(abs):(Math.abs(abs-1)<1e-9?v:fmt(abs)+v);
+  if(!parts.length)parts.push(n<0?"−"+term:term);
+  else parts.push((n<0?" − ":" + ")+term);
+ }
+ return parts.join("")||"0";
+}
+function divisorOperation(n){const value=fmt(n).replace(/-/g,"−");return n<0?": ("+value+")":": "+value;}
+function scaleOperation(ratio){
+ if(ratio>0&&ratio<1)return divisorOperation(1/ratio);
+ if(ratio>1)return"· "+fmt(ratio);
+ if(ratio<0&&Math.abs(ratio)<1)return divisorOperation(1/ratio);
+ if(ratio<0)return"· ("+fmt(ratio)+")";
+ return"Äquivalenzumformung";
+}
+function inferWorkOperation(before,after){
+ const p=parseLinearEquation(before),q=parseLinearEquation(after);if(!p||!q)return"Äquivalenzumformung";
+ const near=(a,b)=>Math.abs(a-b)<1e-8;
+ const vars=["x","y","z"];
+ const dl=q.left.c-p.left.c,dr=q.right.c-p.right.c;
+ if(vars.every(v=>near(p.left[v],q.left[v])&&near(p.right[v],q.right[v]))&&near(dl,dr)&&Math.abs(dl)>1e-8)return operationNumber(dl);
+ for(const v of vars){
+  if(vars.filter(w=>w!==v).every(w=>near(p.left[w],q.left[w])&&near(p.right[w],q.right[w]))&&near(p.left[v]-q.left[v],p.right[v]-q.right[v])&&near(p.left.c,q.left.c)&&near(p.right.c,q.right.c)){
+   const delta=q.left[v]-p.left[v];if(Math.abs(delta)>1e-8)return operationTerm(delta,v);
+  }
+ }
+ const ratios=(leftP,leftQ,rightP,rightQ)=>{
+  const old=[leftP.x,leftP.y,leftP.z,leftP.c,rightP.x,rightP.y,rightP.z,rightP.c];
+  const neu=[leftQ.x,leftQ.y,leftQ.z,leftQ.c,rightQ.x,rightQ.y,rightQ.z,rightQ.c];
+  let ratio=null,valid=true;
+  for(let i=0;i<old.length;i++){
+   if(Math.abs(old[i])<1e-8){if(Math.abs(neu[i])>1e-8){valid=false;break}}
+   else{const r=neu[i]/old[i];if(ratio===null)ratio=r;else if(!near(ratio,r)){valid=false;break}}
+  }
+  return valid&&ratio!==null&&Math.abs(ratio)>1e-8&&!near(ratio,1)?ratio:null;
+ };
+ let ratio=ratios(p.left,q.left,p.right,q.right);
+ if(ratio===null)ratio=ratios(p.right,q.left,p.left,q.right);
+ return ratio===null?"Äquivalenzumformung":scaleOperation(ratio);
+}
+function expandDirectSolve(before,after,label,mark){
+ const p=parseLinearEquation(before),q=parseLinearEquation(after);
+ const targetMatch=String(after).match(/^\s*([xyz])\s*=/i);if(!p||!q||!targetMatch)return null;
+ const target=targetMatch[1].toLowerCase(),others=["x","y","z"].filter(v=>v!==target);
+ if(!nearZero(q.left[target]-1)||!nearZero(q.left.c)||others.some(v=>!nearZero(q.left[v]))||!nearZero(q.right[target]))return null;
+ const finalMark=mark||"u";
+ // One-variable equations with the unknown on both sides need the term moved first.
+ if(others.every(v=>nearZero(p.left[v])&&nearZero(p.right[v]))&&Math.abs(p.left[target])>1e-9&&Math.abs(p.right[target])>1e-9){
+  const coef=p.left[target]-p.right[target];if(Math.abs(coef)<1e-9)return null;
+  const rows=[];
+  rows.push(renderWorkRow(label,before,operationTerm(-p.right[target],target)));
+  const middle=lin(coef,p.left.c,target)+" = "+fmt(p.right.c);
+  if(Math.abs(p.left.c)>1e-9)rows.push(renderWorkRow("",middle,operationNumber(-p.left.c)));
+  else rows.push(renderWorkRow("",middle,Math.abs(coef-1)>1e-9?": "+fmt(coef):"",Math.abs(coef-1)<1e-9?finalMark:""));
+  if(Math.abs(p.left.c)>1e-9){
+   const isolated=lin(coef,0,target)+" = "+fmt(p.right.c-p.left.c);
+   if(Math.abs(coef-1)>1e-9)rows.push(renderWorkRow("",isolated,": "+fmt(coef)));
+   rows.push(renderWorkRow("",after,"",finalMark));
+  }else if(Math.abs(coef-1)>1e-9)rows.push(renderWorkRow("",after,"",finalMark));
+  return rows;
+ }
+ // A linear equation ax + by (+ cz) = d can be rearranged to isolate one variable.
+ if(others.some(v=>Math.abs(p.left[v]-p.right[v])>1e-9)&&others.every(v=>nearZero(p.right[v]))){
+  const b=p.left[target]-p.right[target];if(Math.abs(b)<1e-9)return null;
+  const rhs={x:0,y:0,z:0,c:p.right.c-p.left.c};
+  const moved={x:0,y:0,z:0,c:-p.left.c};
+  for(const v of others){const a=p.left[v]-p.right[v];rhs[v]=-a;moved[v]=-a;}
+  const operation=formatMultiSide(moved);
+  const middle=lin(b,0,target)+" = "+formatMultiSide(rhs);
+  const rows=[renderWorkRow(label,before,operation)];
+  if(Math.abs(b-1)>1e-9)rows.push(renderWorkRow("",middle,divisorOperation(b)));
+  rows.push(renderWorkRow("",after,"",finalMark));
+  return rows;
+ }
+ return null;
+}
+function nearZero(n){return Math.abs(n)<1e-9;}
+function operationNumber(n){return(n<0?"−":"+")+fmt(Math.abs(n));}
+function operationTerm(n,v){return(n<0?"−":"+")+(Math.abs(n)===1?"":fmt(Math.abs(n)))+v;}
+function renderWorkRow(label,text,operation="",mark=""){
+ const parsed=splitWorkLabel(text);
+ label=label||parsed.label;text=parsed.text;
+ const op=extractWorkOperation(text);text=op.text;operation=operation||op.operation;
+ const eq=text.indexOf("=");
+ const cls=mark==="uu"?" double-underline":mark==="u"?" single-underline":"";
+ if(eq<0)return '<div class="work-row'+cls+'"><span class="work-note">'+typesetFractions(text)+'</span></div>';
+ const lhs=text.slice(0,eq).trim(),rhs=text.slice(eq+1).trim();
+ return '<div class="work-row'+cls+'"><span class="work-label">'+typesetFractions(label)+'</span><span class="work-lhs">'+typesetFractions(lhs)+'</span><span class="work-equals">=</span><span class="work-rhs">'+typesetFractions(rhs)+'</span><span class="work-operation">'+(operation?'| '+typesetFractions(operation):'')+'</span></div>';
+}
+function E(source){
+ const raw=String(source??"");let rows=[];
+ for(let line of raw.split(/\n/)){
+  line=line.trim();if(!line)continue;
+  let mark="";if(/@@uu\s*$/.test(line)){mark="uu";line=line.replace(/@@uu\s*$/," ").trim()}else if(/@@u\s*$/.test(line)){mark="u";line=line.replace(/@@u\s*$/," ").trim()}
+  const arrowParts=line.split(/\s*(?:→|⇒)\s*/);
+  const isTransform=arrowParts.length>1&&arrowParts[0].includes("=")&&!arrowParts[0].includes("≠")&&/[xyz]/i.test(arrowParts[0]);
+  if(isTransform){
+   let first=splitWorkLabel(arrowParts[0]);
+   if(arrowParts.length===2){
+    const expanded=expandDirectSolve(first.text,arrowParts[1].replace(/[.]\s*$/," ").trim(),first.label,mark);
+    if(expanded){rows.push(...expanded);continue;}
+   }
+   for(let i=0;i<arrowParts.length;i++){
+    let piece=(i===0?first.text:arrowParts[i]).replace(/[.]\s*$/," ").trim();
+    let label=i===0?first.label:"";
+    let op="";
+    if(i<arrowParts.length-1)op=inferWorkOperation(piece,arrowParts[i+1].replace(/[.]\s*$/," ").trim());
+    let rowMark=i===arrowParts.length-1?mark:"";
+    if(!rowMark&&i===arrowParts.length-1&&/^\s*[xyz]\s*=/.test(piece))rowMark="u";
+    if(!rowMark&&i===arrowParts.length-1&&/^\s*L\s*=/.test(piece))rowMark="uu";
+    rows.push(renderWorkRow(label,piece,op,rowMark));
+   }
+  }else{
+   if(!mark&&/^\s*L\s*=/.test(line))mark="uu";
+   rows.push(renderWorkRow("",line,"",mark));
+  }
+ }
+ return '<div class="equation work-board"><div class="work-grid">'+rows.join("")+'</div></div>';
+}
+function eqBlock(eqs){return E(eqs.map((r,i)=>(eqs.length>1?["I","II","III","IV"][i]+":   ":"")+expression(...r)).join("\n"));}
+function renderExplanation(source){
+ const text=String(source??"").trim();if(!text)return"";
+ const sentences=text.split(/(?<=\.)\s+(?=[A-ZÄÖÜ])/u);let out='<div class="work-explanation">';
+ for(let sentence of sentences){sentence=sentence.trim();if(!sentence)continue;
+  const probe=sentence.match(/\b(Probe(?:\s+(?:I|II|III))?):\s*/i);
+  if(probe){
+   const before=sentence.slice(0,probe.index).trim();if(before)out+='<p>'+esc(before)+'</p>';
+   const rest=sentence.slice(probe.index+probe[0].length).trim();
+   if(rest.includes("=")||rest.includes("→")){
+    const checks=rest.split(/;\s*|\s+und\s+(?=(?:[-−\d(]|[xyz]\s*=|I{1,3}:))/i);
+    if(checks.length>1&&checks.every(v=>v.includes("=")))out+=E(checks.map((v,i)=>probe[1]+" "+["I","II","III"][i]+": "+v).join("\n"));
+    else out+=E(probe[1]+": "+rest);
+   }else out+='<p><strong>'+esc(probe[1])+':</strong> '+esc(rest)+'</p>';
+   continue;
+  }
+  if(sentence.includes("→")||sentence.includes("⇒")){out+=E(sentence);continue;}
+  const colon=sentence.indexOf(":");
+  if(colon>0&&sentence.slice(colon+1).includes("=")){
+   const lead=sentence.slice(0,colon).trim(),math=sentence.slice(colon+1).trim();
+   if(lead.length<70){
+    const equations=math.split(/\s+und\s+(?=(?:[-−\d(]|[xyz]\s*=|I{1,3}:))/i);
+    out+='<p>'+esc(lead)+':</p>'+E(equations.length>1&&equations.every(v=>v.includes("="))?equations.join("\n"):math);
+   }else out+='<p>'+esc(sentence)+'</p>';
+   continue;
+  }
+  const denn=sentence.indexOf(" denn ");
+  if(denn>0&&sentence.slice(denn+6).includes("=")){
+   out+='<p>'+esc(sentence.slice(0,denn+6).trim())+'</p>'+E(sentence.slice(denn+6).trim());continue;
+  }
+  if((/^\s*(?:[xyz]|L)\s*=/.test(sentence)||sentence.split("; ").filter(x=>x.includes("=")).length>1)&&sentence.includes("=")){
+   const line=/^\s*L\s*=/.test(sentence)?sentence+"@@uu":/^\s*[xyz]\s*=/.test(sentence)?sentence+"@@u":sentence;
+   const bits=line.split(/;\s*/);out+=E(bits.join("\n"));continue;
+  }
+  out+='<p>'+esc(sentence)+'</p>';
+ }
+ return out+'</div>';
+}
 function sys(id,title,rows,xy,opt={}){
 return{id,title,type:"system",eqs:rows.map(([a,b])=>[a,b,a*xy[0]+b*xy[1]]),answer:xy,level:1,...opt}
 }
@@ -282,7 +509,7 @@ group:"Begründe schriftlich, warum zwei verschiedene Punkte zum Zeichnen einer 
 {
 id:"m2",title:"2 · Gleichung mit zwei Variablen",short:"Gleichung mit zwei Variablen",time:"Unterrichtsstunde 1",goal:"Ich finde Lösungspaare für eine Gleichung mit zwei Variablen und erkenne, dass ihre Lösungen auf einer Geraden liegen.",
 intro:`<div class="card problem"><h3>Einstieg · Getränkeverkauf</h3><p>Ein Saft kostet 2 €, ein Wasser 1 €. Eine Gruppe bezahlt insgesamt 8 €. <strong>Wie viele Säfte und wie viele Wasser könnten es sein?</strong></p><p>Lege eine Tabelle an: x = Anzahl Säfte, y = Anzahl Wasser. Finde mindestens vier Möglichkeiten. Achte darauf: Stückzahlen sind hier ganze, nichtnegative Zahlen.</p><details><summary>Ideen und Kontrolle</summary>${E("2x + y = 8\n(x | y): (0 | 8), (1 | 6), (2 | 4), (3 | 2), (4 | 0)")}<p>Ein Wertepaar bedeutet zum Beispiel: 2 Säfte und 4 Wasser kosten zusammen 8 €.</p></details></div>
-<div class="card"><h3>Warum plötzlich so viele Lösungen?</h3><p>In <strong>2x + y = 8</strong> stecken zwei unbekannte Zahlen. Wählst du x, kannst du y passend berechnen. Ein Lösungspaar muss die Gleichung wahr machen. Die Reihenfolge ist festgelegt: <strong>(x | y)</strong>.</p>${E("Die Gleichung <strong>2x + y = 8</strong> ist äquivalent zur Gleichung <strong>y = −2x + 8</strong>")}<p>Beide Schreibweisen beschreiben dieselbe Beziehung. Zum Beispiel lösen (0 | 8), (1 | 6), (2 | 4) und (4 | 0) die Gleichung. Auch weitere reelle Wertepaare sind möglich.</p><p>Jedes Lösungspaar entspricht einem Punkt. Alle Lösungspunkte liegen auf einer Geraden.</p></div>
+<div class="card"><h3>Warum plötzlich so viele Lösungen?</h3><p>In <strong>2x + y = 8</strong> stecken zwei unbekannte Zahlen. Wählst du x, kannst du y passend berechnen. Ein Lösungspaar muss die Gleichung wahr machen. Die Reihenfolge ist festgelegt: <strong>(x | y)</strong>.</p><p>Die Gleichung <strong>2x + y = 8</strong> ist äquivalent zur Gleichung <strong>y = −2x + 8</strong>.</p><p>Beide Schreibweisen beschreiben dieselbe Beziehung. Zum Beispiel lösen (0 | 8), (1 | 6), (2 | 4) und (4 | 0) die Gleichung. Auch weitere reelle Wertepaare sind möglich.</p><p>Jedes Lösungspaar entspricht einem Punkt. Alle Lösungspunkte liegen auf einer Geraden.</p></div>
 ${diagramEquationLine()}
 <div class="card notebook"><h3>Gleichung mit zwei Variablen</h3><div class="tb-section"><div class="tb-label">Merke</div><div class="tb-content"><p><strong>2x + y = 8</strong> ist gleichbedeutend mit <strong>y = −2x + 8</strong>.</p><p>Jedes passende Wertepaar (x | y) ist eine Lösung und entspricht einem Punkt auf der Geraden.</p></div></div><div class="tb-section"><div class="tb-label">Beispiele</div><div class="tb-content">${E("(0 | 8): 2·0 + 8 = 8 ✓\n(1 | 6): 2·1 + 6 = 8 ✓\n(2 | 4): 2·2 + 4 = 8 ✓")}</div></div></div>
 `,
@@ -314,7 +541,7 @@ ${diagramSystemIntersection()}
 <p>Lösung eines LGS: das Paar (x | y), das alle Gleichungen erfüllt.</p>
 </div></div>
 <div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
-${E("I:   2x + y = 8\nII:  x + y = 5\nL = {(3 | 2)}\nProbe I:   2·3 + 2 = 8   ✓\nProbe II:  3 + 2 = 5     ✓")}
+${E("I:   2x + y = 8\nII:  x + y = 5\nProbe I:   2·3 + 2 = 8   ✓\nProbe II:  3 + 2 = 5     ✓\nL = {(3 | 2)}@@uu")}
 </div></div>
 <div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
 <p>Reihenfolge beachten: <strong>(x | y)</strong> – erst x, dann y. Ein Paar ist nur Lösung, wenn <strong>beide</strong> Proben stimmen.</p>
@@ -345,7 +572,7 @@ ${diagramSystemIntersection()}
 <p>3. Probe in beiden Gleichungen.</p>
 </div></div>
 <div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
-${E("I:    y = x + 1\nII:   y = −x + 5\nS(2 | 3)   →   L = {(2 | 3)}")}
+${E("I: y = x + 1\nII: y = −x + 5\nS(2 | 3)@@u\nL = {(2 | 3)}@@uu")}
 </div></div>
 <div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
 <p>Abgelesene Werte sind oft ungenau. Erst die Probe in beiden Gleichungen zeigt, ob das Paar wirklich passt.</p>
@@ -415,7 +642,7 @@ intro:`<div class="card problem"><h3>Einstieg · Zwei Wege zur selben Höhe</h3>
 <p>Es entsteht eine Gleichung mit nur noch einer Variablen.</p>
 </div></div>
 <div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
-${E("I:   y = x + 1\nII:  y = −x + 5\nx + 1 = −x + 5   →   2x = 4   →   x = 2\ny = 2 + 1 = 3    →   L = {(2 | 3)}")}
+${E("I: y = x + 1\nII: y = −x + 5\nI = II: x + 1 = −x + 5 | −1\nx = −x + 4 | +x\n2x = 4 | : 2\nx = 2@@u\nin I: y = 2 + 1 = 3@@u\nL = {(2 | 3)}@@uu")}
 </div></div>
 <div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
 <p>Nach x noch y berechnen – eine Lösung ist immer ein Paar. Erst die Probe in beiden Originalgleichungen bestätigt das Ergebnis.</p>
@@ -451,7 +678,7 @@ intro:`<div class="card problem"><h3>Einstieg · Fünf Euro mehr</h3><p>Am Kinok
 <p>Der Ausdruck wird in die <strong>andere</strong> Gleichung eingesetzt.</p>
 </div></div>
 <div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
-${E("I:   x = y + 5\nII:  2x + 3y = 25\n2(y + 5) + 3y = 25   →   y = 3\nx = 3 + 5 = 8         →   L = {(8 | 3)}")}
+${E("I: x = y + 5\nII: 2x + 3y = 25 | einsetzen\nEinsetzen in II: 2(y + 5) + 3y = 25 | ausmultiplizieren\n2y + 10 + 3y = 25 | Terme zusammenfassen\n5y + 10 = 25 | −10\n5y = 15 | : 5\ny = 3@@u\nin I: x = 3 + 5 = 8@@u\nProbe I: 8 = 3 + 5\nProbe II: 2·8 + 3·3 = 25\nL = {(8 | 3)}@@uu")}
 </div></div>
 <div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
 <p>Beim Einsetzen Klammern setzen: 2(y + 5), nicht 2y + 5. Danach zurück einsetzen und den zweiten Wert berechnen.</p>
@@ -478,7 +705,7 @@ group:"Sammle zwei mögliche Klammerfehler und erkläre, warum sie falsch sind. 
 },
 {
 id:"m7",title:"8 · Eine Variable verschwindet",short:"Additionsverfahren",time:"Doppelstunde 7",goal:"Ich addiere geeignete Gleichungen und wähle ein günstiges Lösungsverfahren.",
-intro:`<div class="card problem"><h3>Einstieg · Notizbücher und Stifte</h3><p>In einem Schreibwarenladen kosten zwei Notizbücher und ein Stift zusammen 11 €. Außerdem kosten zwei Notizbücher 5 € mehr als ein Stift. x steht für den Preis eines Notizbuchs, y für den Preis eines Stifts.</p>${E("I:   2x + y = 11\nII:  2x − y = 5")}<p>Addiere die beiden Gleichungen jeweils auf der linken und auf der rechten Seite. Was passiert mit +y und −y? Erkläre, warum sich dadurch zuerst der Preis eines Notizbuchs bestimmen lässt.</p><details><summary>Entdeckung</summary>${E("4x + 0y = 16 → x = 4\nIn I: 8 + y = 11 → y = 3")}<p>+y und −y heben sich auf. Ein Notizbuch kostet 4 €, ein Stift 3 €.</p></details></div>
+intro:`<div class="card problem"><h3>Einstieg · Notizbücher und Stifte</h3><p>In einem Schreibwarenladen kosten zwei Notizbücher und ein Stift zusammen 11 €. Außerdem kosten zwei Notizbücher 5 € mehr als ein Stift. x steht für den Preis eines Notizbuchs, y für den Preis eines Stifts.</p>${E("I:   2x + y = 11\nII:  2x − y = 5")}<p>Addiere die beiden Gleichungen jeweils auf der linken und auf der rechten Seite. Was passiert mit +y und −y? Erkläre, warum sich dadurch zuerst der Preis eines Notizbuchs bestimmen lässt.</p><details><summary>Entdeckung</summary>${E("I + II: 4x + 0y = 16 | : 4\nx = 4@@u\nin I: 8 + y = 11 | −8\ny = 3@@u")}<p>+y und −y heben sich auf. Ein Notizbuch kostet 4 €, ein Stift 3 €.</p></details></div>
 <div class="card"><h3>Das Additionsverfahren</h3><ol><li>Gleichungen in eine übersichtliche Form bringen: ax + by = c.</li><li>Eine Variable wählen, deren Koeffizienten Gegenzahlen sind.</li><li>Falls nötig, eine oder beide <strong>ganzen Gleichungen</strong> mit einer Zahl ungleich 0 multiplizieren.</li><li>Gleichungen seitenweise addieren. Eine Variable fällt weg.</li><li>Verbleibende Variable bestimmen; zurück einsetzen; Probe.</li></ol><p><strong>Günstig:</strong> +y und −y stehen schon da, oder kleine Faktoren machen die Koeffizienten zu Gegenzahlen. Bei gleichen Koeffizienten kannst du auch eine Gleichung von der anderen subtrahieren: Das ist Addition der mit −1 multiplizierten Gleichung.</p><p><strong>Beispiel zum Vorbereiten:</strong> Bei 2x + y = 9 und x − 2y = −3 multiplizierst du die erste Gleichung mit 2. Dann stehen +2y und −2y da.</p><p><strong>Wichtig:</strong> Aus 2x + y = 9 wird bei ·2 die Gleichung <strong>4x + 2y = 18</strong>. Jedes Glied und die rechte Seite werden mitmultipliziert.</p></div>
 <div class="card notebook">
 <h3>Addieren</h3>
@@ -487,7 +714,7 @@ intro:`<div class="card problem"><h3>Einstieg · Notizbücher und Stifte</h3><p>
 <p>Eine Variable fällt weg, wenn ihre Koeffizienten Gegenzahlen sind (+y und −y).</p>
 </div></div>
 <div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
-${E("I:   2x + y = 9       | ·2\nII:  x − 2y = −3\nI′:  4x + 2y = 18\nI′ + II:   5x = 15   →   x = 3\ny = 3                →   L = {(3 | 3)}")}
+${E("I: 2x + y = 9 | · 2\nII: x − 2y = −3\nI′: 4x + 2y = 18\nII′: x − 2y = −3\nI′ + II′: 5x = 15 | : 5\nx = 3@@u\nin II: 3 − 2y = −3 | −3\n−2y = −6 | : (−2)\ny = 3@@u\nProbe I: 2·3 + 3 = 9\nProbe II: 3 − 2·3 = −3\nL = {(3 | 3)}@@uu")}
 </div></div>
 <div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
 <p>Beim Multiplizieren werden <strong>alle</strong> Glieder und die rechte Seite mitmultipliziert. Aus 2x + y = 9 wird bei ·2 zum Beispiel 4x + 2y = 18.</p>
@@ -525,7 +752,7 @@ intro:`<div class="card problem"><h3>Einstieg · Drei Produkte im Schulkiosk</h3
 <p>3 Variablen → 2 Variablen → 1 Variable → zurück einsetzen.</p>
 </div></div>
 <div class="tb-section"><div class="tb-label">Beispiel</div><div class="tb-content">
-${E("I:   x + y + z = 6\nII:  2x + y + z = 8     II − I:   x = 2\nIII: x + 2y + z = 7     III − I:  y = 1\nI: 2 + 1 + z = 6   →   z = 3\nL = {(2 | 1 | 3)}")}
+${E("I: x + y + z = 6\nII: 2x + y + z = 8 | − I\nx = 2@@u\nIII: x + 2y + z = 7 | − I\ny = 1@@u\nin I: 2 + 1 + z = 6 | −3\nz = 3@@u\nL = {(2 | 1 | 3)}@@uu")}
 </div></div>
 <div class="tb-section"><div class="tb-label">Wichtig</div><div class="tb-content">
 <p>Probe in <strong>allen drei</strong> Originalgleichungen. Mehr Gleichungen bedeuten nicht automatisch mehr Information – sie können sich wiederholen oder widersprechen.</p>
@@ -583,65 +810,126 @@ if(t.method==="sub")return["Nutze die erste Gleichung, um eine Variable durch ei
 if(t.method==="add")return["Suche gleiche oder entgegengesetzte Koeffizienten bei x oder y.","Bereite durch Multiplikation ganze Gleichungen vor. Addiere oder subtrahiere dann."];
 return["Überlege zuerst, was gesucht ist und welche Bedingung erfüllt sein muss.","Benutze das Heftbeispiel als Orientierung. Prüfe deinen Vorschlag in jeder Gleichung."]
 }
+function timesFactor(a,v){if(Math.abs(a-1)<1e-9)return v;if(Math.abs(a+1)<1e-9)return"−"+v;return fmt(a)+"·("+v+")";}
+function resultPairHTML(x,y){return E("L = {("+fmt(x)+" | "+fmt(y)+")}@@uu");}
 function solutionHTML(t){
-if(t.type==="choice")return"<p><strong>Richtig:</strong> "+esc(t.options[t.correct])+"</p><p>"+esc(t.explain)+"</p>";
-if(t.type==="number"||t.type==="pair"||t.type==="triple")return"<p>"+esc(t.solution||"")+" </p>";
-let [x,y]=t.answer;
-let steps=[];
-if(t.customSolution)steps=[t.customSolution];
-else if(t.method==="equal"){
-const [[a,b,c],[d,e,f]]=t.eqs;
-const m1=-a/b,n1=c/b,m2=-d/e,n2=f/e;
-steps=["I: y = "+lin(m1,n1)+". II: y = "+lin(m2,n2)+".",
-"Gleichsetzen: "+lin(m1,n1)+" = "+lin(m2,n2)+".",
-"Zusammenfassen: "+lin(m1-m2,0)+" = "+fmt(n2-n1)+" → x = "+fmt(x)+".",
-"In I: y = "+fmt(m1)+"·("+fmt(x)+")"+signed(n1)+" = "+fmt(y)+"."];
-}else if(t.method==="equalX"){
-const [[a,b,c],[d,e,f]]=t.eqs;
-const m1=-b/a,n1=c/a,m2=-e/d,n2=f/d;
-steps=["I: x = "+lin(m1,n1,"y")+". II: x = "+lin(m2,n2,"y")+".",
-"Gleichsetzen: "+lin(m1,n1,"y")+" = "+lin(m2,n2,"y")+".",
-lin(m1-m2,0,"y")+" = "+fmt(n2-n1)+" → y = "+fmt(y)+".",
-"In I: x = "+fmt(m1)+"·("+fmt(y)+")"+signed(n1)+" = "+fmt(x)+"."];
-}else if(t.method==="sub"){
-const [[a,b,c],[d,e,f]]=t.eqs;
-if(a!==0&&(Math.abs(a)===1||b===0)){
-const p=-b/a,q=c/a;
-steps=["I nach x: x = "+lin(p,q,"y")+".",
-"In II: "+fmt(d)+"·("+lin(p,q,"y")+")"+signed(e)+"y = "+fmt(f)+".",
-"Zusammenfassen: "+lin(d*p+e,d*q,"y")+" = "+fmt(f)+".",
-lin(d*p+e,0,"y")+" = "+fmt(f-d*q)+" → y = "+fmt(y)+".",
-"I: x = "+fmt(p)+"·("+fmt(y)+")"+signed(q)+" = "+fmt(x)+"."];
-}else{
-const p=-a/b,q=c/b;
-steps=["I nach y: y = "+lin(p,q)+".",
-"In II: "+lin(d,0)+signed(e)+"·("+lin(p,q)+") = "+fmt(f)+".",
-"Zusammenfassen: "+lin(d+e*p,e*q)+" = "+fmt(f)+".",
-lin(d+e*p,0)+" = "+fmt(f-e*q)+" → x = "+fmt(x)+".",
-"I: y = "+fmt(p)+"·("+fmt(x)+")"+signed(q)+" = "+fmt(y)+"."];
+ if(t.type==="choice")return"<p><strong>Richtig:</strong> "+esc(t.options[t.correct])+"</p>"+renderExplanation(t.explain||"");
+ if(t.type==="number")return renderExplanation(t.solution||"");
+ if(t.type==="pair")return renderExplanation(t.solution||"");
+ if(t.type==="triple")return renderExplanation(t.solution||"")+E("L = {("+fmt(t.answer[0])+" | "+fmt(t.answer[1])+" | "+fmt(t.answer[2])+")}@@uu");
+ let [x,y]=t.answer;
+ if(t.customSolution)return '<p><strong>Lösungsweg</strong></p>'+renderExplanation(t.customSolution)+resultPairHTML(x,y);
+ let work=[];
+ if(t.method==="equal"){
+  const [[a,b,c],[d,e,f]]=t.eqs;
+  const m1=-a/b,n1=c/b,m2=-d/e,n2=f/e;
+  const left=lin(m1,n1),right=lin(m2,n2);
+  work.push("I = II: "+left+" = "+right+(Math.abs(n1)>1e-9?" | "+operationNumber(-n1):""));
+  if(Math.abs(m2)>1e-9){
+   const next=lin(m1,0)+" = "+lin(m2,n2-n1);
+   const coef=m1-m2;
+   if(Math.abs(coef-1)<1e-9)work.push(next+" | "+operationTerm(-m2,"x")+"@@u");
+   else{
+    work.push(next+" | "+operationTerm(-m2,"x"));
+    work.push(lin(coef,0)+" = "+fmt(n2-n1)+" | "+divisorOperation(coef));
+    work.push("x = "+fmt(x)+"@@u");
+   }
+  }else work.push("x = "+fmt(x)+"@@u");
+  work.push("in I: y = "+timesFactor(m1,fmt(x))+signed(n1)+" = "+fmt(y)+"@@u");
+  work.push("Probe I: "+fmt(a)+"·("+fmt(x)+")"+signed(b)+"·("+fmt(y)+") = "+fmt(c));
+  work.push("Probe II: "+fmt(d)+"·("+fmt(x)+")"+signed(e)+"·("+fmt(y)+") = "+fmt(f));
+  work.push("L = {("+fmt(x)+" | "+fmt(y)+")}@@uu");
+ }else if(t.method==="equalX"){
+  const [[a,b,c],[d,e,f]]=t.eqs;
+  const m1=-b/a,n1=c/a,m2=-e/d,n2=f/d;
+  work.push("I = II: "+lin(m1,n1,"y")+" = "+lin(m2,n2,"y")+(Math.abs(n1)>1e-9?" | "+operationNumber(-n1):""));
+  if(Math.abs(m2)>1e-9){
+   const next=lin(m1,0,"y")+" = "+lin(m2,n2-n1,"y");
+   const coef=m1-m2;
+   if(Math.abs(coef-1)<1e-9)work.push(next+" | "+operationTerm(-m2,"y")+"@@u");
+   else{
+    work.push(next+" | "+operationTerm(-m2,"y"));
+    work.push(lin(coef,0,"y")+" = "+fmt(n2-n1)+" | : "+fmt(coef));
+    work.push("y = "+fmt(y)+"@@u");
+   }
+  }else work.push("y = "+fmt(y)+"@@u");
+  work.push("in I: x = "+timesFactor(m1,fmt(y))+signed(n1)+" = "+fmt(x)+"@@u");
+  work.push("Probe I: "+fmt(a)+"·("+fmt(x)+")"+signed(b)+"·("+fmt(y)+") = "+fmt(c));
+  work.push("Probe II: "+fmt(d)+"·("+fmt(x)+")"+signed(e)+"·("+fmt(y)+") = "+fmt(f));
+  work.push("L = {("+fmt(x)+" | "+fmt(y)+")}@@uu");
+ }else if(t.method==="sub"){
+  const [[a,b,c],[d,e,f]]=t.eqs;
+  if(a!==0&&(Math.abs(a)===1||b===0)){
+   const p=-b/a,q=c/a,coef=d*p+e,constant=d*q;
+   work.push("I nach x: x = "+lin(p,q,"y"));
+   work.push("Einsetzen in II: "+fmt(d)+"·("+lin(p,q,"y")+")"+signed(e)+"y = "+fmt(f)+" | ausmultiplizieren");
+   work.push(lin(d*p,constant,"y")+signed(e)+"y = "+fmt(f)+" | Terme zusammenfassen");
+   const combined=lin(coef,constant,"y")+" = "+fmt(f);
+   if(Math.abs(constant)>1e-9)work.push("Terme zusammenfassen: "+combined+" | "+operationNumber(-constant));
+   else if(Math.abs(coef-1)>1e-9)work.push("Terme zusammenfassen: "+combined+" | : "+fmt(coef));
+   else work.push("Terme zusammenfassen: y = "+fmt(f)+"@@u");
+   if(Math.abs(coef-1)>1e-9){
+    if(Math.abs(constant)>1e-9)work.push(lin(coef,0,"y")+" = "+fmt(f-constant)+" | "+divisorOperation(coef));
+    work.push("y = "+fmt(y)+"@@u");
+   }else if(Math.abs(constant)>1e-9)work.push("y = "+fmt(y)+"@@u");
+   work.push("in I: x = "+timesFactor(p,fmt(y))+signed(q)+" = "+fmt(x)+"@@u");
+  }else{
+   const p=-a/b,q=c/b,coef=d+e*p,constant=e*q;
+   work.push("I nach y: y = "+lin(p,q));
+   work.push("Einsetzen in II: "+lin(d,0)+signed(e)+"·("+lin(p,q)+") = "+fmt(f)+" | ausmultiplizieren");
+   work.push(lin(d,0)+signed(e*p)+"x"+signed(constant)+" = "+fmt(f)+" | Terme zusammenfassen");
+   const combined=lin(coef,constant)+" = "+fmt(f);
+   if(Math.abs(constant)>1e-9)work.push("Terme zusammenfassen: "+combined+" | "+operationNumber(-constant));
+   else if(Math.abs(coef-1)>1e-9)work.push("Terme zusammenfassen: "+combined+" | : "+fmt(coef));
+   else work.push("Terme zusammenfassen: x = "+fmt(f)+"@@u");
+   if(Math.abs(coef-1)>1e-9){
+    if(Math.abs(constant)>1e-9)work.push(lin(coef,0)+" = "+fmt(f-constant)+" | "+divisorOperation(coef));
+    work.push("x = "+fmt(x)+"@@u");
+   }else if(Math.abs(constant)>1e-9)work.push("x = "+fmt(x)+"@@u");
+   work.push("in I: y = "+timesFactor(p,fmt(x))+signed(q)+" = "+fmt(y)+"@@u");
+  }
+  const [r1,r2]=t.eqs;
+  work.push("Probe I: "+fmt(r1[0])+"·("+fmt(x)+")"+signed(r1[1])+"·("+fmt(y)+") = "+fmt(r1[2]));
+  work.push("Probe II: "+fmt(r2[0])+"·("+fmt(x)+")"+signed(r2[1])+"·("+fmt(y)+") = "+fmt(r2[2]));
+  work.push("L = {("+fmt(x)+" | "+fmt(y)+")}@@uu");
+ }else if(t.method==="add"){
+  const [r,s]=t.eqs;
+  const factorsFor=i=>{if(!r[i]||!s[i])return null;let g=gcd(r[i],s[i]);let u=s[i]/g,v=-r[i]/g;if(u<0){u=-u;v=-v}return[u,v,Math.abs(u)+Math.abs(v)];};
+  const fy=factorsFor(1),fx=factorsFor(0),chosen=fy&&(!fx||fy[2]<=fx[2])?{v:1,f:fy}:{v:0,f:fx};
+  if(chosen.f){
+   const[u,v]=chosen.f,A=r.map(n=>n*u),B=s.map(n=>n*v),sum=A.map((n,i)=>n+B[i]);
+   work.push("I: "+expression(...r)+(u===1?"":" | · "+fmt(u)));
+   work.push("II: "+expression(...s)+(v===1?"":" | · "+fmt(v)));
+   work.push("I′: "+expression(...A));work.push("II′: "+expression(...B));
+   const eliminated=chosen.v===1?"x":"y",coefficient=chosen.v===1?sum[0]:sum[1],rhs=sum[2];
+   work.push("Addieren: "+expression(...sum)+(Math.abs(coefficient-1)>1e-9?" | "+divisorOperation(coefficient):"@@u"));
+   if(Math.abs(coefficient-1)>1e-9)work.push(eliminated+" = "+fmt(eliminated==="x"?x:y)+"@@u");
+   if(chosen.v===1){
+    work.push("in I: "+fmt(r[0])+"·("+fmt(x)+")"+signed(r[1])+"y = "+fmt(r[2])+(Math.abs(r[0]*x)>1e-9?" | "+operationNumber(-r[0]*x):""));
+    if(Math.abs(r[1]-1)>1e-9){
+     work.push(lin(r[1],0,"y")+" = "+fmt(r[2]-r[0]*x)+" | : "+fmt(r[1]));
+     work.push("y = "+fmt(y)+"@@u");
+    }else work.push("y = "+fmt(y)+"@@u");
+   }else{
+    work.push("in I: "+fmt(r[0])+"x"+signed(r[1]*y)+" = "+fmt(r[2])+(Math.abs(r[1]*y)>1e-9?" | "+operationNumber(-r[1]*y):""));
+    if(Math.abs(r[0]-1)>1e-9){
+     work.push(fmt(r[0])+"x = "+fmt(r[2]-r[1]*y)+" | : "+fmt(r[0]));
+     work.push("x = "+fmt(x)+"@@u");
+    }else work.push("x = "+fmt(x)+"@@u");
+   }
+  }else work.push("Eine Variable ist bereits bestimmt. Setze den Wert in die andere Gleichung ein.");
+  work.push("Probe I: "+fmt(r[0])+"·("+fmt(x)+")"+signed(r[1])+"·("+fmt(y)+") = "+fmt(r[2]));
+  work.push("Probe II: "+fmt(s[0])+"·("+fmt(x)+")"+signed(s[1])+"·("+fmt(y)+") = "+fmt(s[2]));
+  work.push("L = {("+fmt(x)+" | "+fmt(y)+")}@@uu");
+ }else if(t.type==="graph"){
+  work=t.eqs.map((r,i)=>["I","II"][i]+": "+(r[1]?"y = "+lin(-r[0]/r[1],r[2]/r[1]):"x = "+fmt(r[2]/r[0])));
+  work.push("S("+fmt(x)+" | "+fmt(y)+")@@u");work.push("L = {("+fmt(x)+" | "+fmt(y)+")}@@uu");
+ }
+ const body=work.length?E(work.join("\n")):resultPairHTML(x,y);
+ if(t.method==="graph")return '<p><strong>Schnittpunkt bestimmen</strong></p>'+body;
+ return '<p><strong>Lösungsweg · Äquivalenzumformungen Schritt für Schritt</strong></p>'+body+(t.after?'<p>'+esc(t.after)+'</p>':"");
 }
-}else if(t.method==="add"){
-const [r,s]=t.eqs;
-const factorsFor=v=>{
-if(!r[v]||!s[v])return null;
-let g=gcd(r[v],s[v]);let u=s[v]/g,vv=-r[v]/g;
-if(u<0){u=-u;vv=-vv}return[u,vv,Math.abs(u)+Math.abs(vv)]
-};
-const fy=factorsFor(1),fx=factorsFor(0);
-const chosen=fy&&(!fx||fy[2]<=fx[2])?{v:1,f:fy}:{v:0,f:fx};
-if(chosen.f){let[u,v]=chosen.f;let A=r.map(n=>n*u),B=s.map(n=>n*v),sum=A.map((n,i)=>n+B[i]);
-steps=["I mit "+fmt(u)+", II mit "+fmt(v)+" multiplizieren.",
-"I′: "+expression(...A)+".","II′: "+expression(...B)+".",
-"Addieren: "+expression(...sum)+".",
-(chosen.v===1?"x = "+fmt(x):"y = "+fmt(y))+". Zurück einsetzen in I → "+(chosen.v===1?"y = "+fmt(y):"x = "+fmt(x))+"."];
-}else steps=["Eine Variable ist schon bestimmt. Einsetzen liefert das vollständige Paar."];
-}else if(t.type==="graph"){
-steps=t.eqs.map((r,i)=>["I","II"][i]+": "+(r[1]?"y = "+lin(-r[0]/r[1],r[2]/r[1]):"x = "+fmt(r[2]/r[0]))) ;
-steps.push("Die Geraden schneiden sich bei S("+fmt(x)+" | "+fmt(y)+").");
-}else steps=["Die gemeinsame Lösung ist ("+fmt(x)+" | "+fmt(y)+")."];
-const probes=t.eqs.map((r,i)=>["I","II"][i]+": "+fmt(r[0])+"·("+fmt(x)+")"+signed(r[1])+"·("+fmt(y)+") = "+fmt(r[2])+" ✓");
-return"<p><strong>Lösungsweg</strong></p>"+E(steps.map(esc).join("\n"))+"<p><strong>L = {("+fmt(x)+" | "+fmt(y)+")}</strong></p>"+E(probes.map(esc).join("\n"))+(t.after?"<p>"+esc(t.after)+"</p>":"");
-}
+
 function displayTask(t){
 const a=state.answers[t.id]||{};
 const hints=taskHints(t),hc=state.hints[t.id]||0;
@@ -666,7 +954,7 @@ fields.forEach(k=>html+=`<label>${k==="value"?(t.label||"Ergebnis"):k} = <input 
 html+="</div>";
 if(t.type==="pair")html+='<p class="small">Ein beliebiges passendes Paar genügt. x zuerst, y danach.</p>';
 }
-html+=`<div class="actions"><button class="primary" onclick="checkTask('${t.id}')">Prüfen</button><button onclick="showHint('${t.id}')">Hinweis <span id="hintcount-${t.id}">${Math.min(hc,hints.length)}/${hints.length}</span></button><button onclick="showSolution('${t.id}')">Lösungsweg ansehen</button></div><div id="feedback-${t.id}" role="status"></div><div id="hints-${t.id}">${hints.slice(0,hc).map((h,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+':</strong> '+esc(h)+"</div>").join("")}</div><div id="solution-${t.id}">${state.revealed[t.id]?'<details open><summary>Lösung · erst vergleichen, dann selbst erklären</summary>'+solutionHTML(t)+"</details>":""}</div></section>`;
+html+=`<div class="actions"><button class="primary" onclick="checkTask('${t.id}')">Prüfen</button><button onclick="showHint('${t.id}')">Hinweis <span id="hintcount-${t.id}">${Math.min(hc,hints.length)}/${hints.length}</span></button><button onclick="showSolution('${t.id}')">Lösungsweg ansehen</button></div><div id="feedback-${t.id}" role="status"></div><div id="hints-${t.id}">${hints.slice(0,hc).map((h,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+':</strong> '+renderExplanation(h)+"</div>").join("")}</div><div id="solution-${t.id}">${state.revealed[t.id]?'<details open><summary>Lösung · erst vergleichen, dann selbst erklären</summary>'+solutionHTML(t)+"</details>":""}</div></section>`;
 return html;
 }
 function remember(id,k,v){if(!state.answers[id])state.answers[id]={};state.answers[id][k]=v;save()}
@@ -721,7 +1009,7 @@ if(t.after&&!state.revealed[id]){const p=document.createElement("p");p.textConte
 }
 function showHint(id){
 const h=taskHints(taskMap[id]);state.hints[id]=Math.min((state.hints[id]||0)+1,h.length);save();
-document.getElementById("hints-"+id).innerHTML=h.slice(0,state.hints[id]).map((v,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+":</strong> "+esc(v)+"</div>").join("");
+document.getElementById("hints-"+id).innerHTML=h.slice(0,state.hints[id]).map((v,i)=>'<div class="hintbox"><strong>Hinweis '+(i+1)+":</strong> "+renderExplanation(v)+"</div>").join("");
 document.getElementById("hintcount-"+id).textContent=state.hints[id]+"/"+h.length;
 }
 function showSolution(id){
@@ -776,7 +1064,7 @@ main.innerHTML=`<section class="card"><span class="tag">Willkommen im Lernatelie
 }
 function renderReference(){
 main.innerHTML=`<section class="card"><h2>Nachschlagen & Abschluss</h2><p>Hier findest du kurze Merksätze. Für die ausführlichen Lernwege gehst du zurück zum passenden Kapitel.</p></section>
-<section class="card"><h3>Vom Sachproblem zum LGS</h3><ol><li><strong>Variablen:</strong> Was ist unbekannt? Bedeutung und Einheit notieren.</li><li><strong>Aussagen:</strong> Jede unabhängige Information als Gleichung schreiben.</li><li><strong>Plausibilität:</strong> Stehen Preise bei Stückzahlen? Sind Größen und Einheiten sinnvoll?</li><li><strong>Lösen:</strong> Ein günstiges Verfahren wählen.</li><li><strong>Prüfen:</strong> In die ursprünglichen Gleichungen einsetzen.</li><li><strong>Deuten:</strong> Antwortsatz. Passen negative Zahlen oder Brüche zum Kontext?</li></ol><details><summary>Mini-Beispiel</summary><p>2 Hefte und 1 Stift kosten 9 €, 1 Heft und 2 Stifte kosten 6 €. x = Heftpreis, y = Stiftpreis.</p>${E("2x + y = 9\nx + 2y = 6\n→ (x | y) = (4 | 1)")}<p>Ein Heft kostet 4 €, ein Stift 1 €. Probe: 8 + 1 = 9; 4 + 2 = 6.</p></details></section>
+<section class="card"><h3>Vom Sachproblem zum LGS</h3><ol><li><strong>Variablen:</strong> Was ist unbekannt? Bedeutung und Einheit notieren.</li><li><strong>Aussagen:</strong> Jede unabhängige Information als Gleichung schreiben.</li><li><strong>Plausibilität:</strong> Stehen Preise bei Stückzahlen? Sind Größen und Einheiten sinnvoll?</li><li><strong>Lösen:</strong> Ein günstiges Verfahren wählen.</li><li><strong>Prüfen:</strong> In die ursprünglichen Gleichungen einsetzen.</li><li><strong>Deuten:</strong> Antwortsatz. Passen negative Zahlen oder Brüche zum Kontext?</li></ol><details><summary>Mini-Beispiel</summary><p>2 Hefte und 1 Stift kosten 9 €, 1 Heft und 2 Stifte kosten 6 €. x = Heftpreis, y = Stiftpreis.</p>${E("I: 2x + y = 9\nII: x + 2y = 6\nI · 2: 4x + 2y = 18\nI · 2 − II: 3x = 12 | : 3\nx = 4@@u\nin II: 4 + 2y = 6 | −4\n2y = 2 | : 2\ny = 1@@u\nProbe I: 8 + 1 = 9\nProbe II: 4 + 2 = 6\nL = {(4 | 1)}@@uu")}<p>Ein Heft kostet 4 €, ein Stift 1 €.</p></details></section>
 <section class="card"><h3>Verfahrenskompass</h3><div class="tablewrap"><table><tr><th>Verfahren</th><th>Günstig, wenn …</th><th>Kernidee</th></tr><tr><td>Grafisch</td><td>ein anschaulicher Überblick wichtig ist.</td><td>Gemeinsame Punkte der Geraden finden; oft Näherung.</td></tr><tr><td>Systematisches Probieren</td><td>wenige sinnvolle Werte möglich sind.</td><td>Geordnet Paare erzeugen und alle Bedingungen prüfen.</td></tr><tr><td>Inhaltlich</td><td>ein Vergleich in der Situation hilft.</td><td>Z. B. Zusatzkosten oder zusätzliche Räder vergleichen.</td></tr><tr><td>Gleichsetzen</td><td>beide Gleichungen nach derselben Variablen aufgelöst sind.</td><td>Zwei gleichwertige Ausdrücke gleichsetzen.</td></tr><tr><td>Einsetzen</td><td>eine Variable leicht freizustellen ist.</td><td>Einen Ausdruck in der anderen Gleichung einsetzen.</td></tr><tr><td>Addieren</td><td>passende Gegenzahlen vorliegen oder leicht entstehen.</td><td>Eine Variable durch Addition eliminieren.</td></tr></table></div></section>
 <section class="card"><h3>Begriffe in einem Satz</h3><ul><li><strong>Lösungspaar:</strong> (x | y); die Reihenfolge ist fest.</li><li><strong>Lösungsmenge L:</strong> alle passenden Paare oder Tripel.</li><li><strong>LGS:</strong> mehrere lineare Gleichungen über dieselben Variablen, die gleichzeitig erfüllt sein müssen.</li><li><strong>Linear:</strong> Variablen kommen nur in der ersten Potenz vor und werden nicht miteinander multipliziert. x·y oder x² wäre nicht linear.</li><li><strong>Äquivalente Umformung:</strong> verändert die Lösungsmenge nicht.</li><li><strong>Probe:</strong> Einsetzen in alle ursprünglichen Gleichungen.</li><li><strong>Eliminieren:</strong> eine Variable durch geeignetes Rechnen entfernen.</li><li><strong>Abhängige Gleichungen:</strong> eine Gleichung liefert keine neue Information, weil sie aus anderen folgt.</li></ul></section>
 <section class="card notebook"><h3>Lösbarkeit kompakt</h3><p>Zwei nicht entartete Geradengleichungen: <strong>ein</strong> Schnittpunkt, <strong>keiner</strong> oder <strong>unendlich viele</strong>.</p>${E("m₁ ≠ m₂ → genau eine Lösung\nm₁ = m₂, b₁ ≠ b₂ → keine Lösung\nm₁ = m₂, b₁ = b₂ → unendlich viele")}<p>Die m-b-Regel setzt Funktionsform voraus. Ein Widerspruch wie 0 = 5 schließt Lösungen aus. 0 = 0 liefert keine neue Bedingung; andere Gleichungen gelten weiter.</p><p>Bei größeren Systemen entscheidet nicht nur die Anzahl der Gleichungen. Zusätzliche Aussagen können helfen, nichts Neues sagen oder widersprechen.</p></section>
