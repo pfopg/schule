@@ -944,6 +944,47 @@ show("home");
 })();
 
 
+/* Kleine Tastaturkorrekturen */
+(() => {
+
+  // Raute links von 2nd positionieren
+  const bottom = document.getElementById("bottom");
+
+  if (bottom) {
+    const keys = [...bottom.children];
+
+    const diamond = keys.find(el =>
+      el.querySelector("button")?.textContent.trim() === "◆"
+    );
+
+    const second = keys.find(el =>
+      el.querySelector("button")?.textContent.trim() === "2nd"
+    );
+
+    if (diamond && second && diamond.nextElementSibling !== second) {
+      bottom.insertBefore(diamond, second);
+    }
+  }
+
+  // Beschriftung über ENTER von ≈ auf APPROX ändern
+  const enter = [...document.querySelectorAll("#numeric .keywrap")]
+    .find(el =>
+      el.querySelector("button")?.textContent.trim() === "ENTER"
+    );
+
+  if (enter) {
+    const legend = enter.querySelector(".legend .green");
+    if (legend) legend.textContent = "APPROX";
+
+    const button = enter.querySelector("button");
+    if (button) {
+      button.title = "ENTER · APPROX";
+      button.setAttribute("aria-label", "ENTER · APPROX");
+    }
+  }
+
+})();
+
 </script>
 </body>
 </html>
