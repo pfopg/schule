@@ -985,6 +985,220 @@ show("home");
 
 })();
 
+/* =========================================
+   VOYAGE 200 – FINALE LAYOUTREPARATUR
+   ========================================= */
+
+(() => {
+  const device = document.querySelector(".device");
+  if (!device) return;
+
+  const brand = device.querySelector(".brand");
+  const bezel = device.querySelector(".bezel");
+  const side = device.querySelector(".side");
+  const letters = device.querySelector(".letters");
+  const numeric = device.querySelector("#numeric");
+  const upper = device.querySelector(".upper");
+  const keyboard = device.querySelector(".keyboard");
+
+  if (!bezel || !side || !letters || !numeric) return;
+
+  // Zwei echte Spalten erzeugen
+  const columns = document.createElement("div");
+  columns.className = "body-columns";
+
+  const left = document.createElement("div");
+  left.className = "left-stack";
+
+  const right = document.createElement("div");
+  right.className = "right-stack";
+
+  // Linke Spalte: Display und Buchstabentastatur
+  left.append(bezel, letters);
+
+  // Rechte Spalte: Steuerkreuz, sechs Tasten und Zahlenblock
+  right.append(side, numeric);
+
+  columns.append(left, right);
+
+  // Alte Layout-Container entfernen
+  upper?.remove();
+  keyboard?.remove();
+
+  // Neue Anordnung direkt unter dem Markenlogo einsetzen
+  if (brand) {
+    brand.after(columns);
+  } else {
+    device.prepend(columns);
+  }
+
+  // Alte Layoutregeln überschreiben
+  document.getElementById("voyage-final-layout")?.remove();
+
+  const style = document.createElement("style");
+  style.id = "voyage-final-layout";
+
+  style.textContent = `
+
+    .device {
+      display: block !important;
+      min-width: 870px;
+    }
+
+    .body-columns {
+      display: grid !important;
+      grid-template-columns:
+        minmax(0, 1.85fr)
+        minmax(265px, 1fr);
+
+      gap: 22px;
+      align-items: start;
+      width: 100%;
+    }
+
+    .left-stack,
+    .right-stack {
+      display: flex !important;
+      flex-direction: column;
+      align-items: stretch;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .left-stack {
+      gap: 8px;
+    }
+
+    .right-stack {
+      gap: 5px;
+    }
+
+    .bezel,
+    .letters,
+    .side,
+    .numeric {
+      grid-area: auto !important;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+      align-self: stretch;
+    }
+
+    /* Steuerkreuz */
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 4px;
+    }
+
+    .nav {
+      width: 116px;
+      max-width: 100%;
+      margin: 0 auto;
+      gap: 3px;
+    }
+
+    .nav .key {
+      min-height: 30px;
+    }
+
+    /* Sechs Funktionstasten: 3 × 2 */
+
+    .sidekeys {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      gap: 5px 6px;
+    }
+
+    .sidekeys .key {
+      min-height: 25px;
+      padding: 2px;
+      font-size: 9px;
+    }
+
+    /* Zahlenblock */
+
+    .numeric {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px 7px;
+    }
+
+    .numeric .keywrap {
+      min-width: 0;
+    }
+
+    .numeric .legend {
+      height: 17px;
+      min-height: 17px;
+      font-size: 9px;
+      padding-bottom: 2px;
+    }
+
+    .numeric .key {
+      min-height: 32px;
+    }
+
+    .numeric .enter {
+      grid-column: 1 / -1 !important;
+    }
+
+    .numeric .enter .legend .green {
+      font-size: 9px;
+    }
+
+    .devicehint {
+      margin: 5px 0 0;
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  // Raute links von 2nd
+  const bottom = document.getElementById("bottom");
+
+  if (bottom) {
+    const buttons = [...bottom.children];
+
+    const diamond = buttons.find(el =>
+      el.querySelector("button")?.textContent.trim() === "◆"
+    );
+
+    const second = buttons.find(el =>
+      el.querySelector("button")?.textContent.trim() === "2nd"
+    );
+
+    if (diamond && second) {
+      bottom.insertBefore(diamond, second);
+    }
+  }
+
+  // ENTER-Zweitbeschriftung: APPROX
+  const enter = [...numeric.querySelectorAll(".keywrap")]
+    .find(el =>
+      el.querySelector("button")?.textContent.trim() === "ENTER"
+    );
+
+  if (enter) {
+    const green = enter.querySelector(".legend .green");
+
+    if (green) green.textContent = "APPROX";
+
+    const button = enter.querySelector("button");
+
+    if (button) {
+      button.title = "ENTER · APPROX";
+      button.setAttribute("aria-label", "ENTER · APPROX");
+    }
+  }
+
+})();
+
 </script>
 </body>
 </html>
