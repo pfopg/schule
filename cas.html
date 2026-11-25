@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voyage 200 · Tastaturtrainer</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/all.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e8edf1;color:#293a3c;font:14px system-ui,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #2687bc;outline-offset:2px}.wrap{max-width:1180px;margin:auto;padding:20px}h1{font-size:23px;margin:0}h2{font-size:18px}h3{font-size:15px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}header p{margin-bottom:0;color:#5c6d72;font-size:12px}.utilities{display:flex;gap:7px}.utility,.example{background:white;border:1px solid #c5d2d9;border-radius:7px;padding:9px 12px}.scroll{overflow:auto;padding:4px 4px 22px}.device{min-width:870px;background:linear-gradient(110deg,#d8ddd3,#b8c2b5 70%,#ced6c8);border:2px solid #859381;border-bottom:10px solid #6e7e6b;border-radius:40px 40px 50px 50px;box-shadow:inset 3px 3px 10px #fafff4,inset -3px -3px 8px #8e9e86,0 12px 20px #293d3333;padding:24px 28px 26px}.brand{display:flex;align-items:baseline;gap:22px;padding:0 9px 16px}.brand strong{font:bold italic 31px Arial;letter-spacing:-1px}.brand span{font-size:11px;letter-spacing:1px}.brand small{margin-left:auto;font-size:10px}.upper{display:grid;grid-template-columns:1fr 150px;gap:26px}.bezel{background:linear-gradient(110deg,#52634f,#2d3e31);border-radius:17px 17px 24px 24px;padding:15px 18px;box-shadow:inset 2px 3px 6px #142818}.screen{position:relative;height:345px;display:flex;flex-direction:column;background:#bdcba6;color:#24311f;border:3px solid #253b29;box-shadow:inset 1px 2px 8px #364e3955;font:14px "Courier New",monospace;overflow:hidden}.screen.large{height:465px}.toolbar{display:flex;min-height:26px;border-bottom:1px solid #546c45}.toolbar button{flex:1;border:0;border-right:1px solid #82916d;background:transparent;color:inherit;font:10px monospace;padding:4px 0}.toolbar button:hover{background:#334a2b;color:#bdcba6}.view{flex:1;min-height:0;overflow:auto;position:relative}.entry{display:flex;align-items:center;gap:7px;border-top:1px solid #647953;padding:5px 7px;min-height:33px}.entry input{background:transparent;border:0;outline:none;min-width:0;width:100%;color:inherit;font:16px monospace}.status{display:flex;justify-content:space-between;border-top:1px solid #647953;padding:3px 5px;font:10px monospace;min-height:19px}.fkeys{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-top:11px}.keywrap{display:flex;flex-direction:column;justify-content:flex-end;min-width:0}.legend{height:20px;display:flex;align-items:flex-end;justify-content:center;gap:5px;font:bold 10px Arial;padding-bottom:4px;white-space:nowrap}.blue{color:#236f9f}.green{color:#28703b}.key{user-select:none;touch-action:manipulation;min-height:35px;border:1px solid #2b4430;border-bottom:4px solid #263c2a;border-radius:7px 7px 11px 11px;color:#fafaf0;background:linear-gradient(#576d58,#304c35);box-shadow:inset 0 1px 2px #aabca5,0 2px 2px #263e2633;font:15px Arial;padding:5px 2px}.key:active,.key.active{transform:translateY(2px);filter:brightness(1.18)}.fkeys .key{min-height:25px;font-size:11px;background:linear-gradient(#7a7c94,#50546c);border-color:#41465b}.side{display:flex;flex-direction:column;justify-content:space-between}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0 25px}.nav .key{min-height:39px;border-radius:16px}.sidekeys{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px}.sidekeys .key{font-size:11px;min-height:31px}.keyboard{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(280px,1fr);gap:27px;margin-top:13px;align-items:end}.letters{display:flex;flex-direction:column;gap:8px}.letterrow{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}.letterrow.middle{grid-template-columns:repeat(9,1fr);padding:0 10px}.letterrow.lower{grid-template-columns:repeat(9,1fr);padding-left:20px}.bottom{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;margin-top:7px}.bottom .key{font-size:11px}.space{grid-column:span 3}.second .key{background:linear-gradient(#4393c0,#216d9a);border-color:#1a5278}.diamond .key{background:linear-gradient(#58a66b,#2c7840);border-color:#24562d}.numeric{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 10px}.numeric .key{min-height:37px;font-size:17px}.numeric .number .key{font-size:23px;color:#2b3f29;background:linear-gradient(#fffdf0,#d4dbc9);border-color:#768a70}.numeric .sign .key{font-size:19px;color:#243b2b;background:linear-gradient(#f7fbeb,#cad9be);border-color:#678363}.numeric .enter{grid-column:span 3}.numeric .enter .key{background:linear-gradient(#7a7b96,#515571);font-size:12px}.numeric .ln{grid-column:1}.numeric .spacer{grid-column:span 3}.devicehint{font-size:11px;text-align:center;color:#52654c;line-height:1.7;margin:16px 0 0}.panel{padding:19px 23px;background:white;border:1px solid #d4dfe3;border-radius:10px;line-height:1.65;margin-top:6px}.panel h2{margin-top:0}.columns{display:grid;grid-template-columns:1fr 1fr;gap:25px}code{background:#eef3f7;padding:2px 4px;border-radius:3px}.examples{display:flex;flex-wrap:wrap;gap:7px}.example{font:12px monospace;padding:8px}.small{font-size:12px;color:#5e7174}.hist{padding:5px 10px}.record{padding:8px 0;border-bottom:1px dotted #82946f}.cmd{cursor:pointer;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:5px 0;min-height:28px}.cmd:hover{background:#a6b98c55}.answer{text-align:right;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:9px 2px;min-height:36px}.error{text-align:left;font:12px monospace;white-space:pre-wrap;line-height:1.5}.math{display:inline-block;vertical-align:middle;padding:4px 1px}.katex{font-size:1.13em;color:inherit}.answer .katex{font-size:1.23em}.fallback{white-space:pre-wrap}.welcome{padding:12px 5px;line-height:1.9}.overlay{position:absolute;z-index:20;inset:29px 12px 25px;background:#ccd8b6;border:2px solid #364d2b;box-shadow:3px 3px #354b2b66;padding:11px;overflow:auto}.overlay h3{font:bold 14px monospace;border-bottom:1px solid;padding-bottom:6px;margin:0 0 10px}.overlay pre{font:12px monospace;white-space:pre-wrap;line-height:1.6}.menu{position:absolute;z-index:21;left:1px;top:26px;max-height:285px;max-width:96%;min-width:210px;background:#ccd8b6;border:2px solid #364d2b;overflow:auto}.menu button{display:block;width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:8px 10px;font:13px monospace}.menu button:hover,.menu button:focus{background:#344c2a;color:#ccd8b6}.lcd{padding:10px 13px}.row{display:flex;align-items:center;gap:9px;margin:8px 0}.row label{min-width:112px}.row input,.row select{width:145px;min-width:0;padding:4px;border:1px solid #788b62;background:#dae3c8;color:inherit;font:13px monospace}.lcdButton{background:#3c542f;color:#d1ddbd;border:1px solid #2d4521;padding:6px 10px;margin:5px 5px 3px 0;font:12px monospace}.yrow{display:flex;align-items:center;gap:5px;padding:8px 7px}.yrow input[type=text]{width:100%;min-width:0;border:0;background:transparent;font:15px monospace;color:inherit}.preview{padding:2px 10px 9px 32px;border-bottom:1px dotted #899c74;overflow-x:auto}.table{border-collapse:collapse;width:100%;text-align:right;font:13px monospace}.table th,.table td{padding:7px 9px;border:1px solid #7b9068}.table th{position:sticky;top:0;background:#aabb92}.table td:first-child{cursor:pointer}canvas{width:100%;height:100%;display:block;touch-action:none}.readout{position:absolute;bottom:0;left:0;right:0;padding:5px;background:#bdcba6f5;pointer-events:none;font:11px monospace}.note{background:#fff9e8;border:1px solid #e9d9a8;padding:10px 14px;border-radius:8px;margin-bottom:15px;font-size:12px;line-height:1.6}
+@media(max-width:800px){.wrap{padding:12px 8px}.columns{grid-template-columns:1fr}header{align-items:flex-start}h1{font-size:20px}}
+
+/* =========================================
+   VOYAGE 200 – NEUES ZWEISPALTIGES LAYOUT
+   ========================================= */
+
+.device {
+    display: grid;
+
+    /* Linke Spalte: Display und Buchstabentastatur
+       Rechte Spalte: Navigation und Zahlenblock */
+    grid-template-columns:
+        minmax(0, 1.85fr)
+        minmax(270px, 1fr);
+
+    grid-template-areas:
+        "brand brand"
+        "display side"
+        "letters numeric"
+        "hint hint";
+
+    column-gap: 27px;
+    row-gap: 12px;
+    align-items: start;
+}
+
+/* Kopfzeile über beide Spalten */
+.brand {
+    grid-area: brand;
+}
+
+/* Die bisherigen äußeren Container auflösen,
+   damit ihre Inhalte direkt im Geräte-Grid liegen */
+.upper,
+.keyboard {
+    display: contents;
+}
+
+/* Linke obere Spalte: Display */
+.bezel {
+    grid-area: display;
+    min-width: 0;
+}
+
+/* Rechte obere Spalte: Navigation */
+.side {
+    grid-area: side;
+    min-width: 0;
+    align-self: stretch;
+}
+
+/* Linke untere Spalte: Buchstabentastatur */
+.letters {
+    grid-area: letters;
+    min-width: 0;
+    align-self: start;
+}
+
+/* Rechte untere Spalte: Zahlenblock */
+.numeric {
+    grid-area: numeric;
+    min-width: 0;
+    align-self: start;
+}
+
+/* Fußzeile über beide Spalten */
+.devicehint {
+    grid-area: hint;
+    margin: 4px 0 0;
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><h1>Voyage 200 · Tastaturtrainer</h1><p>Pretty Print · getrennte Minustasten · überarbeiteter rechter Tastenblock</p></div><div class="utilities"><button class="utility" id="size">Displaygröße</button><button class="utility" id="help">Anleitung</button></div></header>
+<div class="note"><strong>Wichtig beim Minus:</strong> <code>7−3</code> ist eine Subtraktion. <code>⁻3</code> ist eine negative Zahl. Mit den Bildschirmtasten werden die beiden Zeichen bewusst unterschieden. Auf der PC-Tastatur: <strong>-</strong> für Subtraktion, <strong>Alt+N</strong> für das Vorzeichen.</div>
+<div class="scroll"><div class="device">
+<div class="brand"><strong>voyage 200</strong><span>TEXAS INSTRUMENTS</span><small>INOFFIZIELLER HTML-TRAINER</small></div>
+<div class="upper"><div class="bezel">
+<div class="screen" id="screen">
+<div class="toolbar" id="toolbar"></div><div class="view" id="view"></div>
+<div class="entry" id="entryrow"><span>▸</span><input id="entry" aria-label="Eingabe" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+<div class="status"><span id="status"></span><span id="page">HOME</span></div>
+<div class="menu" id="menu" hidden></div><div class="overlay" id="dialog" hidden></div>
+</div><div class="fkeys" id="fkeys"></div></div>
+<div class="side"><div class="nav"><span></span><button class="key" data-nav="up">▲</button><span></span><button class="key" data-nav="left">◀</button><button class="key" id="hand" style="font-size:10px">HAND</button><button class="key" data-nav="right">▶</button><span></span><button class="key" data-nav="down">▼</button><span></span></div><div class="sidekeys" id="sidekeys"></div></div></div>
+<div class="keyboard"><div class="letters"><div class="letterrow" id="letters1"></div><div class="letterrow middle" id="letters2"></div><div class="letterrow lower" id="letters3"></div><div class="bottom" id="bottom"></div></div><div class="numeric" id="numeric"></div></div>
+<p class="devicehint">2nd J: ∞ · 2nd 7: ∫ · 2nd 8: d · ◆ ENTER: ≈ · ◆ W: Y= · ◆ E: WINDOW · ◆ R: GRAPH · ◆ T: TblSet · ◆ Y: TABLE</p>
+</div></div>
+<div class="panel" id="instructions">
+<h2>Die beiden Minustasten üben</h2>
+<div class="columns"><div><h3>Subtraktion: Taste rechts neben der 3</h3><p>Sie verbindet zwei Ausdrücke: <code>7−3</code>, <code>x−2</code>, <code>5−⁻2</code>.</p><p>Steht das Rechenminus am Anfang oder direkt nach einer Rechenoperation, meldet der Trainer die Verwechslung. Beispiel: <code>−3</code> → Hinweis auf die Vorzeichentaste.</p></div><div><h3>Vorzeichen: Taste rechts neben dem Punkt</h3><p>Sie macht den folgenden Ausdruck negativ: <code>⁻3</code>, <code>2×⁻3</code>, <code>(⁻2)^2</code>.</p><p><code>⁻2^2</code> ergibt −4, <code>(⁻2)^2</code> ergibt 4. Die Vorzeichentaste ersetzt keine Klammern.</p></div></div>
+<h3>Beispiele zum Anklicken</h3><div class="examples" id="examples"></div>
+<details><summary>Umfang und Hinweise</summary><p>Dies ist eine Trainingsnachbildung, keine vollständige TI-Firmware. Enthalten sind symbolische Grundrechnungen, Funktionsdefinitionen, Ableitungen, Integrale, Gleichungslösungen, Vektorbefehle, einfache Regressionen, Binomialverteilungen, kartesische Graphen und eine Wertetabelle. Nicht alle Menüs und numerischen Spezialverfahren des Originals sind nachgebildet.</p><p>Die Minusprüfung ist eine didaktische Eingabeprüfung, keine vollständige Nachbildung des TI-Parsers. PC-Eingaben und eingefügter Text durchlaufen dieselbe Prüfung. Intern werden beide Minuszeichen erst nach der Prüfung in die Rechensyntax übersetzt.</p><p>Pretty Print setzt Eingaben und Ergebnisse mathematisch. Die Eingabezeile bleibt Klartext. APPROX rundet die Anzeige auf sechs signifikante Stellen. KaTeX und Nerdamer werden über ein CDN geladen; dafür ist eine Internetverbindung erforderlich.</p></details>
+<div class="small" id="loaded"></div>
+</div></div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fresh=()=>({vars:{},funcs:{},history:[],mode:"AUTO",pretty:true,ys:Array.from({length:10},()=>({expr:"",on:true})),win:{xmin:-10,xmax:10,ymin:-10,ymax:10},table:{start:0,step:1,mode:"Auto",cells:[]},stats:""});
+let S=fresh();
+try{const old=JSON.parse(localStorage.getItem("voyageKeysV4")||"null");if(old?.ys)S=Object.assign(fresh(),old)}catch(e){}
+let page="home",modifier="",shift=false,active=$("entry"),historyIndex=S.history.length,offset=0,trace=false,tx=0,curveIndex=0,curves=[],canvas,ctx,W=600,H=250;
+function save(){try{localStorage.setItem("voyageKeysV4",JSON.stringify(S))}catch(e){}}
+function split(s,seps=",;"){let out=[],depth=0,start=0;s=String(s);for(let i=0;i<s.length;i++){if("([{".includes(s[i]))depth++;else if(")]}".includes(s[i]))depth--;else if(!depth&&seps.includes(s[i])){out.push(s.slice(start,i).trim());start=i+1}}out.push(s.slice(start).trim());return out}
+function vector(s){s=String(s).trim();return /^\[.*\]$/s.test(s)||/^\{.*\}$/s.test(s)?split(s.slice(1,-1)).filter(Boolean):null}
+function replaceWord(s,name,value){return s.replace(new RegExp("\\b"+name+"\\b","g"),()=>value)}
+function normalize(s){return String(s).trim().replace(/[⁻−–]/g,"-").replace(/×/g,"*").replace(/÷/g,"/").replace(/π/g,"pi").replace(/∞/g,"Infinity").replace(/∫\(/g,"integral(").replace(/Σ\(/g,"sum(")}
+function userSyntax(s){return String(s).replace(/\blog\(/g,"ln(")}
+function requireCAS(){if(typeof nerdamer==="undefined")throw Error("CAS nicht geladen. Internetverbindung prüfen.")}
+function checkInput(source){
+ let s=String(source),stack=[];
+ for(let i=0;i<s.length;i++){
+ let c=s[i];
+ if("([{".includes(c))stack.push(c);
+ if(")]}".includes(c)&&"([{".indexOf(stack.pop())!==")]}".indexOf(c))throw Error("Klammern passen nicht zusammen.");
+ if(!"-−–⁻".includes(c))continue;
+ if(c==="-"&&s[i+1]===">"){i++;continue}
+ let before=s.slice(0,i).trimEnd(),after=s.slice(i+1).trimStart();
+ let prev=before.slice(-1);
+ let keyword=before.match(/\b(Define|DelVar|graph|and|or)\s*$/i);
+ let expects=!before||keyword||/[([{,;=+*×/÷^|→<>:−–\-⁻]/.test(prev);
+ // Minus im Exponenten einer wissenschaftlichen Zahl ist kein Tastaturfehler.
+ if(c!=="⁻"&&/[eE]$/.test(before)&&/\d(?:\.\d*)?[eE]$/.test(before)&&/^\d/.test(after))continue;
+ if(c!=="⁻"&&expects)throw Error("Rechenminus statt Vorzeichenminus.\nFür negative Zahlen die Taste (−) rechts neben dem Punkt verwenden.\nBeispiel: ⁻3 oder 5−⁻2");
+ if(c==="⁻"&&!expects)throw Error("Vorzeichenminus statt Rechenminus.\nFür eine Subtraktion die Taste − rechts neben der 3 verwenden.\nBeispiel: 7−3");
+ if(!after||/^[)\]},;=]/.test(after))throw Error("Nach dem Minus fehlt ein Ausdruck.");
+ }
+ if(stack.length)throw Error("Eine schließende Klammer fehlt.");
+ if(s.length>2000)throw Error("Eingabe zu lang.");
+}
+function decimal(n){if(n===Infinity)return "∞";if(n===-Infinity)return "−∞";return Number.isFinite(n)?Number(n.toPrecision(6)).toString():"undef"}
+function rawNumber(s){requireCAS();let n=Number(nerdamer(String(s)).evaluate().text("decimals"));if(!Number.isFinite(n))throw Error("Endlicher reeller Zahlenwert erforderlich.");return n}
+function num(s){return rawNumber(calculate(s))}
+function numeric(s){let v=vector(s);if(v)return (s[0]==="["?"[":"{")+v.map(numeric).join(",")+(s[0]==="["?"]":"}");if(/\s+(and|or)\s+/.test(s))return s.split(/(\s+(?:and|or)\s+)/).map(t=>/^\s/.test(t)?t:numeric(t)).join("");let eq=split(s,"=");if(eq.length===2)return eq[0]+"="+numeric(eq[1]);try{return decimal(rawNumber(s))}catch(e){return s}}
+function symmetric(s){requireCAS();return nerdamer(s).toString()}
+function factorial(n){let r=1;for(let j=2;j<=n;j++)r*=j;return r}
+function binomial(n,p,k){if(!Number.isInteger(n)||n<0||n>10000||p<0||p>1||!Number.isFinite(p))throw Error("0≤n≤10000 ganzzahlig, 0≤p≤1.");if(!Number.isInteger(k)||k<0||k>n)return 0;if(!p)return +(k===0);if(p===1)return +(k===n);let l=0,m=Math.min(k,n-k);for(let i=1;i<=m;i++)l+=Math.log(n-m+i)-Math.log(i);return Math.exp(l+k*Math.log(p)+(n-k)*Math.log1p(-p))}
+function regression(name,args,blocked,depth){
+ let xs=vector(calculate(args[0],blocked,depth+1)),ys=vector(calculate(args[1],blocked,depth+1));if(!xs||!ys||xs.length!==ys.length||xs.length<2)throw Error("Gleich lange Zahlenlisten erforderlich.");
+ xs=xs.map(rawNumber);ys=ys.map(rawNumber);let X=xs.slice(),Y=ys.slice(),deg=name==="quadreg"?2:name==="quartreg"?4:1;
+ if(["powerreg","lnreg"].includes(name)){if(xs.some(x=>x<=0))throw Error("Positive x-Werte erforderlich.");X=xs.map(Math.log)}
+ if(["powerreg","expreg"].includes(name)){if(ys.some(y=>y<=0))throw Error("Positive y-Werte erforderlich.");Y=ys.map(Math.log)}
+ let n=deg+1;if(xs.length<n)throw Error("Zu wenige Daten.");
+ let A=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>X.reduce((s,x)=>s+x**(r+c),0)).concat(X.reduce((s,x,i)=>s+Y[i]*x**r,0)));
+ for(let i=0;i<n;i++){let p=i;for(let j=i+1;j<n;j++)if(Math.abs(A[j][i])>Math.abs(A[p][i]))p=j;[A[p],A[i]]=[A[i],A[p]];let q=A[i][i];if(Math.abs(q)<1e-12)throw Error("Singuläre Daten.");for(let k=i;k<=n;k++)A[i][k]/=q;for(let j=0;j<n;j++)if(j!==i){let f=A[j][i];for(let k=i;k<=n;k++)A[j][k]-=f*A[i][k]}}
+ let c=A.map(r=>r[n]),body=name==="expreg"?Math.exp(c[0])+"*("+Math.exp(c[1])+")^x":name==="powerreg"?Math.exp(c[0])+"*x^("+c[1]+")":name==="lnreg"?c[0]+"+("+c[1]+")*ln(x)":c.map((v,i)=>"("+v+")*x^"+i).join("+");
+ S.funcs.reg={params:["x"],body};S.stats="reg(x)="+body;return S.stats;
+}
+function calculate(source,blocked=[],depth=0){
+ requireCAS();if(depth>24)throw Error("Definition rekursiv oder zu tief.");
+ let s=normalize(source);if(!s)return "";
+ const next=(v,b=blocked)=>calculate(v,b,depth+1);
+ if(/^newprob$/i.test(s)){S.vars={};S.funcs={};return "Done"}
+ if(/^ShowStat$/i.test(s))return S.stats||"Keine Regression.";
+ if(/^DelVar\s+/i.test(s)){split(s.replace(/^DelVar\s+/i,"")).forEach(k=>{delete S.vars[k];delete S.funcs[k]});return "Done"}
+ let def=s.match(/^Define\s+([A-Za-z]\w*(?:\([^()]*\))?)\s*=\s*(.+)$/i),sto=s.match(/^(.+?)\s*(?:→|->)\s*([A-Za-z]\w*(?:\([^()]*\))?)$/);
+ if(def||sto){
+ let target=def?def[1]:sto[2],body=def?def[2]:sto[1],f=target.match(/^(\w+)\(([^()]*)\)$/);
+ if(f){let params=split(f[2]);if(!params.every(p=>/^[A-Za-z]\w*$/.test(p)))throw Error("Funktionsparameter prüfen.");if(new RegExp("\\b"+f[1]+"\\s*\\(").test(body))throw Error("Rekursive Definition nicht unterstützt.");
+ let result=next(body,[...new Set(blocked.concat(params))]);S.funcs[f[1]]={params,body:userSyntax(result)};delete S.vars[f[1]];return "Done"}
+ if(["pi","e","Infinity"].includes(target))throw Error("Reservierter Name.");
+ let r=next(body);S.vars[target]=r;delete S.funcs[target];return r;
+ }
+ let condition=split(s,"|");
+ if(condition.length===2){let b=condition[0];for(let c of condition[1].split(/\s+and\s+/i)){let m=c.match(/^(\w+)\s*=\s*(.+)$/);if(!m)throw Error("Bedingung als x=2 eingeben.");b=replaceWord(b,m[1],"("+next(m[2])+")")}return next(b)}
+ let gr=s.match(/^graph\s+(.+)$/i);if(gr){S.ys[0]={expr:gr[1].replace(/-/g,"⁻"),on:true};setTimeout(()=>show("graph"),0);return "Done"}
+ let rg=s.match(/^(LinReg|ExpReg|QuadReg|QuartReg|PowerReg|LnReg)\s+(.+)$/i);if(rg)return regression(rg[1].toLowerCase(),split(rg[2]),blocked,depth);
+ let v=vector(s);if(v)return (s[0]==="["?"[":"{")+v.map(x=>next(x)).join(",")+(s[0]==="["?"]":"}");
+ let eq=split(s,"=");if(eq.length===2)return next(eq[0])+"="+next(eq[1]);
+ let out="";
+ for(let i=0;i<s.length;){
+ let m=s.slice(i).match(/^[A-Za-z_]\w*/);
+ if(!m){out+=s[i++];continue}
+ let name=m[0],j=i+name.length;while(s[j]===" ")j++;
+ if(s[j]!=="("){out+=Object.hasOwn(S.vars,name)&&!blocked.includes(name)?"("+next(S.vars[name],blocked.concat(name))+")":name;i+=name.length;continue}
+ let end=j+1,d=1;for(;end<s.length&&d;end++){if(s[end]==="(")d++;if(s[end]===")")d--}if(d)throw Error("Klammer fehlt.");
+ let args=split(s.slice(j+1,end-1)),n=name.toLowerCase(),res;
+ let f=S.funcs[name];if(!f&&/^y([1-9]|10)$/.test(name)){let y=S.ys[+name.slice(1)-1];if(y?.expr)f={params:["x"],body:y.expr}}
+ if(f){if(args.length!==f.params.length)throw Error("Argumentanzahl prüfen.");let body=f.body;f.params.forEach((p,k)=>body=replaceWord(body,p,"zzargument"+k+"zz"));args.forEach((a,k)=>body=body.replaceAll("zzargument"+k+"zz","("+next(a)+")"));res=next(body)}
+ else if(n==="d"||n==="diff"){if(args.length<2)throw Error("d(Term,x) eingeben.");let order=args[2]?num(args[2]):1;if(!Number.isInteger(order)||order<0||order>10)throw Error("Ableitungsordnung 0 bis 10.");res=nerdamer.diff(next(args[0],blocked.concat(args[1])),args[1],order).toString()}
+ else if(["integral","integrate","int"].includes(n)){if(args.length!==2&&args.length!==4)throw Error("∫(Term,x) oder ∫(Term,x,a,b).");res=nerdamer.integrate(next(args[0],blocked.concat(args[1])),args[1]).toString();if(args.length===4){if(res.includes("integrate("))throw Error("Keine Stammfunktion ermittelt.");res=symmetric("("+replaceWord(res,args[1],"("+next(args[3])+")")+")-("+replaceWord(res,args[1],"("+next(args[2])+")")+")")}}
+ else if(n==="limit"){res=nerdamer.limit(next(args[0],blocked.concat(args[1])),args[1],next(args[2])).toString()}
+ else if(n==="solve"||n==="zeros"){
+ let vv=vector(args[1]),es=args[0].split(/\s+and\s+/i);
+ if(vv){let sol=nerdamer.solveEquations(es.map(e=>next(e,blocked.concat(vv))),vv);res=sol.map(([k,v])=>k+"="+v).join(" and ")}
+ else{let a=next(args[0],blocked.concat(args[1])),e=split(a,"=");if(e.length===2)a="("+e[0]+")-("+e[1]+")";let sol=vector(nerdamer.solve(a,args[1]).toString())||[];res=n==="zeros"?"{"+sol.join(",")+"}":sol.length?sol.map(x=>args[1]+"="+x).join(" or "):"Keine Lösung ermittelt."}
+ }
+ else if(n==="approx")res=numeric(next(args[0]));
+ else if(n==="sum"){let lo=num(args[2]),hi=num(args[3]);if(!Number.isInteger(lo)||!Number.isInteger(hi)||hi-lo>2000)throw Error("Ganzzahlige Grenzen; höchstens 2001 Summanden.");let terms=[];for(let k=lo;k<=hi;k++)terms.push("("+next(replaceWord(args[0],args[1],"("+k+")"))+")");res=symmetric(terms.join("+")||"0")}
+ else if(n==="ncr"||n==="npr"){let a=num(args[0]),b=num(args[1]);if(!Number.isInteger(a)||!Number.isInteger(b)||b<0||a<b||a>500)throw Error("Ganzzahlige 0≤k≤n≤500.");res=symmetric("factorial("+a+")/factorial("+(a-b)+")"+(n==="ncr"?"/factorial("+b+")":""))}
+ else if(n==="binompdf"||n==="binomcdf"){let a=num(args[0]),p=num(args[1]);binomial(a,p,0);if(n==="binompdf")res=String(binomial(a,p,num(args[2])));else{let lo=args.length===4?num(args[2]):0,hi=num(args[args.length===4?3:2]),r=0;for(let k=Math.max(0,Math.ceil(lo));k<=Math.min(a,Math.floor(hi));k++)r+=binomial(a,p,k);res=String(Math.min(1,r))}}
+ else if(["norm","unitv","dotp","crossp"].includes(n)){let u=vector(next(args[0]));if(!u)throw Error("Vektor erwartet.");let dot=(u,v)=>{if(!v||v.length!==u.length)throw Error("Vektordimensionen prüfen.");return symmetric(u.map((x,k)=>"("+x+")*("+v[k]+")").join("+"))};let len=symmetric("sqrt("+dot(u,u)+")");
+ if(n==="norm")res=len;else if(n==="unitv"){if(len==="0")throw Error("Nullvektor.");res="["+u.map(x=>symmetric("("+x+")/("+len+")")).join(",")+"]"}else{let v=vector(next(args[1]));if(n==="dotp")res=dot(u,v);else{if(u.length!==3||v?.length!==3)throw Error("Zwei 3D-Vektoren erforderlich.");res="["+[[1,2],[2,0],[0,1]].map(([a,b])=>symmetric("("+u[a]+")*("+v[b]+")-("+u[b]+")*("+v[a]+")")).join(",")+"]"}}}
+ else if(["linreg","quadreg","quartreg","expreg","powerreg","lnreg"].includes(n))res=regression(n,args,blocked,depth);
+ else {let aa=args.map(a=>next(a));if(n==="ln")res=symmetric("log("+aa[0]+")");else if(n==="log"||n==="log10")res=symmetric("log("+aa[0]+")/log(10)");else if(n==="factor")res=nerdamer.factor(aa[0]).toString();else if(n==="comdenom")res=symmetric("simplify("+aa[0]+")");else if(n==="propfrac")res=symmetric("partfrac("+aa[0]+","+(args[1]||"x")+")");else res=symmetric(name+"("+aa.join(",")+")")}
+ if(i===0&&end===s.length)return res;
+ if(/\s+(or|and)\s+/.test(res)||res.includes("="))throw Error("Gleichungsergebnis hier nicht als Term verwendbar.");
+ out+="("+res+")";i=end;
+ }
+ return symmetric(out);
+}
+function plainTex(s){return "\\text{"+String(s).replace(/[\\{}$%&#_^]/g,c=>({"\\":"\\textbackslash{}","{":"\\{","}":"\\}","$":"\\$","%":"\\%","&":"\\&","#":"\\#","_":"\\_","^":"\\textasciicircum{}"}[c]))+"}"}
+function tex(source,approx=false,internal=false,depth=0){
+ if(depth>16)throw Error("Anzeige zu tief.");let s=normalize(source),T=(x,a=approx,i=internal)=>tex(x,a,i,depth+1);
+ if(s==="Done")return "\\mathrm{Done}";
+ if(s.startsWith("Keine "))return plainTex(s);
+ if(s==="Infinity")return "\\infty";if(s==="-Infinity")return "-\\infty";
+ if(approx&&/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(s)){let m=s.match(/^(.+)[eE]([+-]?\d+)$/);return m?m[1]+"\\cdot10^{"+Number(m[2])+"}":s}
+ let def=s.match(/^Define\s+(.+)$/i);if(def)return "\\mathrm{Define}\\quad "+T(def[1]);
+ let sto=s.match(/^(.+?)(?:→|->)(.+)$/);if(sto)return T(sto[1])+"\\longrightarrow "+T(sto[2]);
+ if(/\s+(or|and)\s+/.test(s))return s.split(/(\s+(?:or|and)\s+)/).map(v=>/^\s+or/.test(v)?"\\quad\\lor\\quad":/^\s+and/.test(v)?"\\quad\\land\\quad":T(v)).join("");
+ let e=split(s,"=");if(e.length===2)return T(e[0])+"="+T(e[1]);
+ let v=vector(s);if(v)return s[0]==="["?"\\begin{bmatrix}"+v.map(x=>T(x)).join(" & ")+"\\end{bmatrix}":"\\left\\{"+v.map(x=>T(x)).join(",\\;")+"\\right\\}";
+ let f=s.match(/^([A-Za-z]\w*)\((.*)\)$/s);
+ if(f){let a=split(f[2]),n=f[1].toLowerCase();
+ if(["integral","int","integrate"].includes(n))return "\\int"+(a.length===4?"_{"+T(a[2])+"}^{"+T(a[3])+"}":"")+"\\left("+T(a[0])+"\\right)\\,\\mathrm d"+T(a[1]);
+ if(n==="d"||n==="diff"){let o=a[2]||"1";return "\\frac{\\mathrm d"+(o==="1"?"":"^{"+T(o)+"}")+"}{\\mathrm d"+T(a[1])+(o==="1"?"":"^{"+T(o)+"}")+"}\\left("+T(a[0])+"\\right)"}
+ if(n==="limit")return "\\lim_{"+T(a[1])+"\\to "+T(a[2])+"}\\left("+T(a[0])+"\\right)";
+ if(n==="sum")return "\\sum_{"+T(a[1])+"="+T(a[2])+"}^{"+T(a[3])+"}\\left("+T(a[0])+"\\right)";
+ if(n==="sqrt")return "\\sqrt{"+T(a[0])+"}";
+ if(["solve","zeros","approx","factor","expand","norm","unitv","dotp","crossp","binompdf","binomcdf","comdenom","propfrac","npr"].includes(n))return "\\operatorname{"+f[1]+"}\\left("+a.map(x=>T(x)).join(",\\;")+"\\right)";
+ if(n==="ncr")return "\\binom{"+T(a[0])+"}{"+T(a[1])+"}";
+ if(!internal&&["ln","log","log10"].includes(n))return (n==="ln"?"\\ln":"\\log_{10}")+"\\left("+T(a[0])+"\\right)";
+ }
+ let raw=internal?s:s.replace(/\bln\s*\(/g,"log("),result=nerdamer.convertToLaTeX(raw);
+ return result.replace(/\\(?:mathrm|operatorname)\{log\}/g,"\\ln").replace(/\\log\b/g,"\\ln");
+}
+function math(source,approx=false,internal=false){
+ let s=approx?numeric(String(source)):String(source),fallback=internal?userSyntax(s):s;
+ if(!S.pretty||typeof katex==="undefined")return '<span class="fallback">'+escape(fallback)+'</span>';
+ try{return '<span class="math">'+katex.renderToString(tex(s,approx,internal),{throwOnError:true,trust:false,strict:"ignore",maxExpand:300,output:"htmlAndMathml"})+"</span>"}catch(e){return '<span class="fallback">'+escape(fallback)+'</span>'}
+}
+function renderHome(){
+ $("view").innerHTML='<div class="hist">'+(S.history.length?S.history.map((r,i)=>'<div class="record"><div class="cmd" data-history="'+i+'" title="Zurück in die Eingabe">'+math(r.cmd)+'</div><div class="answer '+(r.ok?"":"error")+'">'+(r.ok?(r.approx?"≈ ":"")+math(r.raw,r.approx,true):escape(r.raw))+'</div></div>').join(""):'<div class="welcome"><b>Tastaturtrainer bereit.</b><br>2nd J → ∞<br>Rechenminus: 7−3<br>Vorzeichenminus: ⁻3<br><br>'+math("sqrt(2)/3",false,true)+'<br>ENTER: exakt · ◆ ENTER: näherungsweise</div>')+"</div>";
+ $("view").querySelectorAll("[data-history]").forEach(b=>b.onclick=()=>{$("entry").value=S.history[+b.dataset.history].cmd;active=$("entry");active.focus()});$("view").scrollTop=$("view").scrollHeight;
+}
+function run(force=false){
+ let cmd=$("entry").value.trim();if(!cmd)return;let raw,ok=true,approx=force||S.mode==="APPROX"||/^approx\s*\(/i.test(cmd)||S.mode==="AUTO"&&/\d\.\d/.test(cmd);
+ try{checkInput(cmd);raw=calculate(cmd);if(raw!=="Done"&&!raw.includes("=")&&!raw.startsWith("Keine "))S.vars.ans=raw}catch(e){ok=false;raw="Eingabefehler: "+e.message}
+ S.history.push({cmd,raw,ok,approx});if(S.history.length>120)S.history.shift();historyIndex=S.history.length;save();if(ok)$("entry").value="";show("home");if(!ok){$("entry").value=cmd;$("entry").focus()}
+}
+function insert(text){
+ let el=active;if(!(el instanceof HTMLInputElement)||!document.contains(el)||el.type==="checkbox"){if(page!=="home")show("home");el=$("entry")}
+ let p=el.selectionStart??el.value.length,q=el.selectionEnd??p;el.value=el.value.slice(0,p)+text+el.value.slice(q);el.focus();el.setSelectionRange(p+text.length,p+text.length);el.dispatchEvent(new Event("input",{bubbles:true}));
+}
+document.addEventListener("focusin",e=>{if(e.target instanceof HTMLInputElement&&e.target.type!=="checkbox")active=e.target});
+function close(){ $("menu").hidden=true;$("dialog").hidden=true}
+function status(){$("status").textContent="MAIN RAD "+S.mode+" FLOAT6 "+(S.pretty?"PP":"TEXT")+(modifier?" "+(modifier==="second"?"2nd":"◆"):"");document.querySelectorAll(".second .key").forEach(b=>b.classList.toggle("active",modifier==="second"));document.querySelectorAll(".diamond .key").forEach(b=>b.classList.toggle("active",modifier==="diamond"))}
+function message(title,text){close();$("dialog").innerHTML="<h3>"+escape(title)+"</h3><pre>"+escape(text)+'</pre><button class="lcdButton" id="ok">ENTER · OK</button>';$("dialog").hidden=false;$("ok").onclick=close;$("ok").focus()}
+function menu(items){close();$("menu").innerHTML=items.map(([name],i)=>'<button data-menu="'+i+'">'+escape(name)+'</button>').join("");$("menu").hidden=false;$("menu").querySelectorAll("button").forEach(b=>b.onclick=()=>{let fn=items[+b.dataset.menu][1];close();fn()});$("menu").querySelector("button")?.focus()}
+function commands(items){menu(items.map(([name,text])=>[name,()=>insert(text)]))}
+function mode(){
+ close();$("dialog").innerHTML='<h3>MODE</h3><div class="row"><label>Exact/Approx</label><select id="modeSelect"><option>AUTO</option><option>EXACT</option><option>APPROX</option></select></div><div class="row"><label>Pretty Print</label><select id="pretty"><option value="on">ON</option><option value="off">OFF</option></select></div><pre>Winkelmaß: RAD\nAnzeige: FLOAT6\nMinusprüfung: aktiv</pre><button class="lcdButton" id="modeok">Speichern</button>';
+ $("dialog").hidden=false;$("modeSelect").value=S.mode;$("pretty").value=S.pretty?"on":"off";$("modeok").onclick=()=>{S.mode=$("modeSelect").value;S.pretty=$("pretty").value==="on";save();show(page)};
+}
+const labels={home:["Tools","Algebra","Calc","Other","Vector","Clean Up","Define","Custom"],y:["Tools","Edit","Style","✓","All","Clear","",""],graph:["Tools","Zoom","Trace","ReGraph","Value","","",""],window:["Tools","","","","","","",""],table:["Tools","Setup","Page ↑","Page ↓","","","",""],tblset:["Tools","","","","","","",""]};
+function show(p){
+ page=p;close();$("toolbar").innerHTML=labels[p].map((t,i)=>'<button data-f="'+(i+1)+'">'+escape(t)+'</button>').join("");$("toolbar").querySelectorAll("button").forEach(b=>b.onclick=()=>fkey(+b.dataset.f));$("entryrow").style.display=p==="home"?"flex":"none";$("page").textContent={home:"HOME",y:"Y= EDITOR",window:"WINDOW",graph:"GRAPH",table:"TABLE",tblset:"TABLE SETUP"}[p];
+ if(p==="home"){renderHome();active=$("entry");active.focus()}if(p==="y")renderY();if(p==="window")renderWindow();if(p==="graph")renderGraph();if(p==="table")renderTable();if(p==="tblset")renderTableSetup();status();
+}
+function renderY(){
+ $("view").innerHTML=S.ys.map((y,i)=>'<div class="yrow"><input type="checkbox" data-check="'+i+'" '+(y.on?"checked":"")+'><label>y'+(i+1)+'=</label><input type="text" data-y="'+i+'" value="'+escape(y.expr)+'" spellcheck="false"></div><div class="preview" id="preview'+i+'">'+math(y.expr)+'</div>').join("");
+ $("view").querySelectorAll("[data-y]").forEach(el=>{el.oninput=()=>{let i=+el.dataset.y;S.ys[i].expr=el.value;$("preview"+i).innerHTML=math(el.value);save()};el.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();$("view").querySelector('[data-y="'+(+el.dataset.y+1)+'"]')?.focus()}}});
+ $("view").querySelectorAll("[data-check]").forEach(el=>el.onchange=()=>{S.ys[+el.dataset.check].on=el.checked;save()});
+}
+function renderWindow(){
+ $("view").innerHTML='<div class="lcd"><h3>WINDOW</h3>'+Object.entries(S.win).map(([k,v])=>'<div class="row"><label>'+k+'=</label><input data-win="'+k+'" value="'+String(v).replace(/-/g,"⁻")+'"></div>').join("")+'<button class="lcdButton" id="winok">ENTER · Graph</button><button class="lcdButton" id="std">ZoomStd</button></div>';
+ $("winok").onclick=()=>{try{let w={};$("view").querySelectorAll("[data-win]").forEach(el=>{checkInput(el.value);w[el.dataset.win]=num(el.value)});if(w.xmin>=w.xmax||w.ymin>=w.ymax)throw Error("Untergrenze muss kleiner als Obergrenze sein.");S.win=w;save();show("graph")}catch(e){message("WINDOW",e.message)}};
+ $("std").onclick=()=>{S.win=fresh().win;save();renderWindow()};
+}
+function functions(){return S.ys.map((y,i)=>({...y,index:i})).filter(y=>y.on&&y.expr.trim())}
+function compileFunction(expr){checkInput(expr);let internal=calculate(expr,["x"]);let f=nerdamer(internal).buildFunction(["x"]);return x=>{try{let n=Number(f(x));return Number.isFinite(n)?n:NaN}catch(e){return NaN}}}
+function renderTableSetup(){
+ $("view").innerHTML='<div class="lcd"><h3>TABLE SETUP</h3><div class="row"><label>tblStart=</label><input id="tstart" value="'+String(S.table.start).replace(/-/g,"⁻")+'"></div><div class="row"><label>Δtbl=</label><input id="tstep" value="'+String(S.table.step).replace(/-/g,"⁻")+'"></div><div class="row"><label>Independent</label><select id="tmode"><option>Auto</option><option>Ask</option></select></div><button class="lcdButton" id="tok">ENTER · Tabelle</button><p>Ask: x-Zelle anklicken und ändern.</p></div>';
+ $("tmode").value=S.table.mode;$("tok").onclick=()=>{try{checkInput($("tstart").value);checkInput($("tstep").value);let a=num($("tstart").value),b=num($("tstep").value);if(!b)throw Error("Schrittweite darf nicht null sein.");S.table.start=a;S.table.step=b;S.table.mode=$("tmode").value;offset=0;save();show("table")}catch(e){message("TABLE",e.message)}};
+}
+function renderTable(){
+ let ys=functions(),fs=ys.map(y=>{try{return compileFunction(y.expr)}catch(e){return ()=>NaN}});
+ $("view").innerHTML='<table class="table"><thead><tr><th>x</th>'+ys.map(y=>'<th>y'+(y.index+1)+'</th>').join("")+'</tr></thead><tbody>'+Array.from({length:12},(_,r)=>{let i=offset+r,x=S.table.mode==="Ask"?S.table.cells[i]:S.table.start+i*S.table.step;return '<tr><td data-x="'+i+'">'+(x===undefined?"…":decimal(x))+'</td>'+fs.map(f=>'<td>'+(x===undefined?"":decimal(f(x)))+'</td>').join("")+'</tr>'}).join("")+'</tbody></table>';
+ $("view").querySelectorAll("[data-x]").forEach(el=>el.onclick=()=>{if(S.table.mode!=="Ask"){show("tblset");return}let i=+el.dataset.x;close();$("dialog").innerHTML='<h3>TABLE · x eingeben</h3><div class="row"><label>x=</label><input id="askx" value="'+String(S.table.cells[i]??"").replace(/-/g,"⁻")+'"></div><button class="lcdButton" id="askok">Übernehmen</button>';$("dialog").hidden=false;$("askok").onclick=()=>{try{checkInput($("askx").value);S.table.cells[i]=num($("askx").value);save();show("table")}catch(e){message("TABLE",e.message)}};$("askx").focus()});
+}
+function renderGraph(){
+ $("view").innerHTML='<canvas id="plot"></canvas><div class="readout" id="readout"></div>';canvas=$("plot");ctx=canvas.getContext("2d");let r=$("view").getBoundingClientRect();W=Math.max(250,Math.round(r.width));H=Math.max(150,Math.round(r.height));canvas.width=W*2;canvas.height=H*2;ctx.setTransform(2,0,0,2,0,0);
+ curves=functions().map(y=>{try{return {...y,fn:compileFunction(y.expr)}}catch(e){return {...y,fn:()=>NaN,error:e.message}}});curveIndex=Math.min(curveIndex,Math.max(0,curves.length-1));draw();
+ canvas.onwheel=e=>{e.preventDefault();zoom(e.deltaY>0?1.25:.8)};canvas.onpointerdown=e=>{let r=canvas.getBoundingClientRect();tx=S.win.xmin+(e.clientX-r.left)/r.width*(S.win.xmax-S.win.xmin);trace=true;draw()};
+}
+function draw(){
+ if(page!=="graph"||!ctx)return;let w=S.win,P=x=>(x-w.xmin)/(w.xmax-w.xmin)*W,Q=y=>(w.ymax-y)/(w.ymax-w.ymin)*H;
+ ctx.fillStyle="#bdcba6";ctx.fillRect(0,0,W,H);ctx.save();ctx.beginPath();ctx.rect(0,0,W,H-24);ctx.clip();ctx.strokeStyle="#7c906355";ctx.lineWidth=.5;
+ let step=range=>{let base=10**Math.floor(Math.log10(range/10));return range/base>35?base*5:range/base>15?base*2:base};
+ let sx=step(w.xmax-w.xmin),sy=step(w.ymax-w.ymin);
+ for(let x=Math.ceil(w.xmin/sx)*sx;x<=w.xmax;x+=sx){ctx.beginPath();ctx.moveTo(P(x),0);ctx.lineTo(P(x),H);ctx.stroke()}
+ for(let y=Math.ceil(w.ymin/sy)*sy;y<=w.ymax;y+=sy){ctx.beginPath();ctx.moveTo(0,Q(y));ctx.lineTo(W,Q(y));ctx.stroke()}
+ ctx.strokeStyle="#3a5230";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(P(0),0);ctx.lineTo(P(0),H);ctx.moveTo(0,Q(0));ctx.lineTo(W,Q(0));ctx.stroke();
+ curves.forEach((c,k)=>{ctx.strokeStyle=["#233c24","#53613a","#335750","#66503a"][k%4];ctx.lineWidth=1.5;ctx.beginPath();let prev=null;for(let u=0;u<=W;u++){let y=Q(c.fn(w.xmin+u/W*(w.xmax-w.xmin)));if(!Number.isFinite(y)||Math.abs(y)>20*H){prev=null;continue}if(prev!==null&&Math.abs(y-prev)<H*.8)ctx.lineTo(u,y);else ctx.moveTo(u,y);prev=y}ctx.stroke()});
+ let text=curves.length?"F3: Trace · Klick: x wählen · Mausrad: Zoom":"◆ W: zuerst eine Funktion eingeben.";
+ if(trace&&curves.length){let c=curves[curveIndex],v=c.fn(tx);if(Number.isFinite(v)){ctx.strokeStyle="#1e3520";ctx.beginPath();ctx.moveTo(P(tx)-5,Q(v));ctx.lineTo(P(tx)+5,Q(v));ctx.moveTo(P(tx),Q(v)-5);ctx.lineTo(P(tx),Q(v)+5);ctx.stroke()}text="y"+(c.index+1)+"  x="+decimal(tx)+"  y="+decimal(v)}
+ let bad=curves.find(c=>c.error);if(bad)text="y"+(bad.index+1)+": "+bad.error;ctx.restore();$("readout").textContent=text;
+}
+function zoom(f){let w=S.win,mx=(w.xmin+w.xmax)/2,my=(w.ymin+w.ymax)/2;w.xmin=mx+(w.xmin-mx)*f;w.xmax=mx+(w.xmax-mx)*f;w.ymin=my+(w.ymin-my)*f;w.ymax=my+(w.ymax-my)*f;save();draw()}
+const catalog=[["Define","Define "],["solve(","solve("],["zeros(","zeros("],["factor(","factor("],["expand(","expand("],["approx(","approx("],["comDenom(","comDenom("],["propFrac(","propFrac("],["d(","d("],["∫(","∫("],["limit(","limit("],["sum(","sum("],["sqrt(","sqrt("],["abs(","abs("],["norm(","norm("],["unitV(","unitV("],["dotP(","dotP("],["crossP(","crossP("],["binompdf(","binompdf("],["binomcdf(","binomcdf("],["nCr(","nCr("],["nPr(","nPr("],["LinReg","LinReg "],["ExpReg","ExpReg "],["QuadReg","QuadReg "],["QuartReg","QuartReg "],["PowerReg","PowerReg "],["LnReg","LnReg "],["ShowStat","ShowStat"],["DelVar","DelVar "],["newprob","newprob"],["∞","∞"]];
+function fkey(n){
+ modifier="";status();close();
+ if(page==="home"){
+ if(n===1)menu([["MODE / Pretty Print",mode],["VAR-LINK",variables],["Clear Home",()=>{S.history=[];save();renderHome()}]]);
+ if(n===2)commands(catalog.slice(1,8));
+ if(n===3)commands(catalog.slice(8,12));
+ if(n===4)commands([["Define","Define "],["DelVar","DelVar "],["∞","∞"],["π","pi"]]);
+ if(n===5)commands(catalog.slice(14,18));
+ if(n===6)menu([["NewProb: Variablen löschen",()=>{S.vars={};S.funcs={};save();message("NewProb","Variablen und Funktionen gelöscht.")}],["Clear Home",()=>{S.history=[];save();renderHome()}]]);
+ if(n===7)insert("Define ");if(n===8)commands(catalog);
+ }else if(page==="graph"){
+ if(n===1)apps();if(n===2)menu([["Zoom In",()=>zoom(.5)],["Zoom Out",()=>zoom(2)],["ZoomStd",()=>{S.win=fresh().win;save();draw()}],["ZoomTrig",()=>{S.win={xmin:-2*Math.PI,xmax:2*Math.PI,ymin:-4,ymax:4};save();draw()}]]);
+ if(n===3){trace=!trace;draw()}if(n===4)renderGraph();if(n===5){trace=true;draw()}
+ }else if(page==="y"){
+ if(n===1)apps();if(n===2)active?.focus();if(n===3)message("Style","Durchgezogene Funktionslinien.");
+ if(n===4){let i=Number(active?.dataset.y);if(S.ys[i]){S.ys[i].on=!S.ys[i].on;save();renderY()}}
+ if(n===5){let b=!S.ys.every(y=>y.on);S.ys.forEach(y=>y.on=b);save();renderY()}
+ if(n===6)menu([["Alle Y-Funktionen löschen",()=>{S.ys=fresh().ys;save();renderY()}],["Abbrechen",()=>{}]]);
+ }else if(page==="table"){if(n===1)apps();if(n===2)show("tblset");if(n===3){offset=Math.max(0,offset-12);renderTable()}if(n===4){offset+=12;renderTable()}}
+ else if(n===1)apps();
+}
+function variables(){message("VAR-LINK",Object.entries(S.vars).map(([k,v])=>k+"="+userSyntax(v)).concat(Object.entries(S.funcs).map(([k,f])=>k+"("+f.params.join(",")+")="+f.body)).join("\n")||"Keine Variablen.")}
+function apps(){menu([["Home",()=>show("home")],["Y= Editor",()=>show("y")],["Window",()=>show("window")],["Graph",()=>show("graph")],["Table Setup",()=>show("tblset")],["Table",()=>show("table")]])}
+function enter(force=false){
+ if(!$("dialog").hidden){let b=$("dialog").querySelector("button");b?.click();return}
+ if(!$("menu").hidden){document.activeElement?.click();return}
+ if(page==="home")run(force);if(page==="window")$("winok")?.click();if(page==="tblset")$("tok")?.click();if(page==="y")navigate("down");
+}
+function navigate(dir){
+ if(!$("menu").hidden){let bs=[...$("menu").querySelectorAll("button")],i=bs.indexOf(document.activeElement);bs[(i+(dir==="up"||dir==="left"?-1:1)+bs.length)%bs.length]?.focus();return}
+ if(page==="graph"){if(dir==="up"||dir==="down")curveIndex=(curveIndex+(dir==="up"?-1:1)+Math.max(1,curves.length))%Math.max(1,curves.length);else tx+=(dir==="left"?-1:1)*(S.win.xmax-S.win.xmin)/W;trace=true;draw();return}
+ if(page==="table"){offset=Math.max(0,offset+(dir==="up"?-1:1));renderTable();return}
+ if(page==="home"&&(dir==="up"||dir==="down")){historyIndex=Math.max(0,Math.min(S.history.length,historyIndex+(dir==="up"?-1:1)));$("entry").value=S.history[historyIndex]?.cmd||"";$("entry").focus();return}
+ if(page==="y"&&(dir==="up"||dir==="down")){let i=Number(active?.dataset.y)||0;$("view").querySelector('[data-y="'+Math.max(0,Math.min(9,i+(dir==="up"?-1:1)))+'"]')?.focus();return}
+ if(active&&typeof active.selectionStart==="number"){let p=Math.max(0,Math.min(active.value.length,active.selectionStart+(dir==="left"?-1:1)));active.focus();active.setSelectionRange(p,p)}
+}
+function action(name){
+ if(name==="second"||name==="diamond"){modifier=modifier===name?"":name;status();return}
+ let mod=modifier;modifier="";status();
+ if(name==="enter"){enter(mod==="diamond");return}
+ if(name==="escape"){close();return}if(name==="home"){show("home");return}
+ if(name==="mode"){mode();return}if(name==="apps"){apps();return}if(name==="catalog"){commands(catalog);return}
+ if(name==="shift"){shift=!shift;return}
+ if(name==="clear"){if(active&&document.contains(active)){active.value="";active.dispatchEvent(new Event("input",{bubbles:true}));active.focus()}return}
+ if(name==="back"){let e=active;if(e&&typeof e.selectionStart==="number"){let p=e.selectionStart,q=e.selectionEnd;if(p===q)p=Math.max(0,p-1);e.value=e.value.slice(0,p)+e.value.slice(q);e.focus();e.setSelectionRange(p,p);e.dispatchEvent(new Event("input",{bubbles:true}))}return}
+}
+function press(k){
+ if(k.action==="second"||k.action==="diamond"){action(k.action);return}
+ if(modifier==="second"&&k.secondFn){modifier="";status();k.secondFn();return}
+ if(modifier==="diamond"&&k.diamondFn){modifier="";status();k.diamondFn();return}
+ if(modifier==="second"&&k.secondText!==undefined){modifier="";status();insert(k.secondText);return}
+ if(k.action){action(k.action);return}
+ if(modifier){modifier="";status();message("Zusatzbelegung","Diese Zusatzbelegung ist hier nicht implementiert.");return}
+ let t=k.text??k.label;if(shift&&/^[a-z]$/.test(t)){t=t.toUpperCase();shift=false}insert(t);
+}
+function key(k){
+ let wrap=document.createElement("div");wrap.className="keywrap "+(k.cls||"");wrap.innerHTML='<div class="legend">'+(k.second?'<span class="blue">'+escape(k.second)+'</span>':"")+(k.diamond?'<span class="green">'+escape(k.diamond)+'</span>':"")+'</div>';
+ let b=document.createElement("button");b.className="key";b.type="button";b.textContent=k.label;b.title=k.title||k.label+(k.second?" · 2nd: "+k.second:"");b.setAttribute("aria-label",b.title);b.onpointerdown=e=>e.preventDefault();b.onclick=()=>press(k);wrap.appendChild(b);return wrap;
+}
+const letterExtras={
+ q:{diamond:"HOME",diamondFn:()=>show("home")},
+ w:{second:"!",secondText:"!",diamond:"Y=",diamondFn:()=>show("y")},
+ e:{diamond:"WINDOW",diamondFn:()=>show("window")},
+ r:{diamond:"GRAPH",diamondFn:()=>show("graph")},
+ t:{diamond:"TblSet",diamondFn:()=>show("tblset")},
+ y:{diamond:"TABLE",diamondFn:()=>show("table")},
+ g:{second:"CHAR",secondFn:()=>commands([["π","pi"],["∞","∞"],["θ","theta"],["[","["],["]","]"],["|","|"]])},
+ j:{second:"∞",secondText:"∞"}
+};
+["qwertyuiop","asdfghjkl","zxcvbnm"].forEach((r,i)=>{for(let c of r)$("letters"+(i+1)).appendChild(key({label:c.toUpperCase(),text:c,...letterExtras[c]}))});
+$("letters3").appendChild(key({label:"[",text:"["}));$("letters3").appendChild(key({label:"]",text:"]"}));
+[
+{label:"ON",action:"home"},{label:"2nd",action:"second",cls:"second"},{label:"◆",action:"diamond",cls:"diamond"},{label:"⇧",action:"shift"},
+{label:"SPACE",text:" ",cls:"space"},{label:"⌫",action:"back"},{label:"STO ►",text:"→"},{label:"=",text:"="}
+].forEach(k=>$("bottom").appendChild(key(k)));
+[
+{label:"APPS",action:"apps"},{label:"ESC",action:"escape"},{label:"MODE",action:"mode"},{label:"CLEAR",action:"clear"},{label:"HOME",action:"home"},{label:"CATALOG",action:"catalog"}
+].forEach(k=>$("sidekeys").appendChild(key(k)));
+/* Vier Spalten. Der Operator steht jeweils rechts neben
+   der Zahlenreihe; Vorzeichenminus bleibt rechts vom Punkt. */
+$("numeric").appendChild(key({label:"ln",text:"ln(",second:"eˣ",secondText:"e^(",cls:"ln"}));
+let spacer=document.createElement("div");spacer.className="spacer";$("numeric").appendChild(spacer);
+[
+{label:"sin",text:"sin(",second:"sin⁻¹",secondText:"asin("},
+{label:"cos",text:"cos(",second:"cos⁻¹",secondText:"acos("},
+{label:"tan",text:"tan(",second:"tan⁻¹",secondText:"atan("},
+{label:"^",text:"^",second:"π",secondText:"pi"},
+{label:"(",text:"(",second:"{",secondText:"{"},
+{label:")",text:")",second:"}",secondText:"}"},
+{label:",",text:","},
+{label:"÷",text:"/"},
+{label:"7",text:"7",cls:"number",second:"∫",secondText:"∫("},
+{label:"8",text:"8",cls:"number",second:"d",secondText:"d("},
+{label:"9",text:"9",cls:"number"},
+{label:"×",text:"*"},
+{label:"4",text:"4",cls:"number"},
+{label:"5",text:"5",cls:"number",second:"MATH",secondFn:()=>commands(catalog)},
+{label:"6",text:"6",cls:"number"},
+{label:"−",text:"−",title:"Rechenminus: Subtraktion, zum Beispiel 7−3"},
+{label:"1",text:"1",cls:"number"},
+{label:"2",text:"2",cls:"number",second:"CATALOG",secondFn:()=>commands(catalog)},
+{label:"3",text:"3",cls:"number"},
+{label:"+",text:"+"},
+{label:"0",text:"0",cls:"number"},
+{label:".",text:".",cls:"number"},
+{label:"(−)",text:"⁻",cls:"sign",title:"Vorzeichenminus: negative Zahl, zum Beispiel ⁻3"},
+{label:"ENTER",action:"enter",diamond:"≈"}
+].forEach(k=>$("numeric").appendChild(key(k)));
+/* Die letzte Reihe bleibt 0 · Vorzeichen · Plus.
+   ENTER wird separat darunter platziert. */
+let nk=$("numeric").children;
+// Layout nachträglich exakt nach Reihen:
+// ln / leer; trig; Klammern; 789÷; 456×; 123−; 0.(−)+; ENTER
+let numKeys=[...$("numeric").querySelectorAll(".keywrap")];
+let operators=numKeys.filter(k=>["÷","×","−","+","ENTER"].includes(k.querySelector("button").textContent));
+const byLabel=t=>numKeys.find(k=>k.querySelector("button").textContent===t);
+const ordered=[
+byLabel("ln"),spacer,
+byLabel("sin"),byLabel("cos"),byLabel("tan"),byLabel("^"),
+byLabel("("),byLabel(")"),byLabel(","),document.createElement("div"),
+byLabel("7"),byLabel("8"),byLabel("9"),byLabel("÷"),
+byLabel("4"),byLabel("5"),byLabel("6"),byLabel("×"),
+byLabel("1"),byLabel("2"),byLabel("3"),byLabel("−"),
+byLabel("0"),byLabel("."),byLabel("(−)"),byLabel("+"),
+byLabel("ENTER")
+];
+$("numeric").replaceChildren(...ordered);
+byLabel("ENTER").classList.add("enter");byLabel("ENTER").style.gridColumn="1 / -1";
+for(let i=1;i<=8;i++){let b=document.createElement("button");b.className="key";b.textContent="F"+i;b.onpointerdown=e=>e.preventDefault();b.onclick=()=>fkey(i);$("fkeys").appendChild(b)}
+document.querySelectorAll("[data-nav]").forEach(b=>{b.onpointerdown=e=>e.preventDefault();b.onclick=()=>navigate(b.dataset.nav)});$("hand").onclick=()=>{trace=false;draw()};
+$("entry").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation();let approx=e.ctrlKey||e.metaKey||modifier==="diamond";modifier="";status();run(approx)}if(e.key==="ArrowUp"||e.key==="ArrowDown"){e.preventDefault();e.stopPropagation();navigate(e.key==="ArrowUp"?"up":"down")}};
+document.addEventListener("keydown",e=>{
+ if(e.altKey&&e.key.toLowerCase()==="n"){e.preventDefault();insert("⁻");return}
+ if(/^F[1-8]$/.test(e.key)){e.preventDefault();fkey(+e.key.slice(1));return}
+ if(e.key==="Escape"){e.preventDefault();action("escape");return}
+ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement)return;
+ if(e.key==="Enter"){if(e.target.tagName!=="BUTTON"){e.preventDefault();enter(e.ctrlKey||e.metaKey)}return}
+ if(/^Arrow/.test(e.key)){e.preventDefault();navigate({ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key]);return}
+ if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&$("dialog").hidden&&$("menu").hidden){e.preventDefault();let k=letterExtras[e.key.toLowerCase()];if(modifier&&k)press({label:e.key,text:e.key,...k});else insert(e.key)}
+});
+$("size").onclick=()=>{$("screen").classList.toggle("large");if(page==="graph")setTimeout(renderGraph,20)};
+$("help").onclick=()=>$("instructions").scrollIntoView({behavior:"smooth"});
+window.addEventListener("resize",()=>{if(page==="graph")renderGraph()});
+const examples=["7−3","⁻3","5−⁻2","2*⁻3","⁻2^2","(⁻2)^2","−3","7⁻3","sqrt(2)/3","Define f(x)=x^2","Define f1(x)=d(f(x),x)","f1(x)","f1(3)","solve(x^2=2,x)","∫(x^2,x,0,3)","limit(1/x,x,∞)"];
+$("examples").innerHTML=examples.map((s,i)=>'<button class="example" data-example="'+i+'">'+escape(s)+'</button>').join("");
+$("examples").querySelectorAll("button").forEach(b=>b.onclick=()=>{show("home");$("entry").value=examples[+b.dataset.example];active=$("entry");active.focus();$("screen").scrollIntoView({behavior:"smooth",block:"center"})});
+$("loaded").textContent=(typeof nerdamer!=="undefined"?"CAS geladen. ":"CAS konnte nicht geladen werden. ")+(typeof katex!=="undefined"?"Formelsatz geladen.":"Formelsatz konnte nicht geladen werden.");
+show("home");
+/*
+ * Layoutkorrektur für den Voyage-200-Trainer aus dieser Unterhaltung.
+ * Verwendet die vorhandenen Funktionen key(), insert(), commands(),
+ * message(), calculate(), show(), save() sowie den Zustand S.
+ *
+ * Nicht im Browser ausgeführt.
+ */
+(() => {
+  const host = document.getElementById("numeric");
+
+  function characterMenu() {
+    commands([
+      ["Kleiner als <", "<"],
+      ["Größer als >", ">"],
+      ["Gleich =", "="],
+      ["Bedingung |", "|"],
+      ["Unendlich ∞", "∞"],
+      ["Pi π", "pi"],
+      ["Theta ϑ — vorläufig", "theta"],
+      ["Semikolon ;", ";"],
+      ["Eckige Klammer [", "["],
+      ["Eckige Klammer ]", "]"],
+      ["Geschweifte Klammer {", "{"],
+      ["Geschweifte Klammer }", "}"]
+    ]);
+  }
+
+  function mathMenu() {
+    commands([
+      ["Wurzel", "sqrt("],
+      ["Betrag", "abs("],
+      ["Ableitung", "d("],
+      ["Integral", "∫("],
+      ["Summe", "sum("],
+      ["Grenzwert", "limit("],
+      ["Gleichung lösen", "solve("],
+      ["Faktorisieren", "factor("],
+      ["Ausmultiplizieren", "expand("],
+      ["Binomialkoeffizient", "nCr("]
+    ]);
+  }
+
+  function customMenu() {
+    message(
+      "CUSTOM",
+      "Die Taste liegt jetzt an der vorgesehenen Stelle.\n\n" +
+      "Ein originalgetreu programmierbares CUSTOM-Menü ist " +
+      "in diesem Trainer noch nicht implementiert."
+    );
+  }
+
+  function memoryInfo() {
+    message(
+      "MEM · Trainer",
+      "Gespeicherte Variablen: " + Object.keys(S.vars).length +
+      "\nDefinierte Funktionen: " + Object.keys(S.funcs).length +
+      "\nVerlaufseinträge: " + S.history.length +
+      "\n\nDies ist keine Anzeige des TI-Gerätespeichers."
+    );
+  }
+
+  const layout = [
+    // Reihe oberhalb der trigonometrischen Funktionen
+    [
+      { label: "ln", text: "ln(", second: "eˣ", secondText: "e^(" },
+      null, null, null
+    ],
+
+    // Trigonometrische Funktionen und Potenztaste
+    [
+      { label: "SIN", text: "sin(", second: "sin⁻¹", secondText: "asin(" },
+      { label: "COS", text: "cos(", second: "cos⁻¹", secondText: "acos(" },
+      { label: "TAN", text: "tan(", second: "tan⁻¹", secondText: "atan(" },
+      { label: "^", text: "^", second: "π", secondText: "pi" }
+    ],
+
+    // Klammern und Komma; rechts bleibt die Operatorspalte frei
+    [
+      { label: "(", text: "(", second: "{", secondText: "{" },
+      { label: ")", text: ")", second: "}", secondText: "}" },
+      { label: ",", text: ",", second: "[", secondText: "[" },
+      null
+    ],
+
+    // Nummernblock mit Operatoren rechts
+    [
+      { label: "7", text: "7", cls: "number", second: "∫", secondText: "∫(" },
+      { label: "8", text: "8", cls: "number", second: "𝑑", secondText: "d(" },
+      {
+        label: "9", text: "9", cls: "number",
+        second: "x⁻¹", secondText: "^(⁻1)"
+      },
+      { label: "÷", text: "/", second: "]", secondText: "]" }
+    ],
+    [
+      { label: "4", text: "4", cls: "number", second: "Σ", secondText: "sum(" },
+      {
+        label: "5", text: "5", cls: "number",
+        second: "MATH", secondFn: mathMenu
+      },
+      {
+        label: "6", text: "6", cls: "number",
+        second: "MEM", secondFn: memoryInfo
+      },
+      { label: "×", text: "*", second: "√", secondText: "sqrt(" }
+    ],
+    [
+      {
+        label: "1", text: "1", cls: "number",
+        second: "EE", secondText: "ᴇ"
+      },
+      {
+        label: "2", text: "2", cls: "number",
+        second: "CATALOG", secondFn: () => commands(catalog)
+      },
+      {
+        label: "3", text: "3", cls: "number",
+        second: "CUSTOM", secondFn: customMenu
+      },
+      {
+        label: "−", text: "−",
+        title: "Rechenminus: Subtraktion, beispielsweise 7−3"
+      }
+    ],
+    [
+      { label: "0", text: "0", cls: "number", second: "<", secondText: "<" },
+      { label: ".", text: ".", cls: "number", second: ">", secondText: ">" },
+      {
+        label: "(−)", text: "⁻", cls: "sign",
+        second: "ANS", secondText: "ans",
+        title: "Vorzeichenminus: negative Zahl; 2nd: letztes Ergebnis ANS"
+      },
+      {
+        label: "+", text: "+",
+        second: "CHAR", secondFn: characterMenu
+      }
+    ]
+  ];
+
+  host.replaceChildren();
+
+  for (const row of layout) {
+    for (const definition of row) {
+      if (definition) {
+        host.appendChild(key(definition));
+      } else {
+        const blank = document.createElement("div");
+        blank.setAttribute("aria-hidden", "true");
+        host.appendChild(blank);
+      }
+    }
+  }
+
+  // Position von ENTER gegenüber der bisherigen Version unverändert.
+  // Eine vollständige geometrische 1:1-Anpassung erfolgt dadurch noch nicht.
+  const enterKey = key({
+    label: "ENTER",
+    action: "enter",
+    diamond: "≈",
+    cls: "enter"
+  });
+  enterKey.style.gridColumn = "1 / -1";
+  host.appendChild(enterKey);
+
+  // Korrekturen im Buchstabenblock
+  letterExtras.o = {};
+  letterExtras.j = { second: "∞", secondText: "∞" };
+  letterExtras.m = { second: ";", secondText: ";" };
+
+  function replaceLetter(rowId, letter, extra) {
+    const row = document.getElementById(rowId);
+    const oldKey = [...row.children].find(element =>
+      element.querySelector("button")?.textContent === letter.toUpperCase()
+    );
+    if (!oldKey) return null;
+
+    const replacement = key({
+      label: letter.toUpperCase(),
+      text: letter,
+      ...extra
+    });
+    oldKey.replaceWith(replacement);
+    return replacement;
+  }
+
+  replaceLetter("letters1", "o", letterExtras.o);
+  replaceLetter("letters2", "j", letterExtras.j);
+  const mKey = replaceLetter("letters3", "m", letterExtras.m);
+
+  // Die bisher dort zusätzlich angebotenen [ und ] entfernen:
+  // Sie liegen nun auf 2nd-Komma und 2nd-Division.
+  const lowerRow = document.getElementById("letters3");
+  for (const element of [...lowerRow.children]) {
+    const label = element.querySelector("button")?.textContent;
+    if (label === "[" || label === "]") element.remove();
+  }
+
+  if (mKey) {
+    mKey.after(key({
+      label: "ϑ",
+      text: "theta",
+      title: "Theta — Zeichen neben M noch anhand der Vorlage zu bestätigen"
+    }));
+  }
+
+  // Untere Buchstabenreihe: sieben Buchstaben plus vorläufige Theta-Taste.
+  lowerRow.style.gridTemplateColumns = "repeat(8, minmax(0, 1fr))";
+
+  // EE ist ein eigener Eingabetoken für Zehnerpotenzen, nicht die Konstante e.
+  // Beispiel: 2ᴇ⁻3 wird intern zu (2*10^(-3)).
+  const previousNormalize = normalize;
+  normalize = function (source) {
+    let text = previousNormalize(source);
+    text = text.replace(
+      /((?:\d+(?:\.\d*)?|\.\d+))ᴇ([+-]?\d+)/g,
+      "($1*10^($2))"
+    );
+    if (text.includes("ᴇ")) {
+      throw Error(
+        "EE benötigt eine Zahl davor und einen ganzzahligen Exponenten danach. " +
+        "Beispiel: 2ᴇ⁻3"
+      );
+    }
+    return text;
+  };
+
+  // Nach EE muss das Vorzeichenminus erlaubt sein.
+  const previousCheckInput = checkInput;
+  checkInput = function (source) {
+    const text = String(source);
+    if (/ᴇ[−–-]/.test(text)) {
+      throw Error(
+        "Negativer EE-Exponent: Bitte die Vorzeichentaste (−) verwenden. " +
+        "Beispiel: 2ᴇ⁻3"
+      );
+    }
+    return previousCheckInput(text.replace(/ᴇ/g, "*"));
+  };
+
+  // Zweitbelegungen auf der PC-Tastatur auch bei fokussierter Eingabe auslösen.
+  document.addEventListener("keydown", event => {
+    if (modifier !== "second" || event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+
+    const mapping = {
+      "j": { secondText: "∞" },
+      "m": { secondText: ";" },
+      "0": { secondText: "<" },
+      ".": { secondText: ">" },
+      "1": { secondText: "ᴇ" },
+      "2": { secondFn: () => commands(catalog) },
+      "3": { secondFn: customMenu },
+      "4": { secondText: "sum(" },
+      "5": { secondFn: mathMenu },
+      "6": { secondFn: memoryInfo },
+      "7": { secondText: "∫(" },
+      "8": { secondText: "d(" },
+      "9": { secondText: "^(⁻1)" }
+    };
+
+    const definition = mapping[event.key.toLowerCase()];
+    if (!definition) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    press({ label: event.key, ...definition });
+  }, true);
+
+  const hint = document.querySelector(".devicehint");
+  if (hint) {
+    hint.textContent =
+      "2nd J: ∞ · 2nd M: ; · 2nd 7: ∫ · 2nd 8: Ableitung · " +
+      "2nd 9: Kehrwert · 2nd (−): ANS · ◆ ENTER: ≈";
+  }
+
+  // Kleine Zweitbeschriftungen bleiben vollständig sichtbar.
+  const style = document.createElement("style");
+  style.textContent = `
+    .numeric .legend {
+      font-size: 10px;
+      min-height: 21px;
+      overflow: visible;
+    }
+    .numeric .legend .blue {
+      font-family: Arial, sans-serif;
+    }
+  `;
+  document.head.appendChild(style);
+
+  save();
+  show(page);
+})();
+
+/* =========================================
+   VOYAGE 200 – KOMPAKTE RECHTE SPALTE
+   ========================================= */
+
+(() => {
+  const device = document.querySelector(".device");
+  const upper = device?.querySelector(".upper");
+  const side = device?.querySelector(".side");
+  const numeric = device?.querySelector("#numeric");
+
+  if (!device || !upper || !side || !numeric) return;
+
+  // Steuerkreuz und Zahlenblock in einem gemeinsamen
+  // rechten Spaltencontainer zusammenführen.
+  let rightStack = device.querySelector(".right-stack");
+
+  if (!rightStack) {
+    rightStack = document.createElement("div");
+    rightStack.className = "right-stack";
+    upper.insertBefore(rightStack, side);
+  }
+
+  rightStack.append(side, numeric);
+
+  // Bisherige Layoutregeln gezielt überschreiben.
+  document.getElementById("voyage-right-stack-style")?.remove();
+
+  const style = document.createElement("style");
+  style.id = "voyage-right-stack-style";
+
+  style.textContent = `
+
+    /* Hauptlayout: zwei Spalten */
+
+    .device {
+      display: grid !important;
+
+      grid-template-columns:
+        minmax(0, 1.85fr)
+        minmax(265px, 1fr);
+
+      grid-template-areas:
+        "brand brand"
+        "display right"
+        "letters right"
+        "hint hint";
+
+      column-gap: 22px;
+      row-gap: 9px;
+      align-items: start;
+    }
+
+    .brand {
+      grid-area: brand;
+    }
+
+    .upper,
+    .keyboard {
+      display: contents !important;
+    }
+
+    /* Linke Spalte */
+
+    .bezel {
+      grid-area: display;
+      min-width: 0;
+    }
+
+    .letters {
+      grid-area: letters;
+      min-width: 0;
+      align-self: start;
+    }
+
+    /* Rechte Spalte als geschlossener Block */
+
+    .right-stack {
+      grid-area: right;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      gap: 5px;
+      width: 100%;
+      min-width: 0;
+      align-self: start;
+    }
+
+    /* Steuerkreuz */
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      gap: 4px;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+    }
+
+    .nav {
+      width: 116px;
+      max-width: 100%;
+      margin: 0 auto;
+      gap: 3px;
+    }
+
+    .nav .key {
+      min-height: 30px;
+      padding: 2px;
+      border-radius: 12px;
+    }
+
+    /* Die sechs Seitentasten kompakter */
+
+/* Sechs Seitentasten: 3 Spalten × 2 Reihen */
+
+.sidekeys {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+
+    gap: 5px 6px;
+}
+
+.sidekeys .key {
+    min-height: 25px;
+    padding: 2px 3px;
+    font-size: 9px;
+    border-bottom-width: 3px;
+    border-radius: 6px 6px 8px 8px;
+}
+
+    /* Zahlenblock direkt unter den Seitentasten */
+
+    .numeric {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+      gap: 5px 7px;
+      align-self: start;
+    }
+
+    .numeric .keywrap {
+      min-width: 0;
+    }
+
+    .numeric .legend {
+      height: 17px;
+      min-height: 17px;
+      padding-bottom: 2px;
+      font-size: 9px;
+    }
+
+    .numeric .key {
+      min-height: 32px;
+      padding: 4px 2px;
+    }
+
+    /* ENTER über die gesamte Breite */
+
+    .numeric .enter {
+      grid-column: 1 / -1;
+    }
+
+    /* Hinweiszeile unten */
+
+    .devicehint {
+      grid-area: hint;
+      margin: 4px 0 0;
+    }
+
+  `;
+
+  document.head.appendChild(style);
+
+})();
+
+
+</script>
+</body>
+</html>
