@@ -1199,6 +1199,223 @@ show("home");
 
 })();
 
+/* ============================================
+   VOYAGE 200 – LAYOUT NEU AUFBAUEN
+   Alte Layout-Patches bereinigen
+   ============================================ */
+
+(() => {
+  const device = document.querySelector(".device");
+  if (!device) return;
+
+  const bezel = device.querySelector(".bezel");
+  const side = device.querySelector(".side");
+  const letters = device.querySelector(".letters");
+  const numeric = device.querySelector("#numeric");
+  const brand = device.querySelector(".brand");
+  const hint = device.querySelector(".devicehint");
+
+  if (!bezel || !side || !letters || !numeric) return;
+
+  // Alte Layout-CSS-Regeln entfernen
+  document.querySelectorAll("style").forEach(style => {
+    if (
+      style.id === "voyage-right-stack-style" ||
+      style.id === "voyage-final-layout" ||
+      /grid-template-areas|body-columns|\.right-stack/.test(
+        style.textContent
+      )
+    ) {
+      style.remove();
+    }
+  });
+
+  // Neue, unabhängige Spalten erzeugen
+  const main = document.createElement("div");
+  main.className = "voyage-columns-2026";
+
+  const left = document.createElement("div");
+  left.className = "voyage-left-2026";
+
+  const right = document.createElement("div");
+  right.className = "voyage-right-2026";
+
+  // Linke Spalte
+  left.append(bezel, letters);
+
+  // Rechte Spalte
+  right.append(side, numeric);
+
+  main.append(left, right);
+
+  // Neue Struktur in das Gerät einsetzen
+  if (brand) {
+    brand.after(main);
+  } else {
+    device.prepend(main);
+  }
+
+  // Alte, leere Layout-Container entfernen
+  device.querySelectorAll(
+    ".upper, .keyboard, .body-columns, .left-stack, .right-stack"
+  ).forEach(element => element.remove());
+
+  if (hint) main.after(hint);
+
+  // Ein einziges, maßgebliches Layout-Stylesheet
+  document.getElementById("voyage-clean-layout")?.remove();
+
+  const style = document.createElement("style");
+  style.id = "voyage-clean-layout";
+
+  style.textContent = `
+
+    .device {
+      display: block !important;
+    }
+
+    /* Zwei nebeneinanderliegende Hauptspalten */
+
+    .voyage-columns-2026 {
+      display: grid !important;
+      grid-template-columns:
+        minmax(0, 1.85fr)
+        minmax(265px, 1fr);
+
+      gap: 22px;
+      align-items: start;
+      width: 100%;
+    }
+
+    .voyage-left-2026,
+    .voyage-right-2026 {
+      display: flex !important;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      min-width: 0;
+      width: 100%;
+    }
+
+    /* Linke Seite */
+
+    .voyage-left-2026 .bezel,
+    .voyage-left-2026 .letters {
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+    }
+
+    /* Rechte Seite: alles oben beginnen lassen */
+
+    .voyage-right-2026 .side {
+      display: flex !important;
+      flex-direction: column;
+      justify-content: flex-start !important;
+      gap: 5px;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+    }
+
+    /* Steuerkreuz */
+
+    .voyage-right-2026 .nav {
+      width: 116px;
+      margin: 0 auto;
+      gap: 3px;
+    }
+
+    .voyage-right-2026 .nav .key {
+      min-height: 30px;
+    }
+
+    /* Sechs Tasten: 3 × 2 */
+
+    .voyage-right-2026 .sidekeys {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      width: 100%;
+      margin: 0;
+      gap: 5px 6px;
+    }
+
+    .voyage-right-2026 .sidekeys .key {
+      min-height: 25px;
+      padding: 2px;
+      font-size: 9px;
+    }
+
+    /* Zahlenblock unmittelbar darunter */
+
+    .voyage-right-2026 .numeric {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+      gap: 5px 7px;
+    }
+
+    .voyage-right-2026 .numeric .keywrap {
+      min-width: 0;
+    }
+
+    .voyage-right-2026 .numeric .legend {
+      height: 17px;
+      min-height: 17px;
+      font-size: 9px;
+    }
+
+    .voyage-right-2026 .numeric .key {
+      min-height: 32px;
+    }
+
+    .voyage-right-2026 .numeric .enter {
+      grid-column: 1 / -1 !important;
+    }
+
+    /* Hinweis am Geräteende */
+
+    .devicehint {
+      margin: 8px 0 0;
+    }
+
+  `;
+
+  document.head.appendChild(style);
+
+  // Raute vor 2nd
+  const bottom = device.querySelector("#bottom");
+
+  if (bottom) {
+    const keys = [...bottom.children];
+
+    const diamond = keys.find(el =>
+      el.querySelector("button")?.textContent.trim() === "◆"
+    );
+
+    const second = keys.find(el =>
+      el.querySelector("button")?.textContent.trim() === "2nd"
+    );
+
+    if (diamond && second) {
+      bottom.insertBefore(diamond, second);
+    }
+  }
+
+  // APPROX über ENTER
+  const enter = [...numeric.querySelectorAll(".keywrap")].find(el =>
+    el.querySelector("button")?.textContent.trim() === "ENTER"
+  );
+
+  if (enter) {
+    const legend = enter.querySelector(".legend .green");
+    if (legend) legend.textContent = "APPROX";
+  }
+
+})();
+
 </script>
 </body>
 </html>
